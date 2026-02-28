@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f4ef;
+  --foreground: #111827;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #f7f4ef;
+  color: #111827;
+  font-family: var(--font-inter), Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px 2px rgba(201,123,58,0.3); }
+  50% { box-shadow: 0 0 40px 8px rgba(201,123,58,0.5); }
+}
+
+.glow-btn {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll reveal */
+.sr-hidden {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.sr-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-up {
+  animation: fade-up 0.7s ease both;
+}
+
+.fade-up-delay {
+  animation: fade-up 0.7s ease 0.2s both;
+}
+
+.fade-up-delay-2 {
+  animation: fade-up 0.7s ease 0.4s both;
+}
+
+.glass {
+  background: linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.025) 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 0 rgba(255,255,255,0.06) inset, 0 -1px 0 0 rgba(0,0,0,0.2) inset;
+}
+
+.glass-featured {
+  background: linear-gradient(135deg, rgba(201,123,58,0.1) 0%, rgba(255,255,255,0.03) 100%);
+  border: 1px solid rgba(201,123,58,0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 0 0 1px rgba(201,123,58,0.1) inset, 0 4px 24px rgba(201,123,58,0.08);
+}
+
+.section-alt {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+/* Light section card styles */
+.card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.card-featured {
+  background: linear-gradient(135deg, #fff8f2 0%, #ffffff 100%);
+  border: 1px solid rgba(201,123,58,0.22);
+  box-shadow: 0 4px 20px rgba(201,123,58,0.07);
+}
+
+/* HeroDemo animations */
+@keyframes flipOut {
+  from { transform: perspective(900px) rotateY(0deg); opacity: 1; }
+  to   { transform: perspective(900px) rotateY(90deg); opacity: 0; }
+}
+@keyframes flipIn {
+  from { transform: perspective(900px) rotateY(-90deg); opacity: 0; }
+  to   { transform: perspective(900px) rotateY(0deg); opacity: 1; }
+}
+@keyframes stepFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes notifSlide {
+  0%   { transform: translateY(-56px); opacity: 0; }
+  12%  { transform: translateY(0);     opacity: 1; }
+  88%  { transform: translateY(0);     opacity: 1; }
+  100% { transform: translateY(-56px); opacity: 0; }
+}
+@keyframes barGrow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+@keyframes progressFill {
+  from { width: 42%; }
+  to   { width: 62%; }
+}
+@keyframes checkPop {
+  0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+  60%  { transform: scale(1.2) rotate(4deg);  opacity: 1; }
+  100% { transform: scale(1) rotate(0deg);    opacity: 1; }
+}
+@keyframes ptsTick {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes badgePop {
+  0%   { transform: scale(0); opacity: 0; }
+  70%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes toastIn {
+  from { transform: translateY(-48px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+@keyframes rowsFadeIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes confettiFall {
+  0%   { transform: translateY(0)   rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(56px) rotate(420deg); opacity: 0; }
+}
+.phone-flip-out { animation: flipOut 0.25s ease-in  forwards; }
+.phone-flip-in  { animation: flipIn  0.28s ease-out forwards; }
+.step-fade-up   { animation: stepFadeUp 0.4s ease-out forwards; }
+
+/* LivePulse marquee */
+@keyframes pulseFeedLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes pulseFeedRight {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
