@@ -4,7 +4,7 @@ import { useState } from "react";
 const faqs = [
   {
     q: "How does LoyaltyHub work?",
-    a: "Customers scan a QR code or check in at your business to earn points automatically. They can then redeem those points for rewards you define — discounts, free items, VIP perks.",
+    a: "Each customer gets their own QR code in the LoyaltyHub app. You scan it at the till to stamp their card. They can then redeem points for rewards you define — discounts, free items, VIP perks.",
   },
   {
     q: "Do my customers need to download an app?",
@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     q: "How long does setup take?",
-    a: "Most businesses are fully set up in under 10 minutes. We guide you through every step.",
+    a: "Most businesses are fully set up in under 5 minutes. We guide you through every step.",
   },
   {
     q: "When will I get access?",
@@ -45,7 +45,7 @@ export default function FAQ() {
           {faqs.map((f, i) => (
             <div
               key={i}
-              className="cursor-pointer"
+              className="cursor-pointer card-hover"
               style={{ borderBottom: i < faqs.length - 1 ? "1px solid rgba(0,0,0,0.07)" : "none" }}
               onClick={() => setOpen(open === i ? null : i)}
             >

@@ -66,7 +66,7 @@ export default function AnalyticsSpotlight() {
               desc: "Know your busiest days, your average transaction value, and how customer behaviour shifts over time.",
             },
           ].map((item, i) => (
-            <div key={i} className="card rounded-2xl p-5 flex gap-4 items-start">
+            <div key={i} className="card card-hover rounded-2xl p-5 flex gap-4 items-start">
               <div className="mt-0.5 shrink-0">{item.icon}</div>
               <div>
                 <div className="text-sm font-bold mb-1" style={{ color: "#111827" }}>{item.label}</div>
@@ -98,7 +98,7 @@ export default function AnalyticsSpotlight() {
             ].map((s, i) => (
               <div
                 key={i}
-                className="rounded-xl p-3 flex flex-col gap-1 text-center"
+                className="rounded-xl p-3 flex flex-col gap-1 text-center card-hover"
                 style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
               >
                 <span className="text-xl font-extrabold" style={{ color: "#e8944a" }}>{s.n}</span>

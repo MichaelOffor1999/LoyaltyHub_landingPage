@@ -5,6 +5,7 @@ import AnalyticsSpotlight from "./components/AnalyticsSpotlight";
 import FAQ from "./components/FAQ";
 import WaitlistForm from "./components/WaitlistForm";
 import ScrollReveal from "./components/ScrollReveal";
+import StepCard from "./components/StepCard";
 
 export default function Home() {
   return (
@@ -66,7 +67,7 @@ export default function Home() {
           </div>
 
           <h1
-            className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight tracking-tight mb-6"
+            className="text-4xl sm:text-6xl lg:text-7xl font-black leading-tight tracking-tight mb-6"
             style={{ color: "#111827" }}
           >
             Turn Every Customer<br />
@@ -83,10 +84,11 @@ export default function Home() {
           </h1>
 
           <p
-            className="text-xl sm:text-2xl max-w-xl leading-relaxed mb-8"
+            className="text-lg sm:text-xl max-w-2xl leading-snug mb-8"
             style={{ color: "#374151", fontWeight: 600 }}
           >
-            Stop guessing. See who&apos;s coming back, who&apos;s drifting, and what to do about it.
+            Stop guessing. See who&apos;s coming back,{" "}
+            who&apos;s drifting, and what to do about it.
           </p>
 
           <div className="w-full max-w-xl" id="waitlist">
@@ -135,16 +137,7 @@ export default function Home() {
                 { step: "02", title: "Invite your customers", desc: "Customers download the free app and get their own QR code — you scan it at the till to stamp their card." },
                 { step: "03", title: "Watch them return", desc: "Customers earn points and redeem rewards — you watch revenue grow." },
               ].map((s, i) => (
-                <div key={i} className={`${i === 1 ? 'card-featured' : 'card'} rounded-2xl p-6 flex flex-col gap-3`}>
-                  <span
-                    className="text-4xl font-black"
-                    style={{ color: i === 1 ? "#c97b3a" : "rgba(201,123,58,0.35)", lineHeight: 1 }}
-                  >
-                    {s.step}
-                  </span>
-                  <h3 className="text-lg font-bold" style={{ color: "#111827" }}>{s.title}</h3>
-                  <p className="text-sm" style={{ color: "#6b7280" }}>{s.desc}</p>
-                </div>
+                <StepCard key={i} step={s.step} title={s.title} desc={s.desc} featured={i === 1} />
               ))}
             </ScrollReveal>
           </div>

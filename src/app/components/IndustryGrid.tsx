@@ -28,10 +28,10 @@ function LoyaltyCard({ card, slot, exiting }: { card: CardData; slot: number; ex
   return (
     <div
       style={{
-        width: 280,
+        width: "clamp(260px, 32vw, 360px)",
         borderRadius: 20,
         background: card.gradient,
-        padding: "16px 18px",
+        padding: "18px 20px",
         boxShadow: slot === 0 ? "0 18px 50px rgba(0,0,0,0.28)" : "0 8px 24px rgba(0,0,0,0.16)",
         transform,
         zIndex: s.z,
@@ -150,11 +150,6 @@ export default function IndustryGrid() {
               </span>
             </h2>
 
-            <p className="text-base sm:text-lg" style={{ color: "#6b7280", lineHeight: 1.7 }}>
-              Most businesses spend more winning new customers than keeping the ones they already have.
-              LoyaltyHub flips that — same card, same app, any industry.
-            </p>
-
             <div className="flex flex-wrap gap-2">
               {HINTS.map((name, i) => (
                 <span key={i} className="rounded-full px-3 py-1 text-sm font-medium" style={{ background: "#faf9f7", border: "1px solid rgba(0,0,0,0.08)", color: "#374151" }}>
@@ -168,8 +163,8 @@ export default function IndustryGrid() {
           </div>
 
           {/* Right — cycling card stack */}
-          <div className="flex-shrink-0 flex flex-col items-center gap-5">
-            <div style={{ width: 310, height: 220, position: "relative" }}>
+          <div className="flex-1 flex flex-col items-center justify-center gap-6">
+            <div style={{ width: "clamp(280px, 35vw, 400px)", height: "clamp(220px, 26vw, 300px)", position: "relative" }}>
               {/* Paint back → middle → front so front is on top */}
               <LoyaltyCard card={CARDS[order[2]]} slot={2} exiting={false} />
               <LoyaltyCard card={CARDS[order[1]]} slot={1} exiting={false} />

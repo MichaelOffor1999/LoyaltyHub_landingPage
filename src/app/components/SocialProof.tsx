@@ -85,7 +85,7 @@ export default function SocialProof() {
       {/* Testimonial cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {testimonials.map((t, i) => (
-          <div key={i} className={`${t.featured ? "card-featured" : "card"} rounded-2xl p-6 flex flex-col gap-4`}>
+          <div key={i} className={`${t.featured ? "card-featured" : "card"} card-hover rounded-2xl p-6 flex flex-col gap-4`}>
             {/* Stars */}
             <div className="flex gap-0.5">
               {Array.from({ length: t.stars }).map((_, s) => (
