@@ -3,7 +3,7 @@ export default function Privacy() {
     <div className="min-h-screen" style={{ background: "#f7f4ef" }}>
       <div className="max-w-3xl mx-auto px-6 py-20">
         <div className="mb-10">
-          <a href="/" className="text-sm font-semibold" style={{ color: "#c97b3a" }}>← Back to LoyaltyHub</a>
+          <a href="/" className="text-sm font-semibold" style={{ color: "#c97b3a" }}>← Back to Clienty</a>
         </div>
         <h1 className="text-4xl font-black mb-3" style={{ color: "#111827" }}>Privacy Policy</h1>
         <p className="text-sm mb-12" style={{ color: "#9ca3af" }}>Last updated: February 2026</p>
@@ -11,7 +11,7 @@ export default function Privacy() {
         <div className="flex flex-col gap-10" style={{ color: "#374151" }}>
           <section>
             <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>1. Who We Are</h2>
-            <p className="text-base leading-relaxed">LoyaltyHub (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is a digital loyalty platform operated by LoyaltyHub Ltd. This Privacy Policy explains how we collect, use, and protect your personal information when you use our services.</p>
+            <p className="text-base leading-relaxed">Clienty (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is a digital loyalty platform operated by Clienty Ltd. This Privacy Policy explains how we collect, use, and protect your personal information when you use our services.</p>
           </section>
 
           <section>
@@ -27,7 +27,7 @@ export default function Privacy() {
           <section>
             <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>3. How We Use Your Information</h2>
             <ul className="text-base leading-relaxed flex flex-col gap-2 list-disc list-inside">
-              <li>To operate and improve the LoyaltyHub platform.</li>
+              <li>To operate and improve the Clienty platform.</li>
               <li>To send push notifications about rewards and offers (only with your consent).</li>
               <li>To provide businesses with anonymised analytics about visit trends and customer behaviour.</li>
               <li>To contact you about your account or respond to support requests.</li>
@@ -46,7 +46,7 @@ export default function Privacy() {
 
           <section>
             <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>6. Your Rights</h2>
-            <p className="text-base leading-relaxed">Under UK GDPR you have the right to access, correct, or delete your personal data; to object to or restrict processing; and to data portability. To exercise any of these rights, contact us at <a href="mailto:hello@loyaltyhub.app" style={{ color: "#c97b3a", textDecoration: "underline" }}>hello@loyaltyhub.app</a>.</p>
+            <p className="text-base leading-relaxed">Under UK GDPR you have the right to access, correct, or delete your personal data; to object to or restrict processing; and to data portability. To exercise any of these rights, contact us at <a href="mailto:hello@clienty.app" style={{ color: "#c97b3a", textDecoration: "underline" }}>hello@clienty.app</a>.</p>
           </section>
 
           <section>
@@ -66,7 +66,7 @@ export default function Privacy() {
 
           <section>
             <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>10. Contact</h2>
-            <p className="text-base leading-relaxed">For any privacy-related queries, contact us at <a href="mailto:hello@loyaltyhub.app" style={{ color: "#c97b3a", textDecoration: "underline" }}>hello@loyaltyhub.app</a>.</p>
+            <p className="text-base leading-relaxed">For any privacy-related queries, contact us at <a href="mailto:hello@clienty.app" style={{ color: "#c97b3a", textDecoration: "underline" }}>hello@clienty.app</a>.</p>
           </section>
         </div>
       </div>

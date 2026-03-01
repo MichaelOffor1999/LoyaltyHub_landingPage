@@ -9,9 +9,71 @@ const inter = Inter({
   display: "swap",
 });
 
+// ← Change this when you buy a domain
+const SITE_URL = "https://clienty.vercel.app";
+
 export const metadata: Metadata = {
-  title: "LoyaltyHub — Turn Every Customer Into a Loyal Fan",
-  description: "The simplest way to reward your best customers, boost repeat business, and grow your revenue.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Clienty — Turn Every Customer Into a Loyal Fan",
+    template: "%s | Clienty",
+  },
+  description:
+    "The simplest way to reward your best customers, boost repeat business, and grow your revenue. Digital loyalty cards, customer insights, and automated re-engagement — all in one app.",
+  keywords: [
+    "loyalty program",
+    "digital loyalty card",
+    "customer retention",
+    "repeat customers",
+    "small business loyalty",
+    "stamp card app",
+    "customer rewards",
+    "loyalty app",
+    "Clienty",
+  ],
+  authors: [{ name: "Clienty" }],
+  creator: "Clienty",
+  publisher: "Clienty",
+  openGraph: {
+    type: "website",
+    locale: "en_GB",
+    url: SITE_URL,
+    siteName: "Clienty",
+    title: "Clienty — Turn Every Customer Into a Loyal Fan",
+    description:
+      "Digital loyalty cards, customer insights, and automated re-engagement. The simplest way to reward your best customers and grow your revenue.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Clienty — Turn Every Customer Into a Loyal Fan",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Clienty — Turn Every Customer Into a Loyal Fan",
+    description:
+      "Digital loyalty cards, customer insights, and automated re-engagement. The simplest way to reward your best customers and grow your revenue.",
+    images: ["/og-image.png"],
+    // creator: "@yourtwitterhandle",  ← Add when you have one
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: [{ url: "/favicon.png", type: "image/png", sizes: "64x64" }],
+    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
+  },
 };
 
 export default function RootLayout({

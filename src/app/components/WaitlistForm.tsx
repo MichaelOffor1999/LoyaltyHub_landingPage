@@ -9,10 +9,11 @@ export default function WaitlistForm({ large = false, light = false }: { large?:
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("loading");
+    const honeypot = (e.target as HTMLFormElement).querySelector<HTMLInputElement>("[name=website]");
     const res = await fetch("/api/waitlist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, website: honeypot?.value || "" }),
     });
     if (res.ok) {
       setSubmittedEmail(email);
@@ -34,7 +35,7 @@ export default function WaitlistForm({ large = false, light = false }: { large?:
         style={{ animation: "card-enter 0.35s cubic-bezier(0.22,1,0.36,1) both" }}
       >
         {/* Card container */}
-        <div style={{ width: "min(360px, 100%)", height: 200 }}>
+        <div style={{ width: "min(360px, 100%)", minHeight: 200 }}>
           <div
             style={{
               width: "100%",
@@ -62,7 +63,7 @@ export default function WaitlistForm({ large = false, light = false }: { large?:
               {/* Brand name + member email */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div>
-                  <div style={{ color: "#fff", fontWeight: 800, fontSize: 15, letterSpacing: "0.04em" }}>LoyaltyHub</div>
+                  <div style={{ color: "#fff", fontWeight: 800, fontSize: 15, letterSpacing: "0.04em" }}>Clienty</div>
                   <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 9.5, fontWeight: 700, letterSpacing: "0.16em", marginTop: 2, textTransform: "uppercase" }}>Early Access</div>
                 </div>
                 <div style={{ textAlign: "right", minWidth: 0, maxWidth: 180, overflow: "hidden" }}>
@@ -110,6 +111,15 @@ export default function WaitlistForm({ large = false, light = false }: { large?:
         onSubmit={handleSubmit}
         className={`flex flex-col sm:flex-row gap-3 w-full ${large ? "max-w-xl" : "max-w-md"} mx-auto mt-6`}
       >
+        {/* Honeypot — hidden from real users, bots auto-fill it */}
+        <input
+          type="text"
+          name="website"
+          autoComplete="off"
+          tabIndex={-1}
+          aria-hidden="true"
+          style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }}
+        />
         <input
           type="email"
           required

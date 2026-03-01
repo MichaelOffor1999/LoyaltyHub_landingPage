@@ -1,3 +1,4 @@
+import Image from "next/image";
 import ScrollReveal from "./ScrollReveal";
 
 // Brand mark components using real logos with CSS cropping
@@ -5,10 +6,12 @@ function MTBMark({ size = "md" }: { size?: "sm" | "md" }) {
   const h = size === "sm" ? 32 : 48;
   return (
     <div style={{ width: h, height: h, overflow: "hidden", borderRadius: 8, flexShrink: 0, background: "#f5f0ea" }}>
-      <img
+      <Image
         src="/logo-mtb.jpg"
         alt="MTB Barbershop"
-        style={{ width: h, height: h, objectFit: "contain", display: "block", padding: 3 }}
+        width={h}
+        height={h}
+        style={{ objectFit: "contain", padding: 3 }}
       />
     </div>
   );
@@ -18,10 +21,12 @@ function ReliefMark({ size = "md" }: { size?: "sm" | "md" }) {
   const h = size === "sm" ? 32 : 48;
   return (
     <div style={{ width: h, height: h, overflow: "hidden", borderRadius: "50%", flexShrink: 0, border: "1px solid rgba(255,255,255,0.1)" }}>
-      <img
+      <Image
         src="/logo-relief.jpg"
         alt="Relief Barbershop"
-        style={{ width: h, height: h, objectFit: "cover", objectPosition: "center center", display: "block" }}
+        width={h}
+        height={h}
+        style={{ objectFit: "cover", objectPosition: "center center" }}
       />
     </div>
   );
@@ -31,7 +36,7 @@ export { MTBMark, ReliefMark };
 
 const testimonials = [
   {
-    quote: "Our regulars actually come back more now. We had customers we hadn't seen in months show up after we sent a tailored offer through LoyaltyHub. That was the moment I knew it worked.",
+    quote: "Our regulars actually come back more now. We had customers we hadn't seen in months show up after we sent a tailored offer through Clienty. That was the moment I knew it worked.",
     mark: <MTBMark />,
     business: "MTB Barbershop",
     featured: true,
@@ -62,20 +67,20 @@ export default function SocialProof() {
           Already trusted by local businesses
         </h2>
           <p className="mt-3 text-sm" style={{ color: "#6b7280" }}>
-          These are real business owners using LoyaltyHub today.
+          These are real business owners using Clienty today.
         </p>
       </div>
 
       {/* Trusted-by logo strip */}
       <div
-        className="flex items-center justify-center gap-10 py-5 rounded-2xl"
+        className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 py-5 rounded-2xl"
         style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
       >
         <div className="flex items-center gap-3">
           <MTBMark size="sm" />
           <span className="text-sm font-semibold" style={{ color: "#374151" }}>MTB Barbershop</span>
         </div>
-        <div style={{ width: 1, height: 36, background: "rgba(0,0,0,0.1)" }} />
+        <div className="hidden sm:block" style={{ width: 1, height: 36, background: "rgba(0,0,0,0.1)" }} />
         <div className="flex items-center gap-3">
           <ReliefMark size="sm" />
           <span className="text-sm font-semibold" style={{ color: "#374151" }}>Relief Barbershop</span>
@@ -89,7 +94,7 @@ export default function SocialProof() {
             {/* Stars */}
             <div className="flex gap-0.5">
               {Array.from({ length: t.stars }).map((_, s) => (
-                <svg key={s} width="14" height="14" viewBox="0 0 14 14" fill="#e8944a">
+                <svg key={s} width="16" height="16" viewBox="0 0 14 14" fill="#e8944a">
                   <path d="M7 1l1.55 3.14L12 4.63l-2.5 2.44.59 3.43L7 8.77l-3.09 1.63.59-3.43L2 4.63l3.45-.49L7 1z"/>
                 </svg>
               ))}
@@ -99,7 +104,7 @@ export default function SocialProof() {
               &ldquo;{t.quote}&rdquo;
             </p>
             {/* Brand */}
-            <div className="mt-auto pt-3 flex items-center gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+            <div className="mt-auto pt-3 flex items-center gap-3" style={{ borderTop: "1px solid rgba(0,0,0,0.07)" }}>
               {t.mark}
               <span className="text-sm font-semibold" style={{ color: "#111827" }}>{t.business}</span>
             </div>

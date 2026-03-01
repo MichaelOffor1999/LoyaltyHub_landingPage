@@ -6,7 +6,7 @@ const DURATION = 7000; // ms per slide
 const outcomes = [
   {
     pain: "You're losing regulars and don't know why",
-    solution: "LoyaltyHub tells you exactly which customers haven't come back — before they're gone for good.",
+    solution: "Clienty tells you exactly which customers haven't come back — before they're gone for good.",
     outcome: "Bring back customers you'd have lost",
     bullets: [
       "Automatic at-risk alerts when a regular goes quiet",
@@ -16,7 +16,7 @@ const outcomes = [
   },
   {
     pain: "You have 40 regulars. You can't contact a single one of them.",
-    solution: "LoyaltyHub gives you a direct line to every customer who's ever walked through your door — so when it's a quiet Tuesday, you can actually do something about it.",
+    solution: "Clienty gives you a direct line to every customer who's ever walked through your door — so when it's a quiet Tuesday, you can actually do something about it.",
     outcome: "Own your customer relationships",
     bullets: [
       "Send targeted offers directly to customers in the app",
@@ -26,7 +26,7 @@ const outcomes = [
   },
   {
     pain: "You're giving discounts to customers who were coming back anyway.",
-    solution: "LoyaltyHub shows you exactly who needs an incentive and who doesn't — so every offer you send earns its cost back, and then some.",
+    solution: "Clienty shows you exactly who needs an incentive and who doesn't — so every offer you send earns its cost back, and then some.",
     outcome: "Spend less on discounts, make more from loyalty",
     bullets: [
       "See which customers are at risk vs. reliably returning",
@@ -92,7 +92,7 @@ export default function FeatureList() {
             className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
             style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
           >
-            Why businesses choose LoyaltyHub
+            Why businesses choose Clienty
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "#111827" }}>
             Built around the problems<br />you actually have
