@@ -111,8 +111,8 @@ export default function Home() {
             <p className="text-xs font-medium uppercase tracking-widest" style={{ color: "#9ca3af" }}>Trusted by</p>
             <div className="overflow-hidden w-full max-w-lg">
               <div className="marquee-track">
-                {[0, 1].map((copy) => (
-                  <div key={copy} className="marquee-content" aria-hidden={copy === 1}>
+                {[0, 1, 2, 3].map((copy) => (
+                  <div key={copy} className="marquee-content" aria-hidden={copy > 0}>
                     <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                       <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: 8, background: "#f5f0ea", border: "1px solid rgba(0,0,0,0.06)", flexShrink: 0 }}>
                         <Image src="/logo-mtb.jpg" alt="MTB Barbershop" width={36} height={36} style={{ objectFit: "contain", padding: 2 }} />
@@ -123,13 +123,13 @@ export default function Home() {
                       <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(0,0,0,0.08)", flexShrink: 0 }}>
                         <Image src="/logo-relief.jpg" alt="Relief Barbershop" width={36} height={36} style={{ objectFit: "cover", objectPosition: "center" }} />
                       </div>
-                      <span className="text-[10px] font-semibold" style={{ color: "#6b7280" }}>Relief Barbershop</span>
+                      <span className="text-[10px] font-semibold" style={{ color: "#6b7280" }}>Relief</span>
                     </div>
                     <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                       <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(0,0,0,0.08)", flexShrink: 0 }}>
-                        <Image src="/logo-10cutsjpg.jpg" alt="10 Cuts Barbershop" width={72} height={72} style={{ objectFit: "cover", objectPosition: "center" }} />
+                        <Image src="/logo-10cuts.jpg" alt="10 Cuts Barbershop" width={72} height={72} style={{ objectFit: "cover", objectPosition: "center" }} />
                       </div>
-                      <span className="text-[10px] font-semibold" style={{ color: "#6b7280" }}>10 Cuts Barbershop</span>
+                      <span className="text-[10px] font-semibold" style={{ color: "#6b7280" }}>10 Cuts</span>
                     </div>
                   </div>
                 ))}

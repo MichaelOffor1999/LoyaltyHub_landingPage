@@ -23,7 +23,7 @@ function ReliefMark({ size = "md" }: { size?: "sm" | "md" }) {
     <div style={{ width: h, height: h, overflow: "hidden", borderRadius: "50%", flexShrink: 0, border: "1px solid rgba(255,255,255,0.1)" }}>
       <Image
         src="/logo-relief.jpg"
-        alt="Relief Barbershop"
+        alt="Relief"
         width={h}
         height={h}
         style={{ objectFit: "cover", objectPosition: "center center" }}
@@ -39,8 +39,8 @@ function TenCutsMark({ size = "md" }: { size?: "sm" | "md" }) {
   return (
     <div style={{ width: h, height: h, overflow: "hidden", borderRadius: "50%", flexShrink: 0, border: "1px solid rgba(0,0,0,0.08)" }}>
       <Image
-        src="/logo-10cutsjpg.jpg"
-        alt="10 Cuts Barbershop"
+        src="/logo-10cuts.jpg"
+        alt="10 Cuts"
         width={h * 2}
         height={h * 2}
         style={{ objectFit: "cover", objectPosition: "center" }}
@@ -101,19 +101,19 @@ export default function SocialProof() {
         style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
       >
         <div className="marquee-track">
-          {[0, 1].map((copy) => (
-            <div key={copy} className="marquee-content" aria-hidden={copy === 1}>
+          {[0, 1, 2, 3].map((copy) => (
+            <div key={copy} className="marquee-content" aria-hidden={copy > 0}>
               <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                 <MTBMark size="sm" />
                 <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>MTB Barbershop</span>
               </div>
               <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                 <ReliefMark size="sm" />
-                <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>Relief Barbershop</span>
+                <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>Relief</span>
               </div>
               <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                 <TenCutsMark size="sm" />
-                <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>10 Cuts Barbershop</span>
+                <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>10 Cuts</span>
               </div>
             </div>
           ))}

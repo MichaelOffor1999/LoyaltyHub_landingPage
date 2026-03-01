@@ -38,7 +38,7 @@ body {
 /* Infinite marquee — logo strip */
 @keyframes marquee-scroll {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(-25%); }
 }
 .marquee-track {
   display: flex;
@@ -51,8 +51,14 @@ body {
   flex-wrap: nowrap;
   align-items: center;
   flex-shrink: 0;
-  gap: 3.5rem;
-  padding: 0 1.75rem;
+  gap: 2.5rem;
+  padding: 0 1.25rem;
+}
+@media (min-width: 640px) {
+  .marquee-content {
+    gap: 5rem;
+    padding: 0 2.5rem;
+  }
 }
 
 @keyframes glow-pulse {
