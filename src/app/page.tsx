@@ -140,8 +140,13 @@ export default function Home() {
         </section>
 
         {/* How it works */}
-        <section className="w-full mt-16">
-            <ScrollReveal delay={0} className="text-center mb-10">
+        <section
+          className="w-full mt-16 rounded-3xl py-14 sm:py-16 px-6 sm:px-10 relative overflow-hidden"
+          style={{ background: "#ffffff", boxShadow: "0 0 0 1px rgba(0,0,0,0.05)" }}
+        >
+          {/* Decorative glow */}
+          <div style={{ position: "absolute", top: "-20%", left: "50%", transform: "translateX(-50%)", width: "500px", height: "350px", background: "radial-gradient(ellipse, rgba(201,123,58,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+            <ScrollReveal delay={0} className="text-center mb-10 relative">
               <div
                 className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
                 style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
@@ -198,7 +203,6 @@ export default function Home() {
                 <StepCard key={i} step={s.step} title={s.title} desc={s.desc} featured={i === 1} />
               ))}
             </ScrollReveal>
-
         </section>
 
         {/* Industry Grid */}

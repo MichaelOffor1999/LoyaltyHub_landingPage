@@ -121,7 +121,7 @@ export default function SocialProof() {
       {/* Testimonial cards — horizontally scrollable */}
       <div className="flex gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory pb-2 -mx-2 px-2 scrollbar-hide">
         {testimonials.map((t, i) => (
-          <div key={i} className={`${t.featured ? "card-featured" : "card"} card-hover rounded-2xl p-5 sm:p-6 flex flex-col gap-3 sm:gap-4 min-w-[80%] sm:min-w-[340px] max-w-[400px] snap-center shrink-0`}>
+          <div key={i} className={`${t.featured ? "card-featured" : "card"} card-hover rounded-2xl p-4 sm:p-6 flex flex-col gap-3 sm:gap-4 min-w-[60%] sm:min-w-[300px] max-w-[340px] snap-center shrink-0`}>
             {/* Stars */}
             <div className="flex gap-0.5">
               {Array.from({ length: t.stars }).map((_, s) => (

@@ -3,22 +3,22 @@
 export default function StepCard({ step, title, desc, featured }: { step: string; title: string; desc: string; featured?: boolean }) {
   return (
     <div
-      className={`${featured ? 'card-featured' : 'card'} card-hover rounded-2xl p-5 sm:p-6 flex flex-col gap-3 h-full relative overflow-hidden`}
+      className="card card-hover rounded-2xl p-6 flex flex-col gap-3 h-full"
     >
       {/* Step badge */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col items-center gap-2">
         <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black"
+          className="w-14 h-14 rounded-2xl flex items-center justify-center text-sm font-black"
           style={{
-            background: featured ? "linear-gradient(135deg, #c97b3a, #e8944a)" : "rgba(201,123,58,0.1)",
+            background: featured ? "linear-gradient(135deg, #c97b3a, #e8944a)" : "rgba(201,123,58,0.08)",
             color: featured ? "#fff" : "#c97b3a",
-            boxShadow: featured ? "0 4px 12px rgba(201,123,58,0.25)" : "none",
+            boxShadow: featured ? "0 4px 16px rgba(201,123,58,0.3)" : "none",
           }}
         >
           {step}
         </div>
         <span
-          className="text-[11px] font-bold tracking-wider uppercase"
+          className="text-[10px] font-bold tracking-widest uppercase"
           style={{ color: "#c97b3a" }}
         >
           Step {step}
