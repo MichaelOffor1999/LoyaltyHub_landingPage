@@ -29,7 +29,6 @@ export default function FAQ() {
 
   return (
     <section className="w-full mt-8 mb-8" aria-labelledby="faq-heading">
-      <div className="w-full rounded-3xl p-8 sm:p-10" style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 2px 16px rgba(0,0,0,0.04)" }}>
         <div className="text-center mb-10">
           <div
             className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
@@ -79,7 +78,6 @@ export default function FAQ() {
             </div>
           ))}
         </div>
-      </div>
     </section>
   );
 }

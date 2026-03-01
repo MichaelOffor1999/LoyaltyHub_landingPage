@@ -117,10 +117,6 @@ export default function IndustryGrid() {
 
   return (
     <section className="w-full mt-16 fade-up-delay">
-      <div
-        className="w-full rounded-3xl p-8 sm:p-12"
-        style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 2px 16px rgba(0,0,0,0.04)" }}
-      >
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
 
           {/* Left — copy */}
@@ -189,7 +185,6 @@ export default function IndustryGrid() {
           </div>
 
         </div>
-      </div>
     </section>
   );
 }

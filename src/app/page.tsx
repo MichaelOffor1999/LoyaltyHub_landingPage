@@ -110,9 +110,9 @@ export default function Home() {
           <div className="mt-6 flex flex-col items-center gap-3 w-full">
             <p className="text-xs font-medium uppercase tracking-widest" style={{ color: "#9ca3af" }}>Trusted by</p>
             <div className="overflow-hidden w-full max-w-lg">
-              <div className="marquee-track">
+              <div style={{ display: "flex", flexWrap: "nowrap", width: "max-content", animation: "marquee-scroll 20s linear infinite" }}>
                 {[0, 1, 2, 3].map((copy) => (
-                  <div key={copy} className="marquee-content" aria-hidden={copy > 0}>
+                  <div key={copy} style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", flexShrink: 0, gap: "2rem", padding: "0 1rem" }} aria-hidden={copy > 0}>
                     <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                       <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: 8, background: "#f5f0ea", border: "1px solid rgba(0,0,0,0.06)", flexShrink: 0 }}>
                         <Image src="/logo-mtb.jpg" alt="MTB Barbershop" width={36} height={36} style={{ objectFit: "contain", padding: 2 }} />
@@ -121,13 +121,13 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                       <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(0,0,0,0.08)", flexShrink: 0 }}>
-                        <Image src="/logo-relief.jpg" alt="Relief Barbershop" width={36} height={36} style={{ objectFit: "cover", objectPosition: "center" }} />
+                        <Image src="/logo-relief.jpg" alt="Relief" width={36} height={36} style={{ objectFit: "cover", objectPosition: "center" }} />
                       </div>
                       <span className="text-[10px] font-semibold" style={{ color: "#6b7280" }}>Relief</span>
                     </div>
                     <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                       <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(0,0,0,0.08)", flexShrink: 0 }}>
-                        <Image src="/logo-10cuts.jpg" alt="10 Cuts Barbershop" width={72} height={72} style={{ objectFit: "cover", objectPosition: "center" }} />
+                        <Image src="/logo-10cuts.jpg" alt="10 Cuts" width={72} height={72} style={{ objectFit: "cover", objectPosition: "center" }} />
                       </div>
                       <span className="text-[10px] font-semibold" style={{ color: "#6b7280" }}>10 Cuts</span>
                     </div>
@@ -141,7 +141,6 @@ export default function Home() {
 
         {/* How it works */}
         <section className="w-full mt-16">
-          <div className="w-full rounded-3xl p-8 sm:p-10" style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 2px 16px rgba(0,0,0,0.04)" }}>
             <ScrollReveal delay={0} className="text-center mb-10">
               <div
                 className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
@@ -199,7 +198,7 @@ export default function Home() {
                 <StepCard key={i} step={s.step} title={s.title} desc={s.desc} featured={i === 1} />
               ))}
             </ScrollReveal>
-          </div>
+
         </section>
 
         {/* Industry Grid */}

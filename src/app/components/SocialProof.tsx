@@ -78,7 +78,6 @@ const testimonials = [
 export default function SocialProof() {
   return (
     <section className="w-full mt-8 mb-8">
-      <div className="w-full rounded-3xl p-8 sm:p-10" style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 2px 16px rgba(0,0,0,0.04)" }}>
       <ScrollReveal staggerChildren className="flex flex-col gap-5">
       <div className="text-center mb-5">
         <div
@@ -98,11 +97,10 @@ export default function SocialProof() {
       {/* Trusted-by logo strip — infinite marquee */}
       <div
         className="overflow-hidden rounded-2xl py-4 sm:py-5"
-        style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
       >
-        <div className="marquee-track">
+        <div style={{ display: "flex", flexWrap: "nowrap", width: "max-content", animation: "marquee-scroll 20s linear infinite" }}>
           {[0, 1, 2, 3].map((copy) => (
-            <div key={copy} className="marquee-content" aria-hidden={copy > 0}>
+            <div key={copy} style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", flexShrink: 0, gap: "2.5rem", padding: "0 1.25rem" }} aria-hidden={copy > 0}>
               <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                 <MTBMark size="sm" />
                 <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>MTB Barbershop</span>
@@ -120,10 +118,10 @@ export default function SocialProof() {
         </div>
       </div>
 
-      {/* Testimonial cards — horizontal scroll on mobile, grid on desktop */}
-      <div className="flex sm:grid sm:grid-cols-3 gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory pb-2 sm:pb-0 -mx-2 px-2 sm:mx-0 sm:px-0 scrollbar-hide">
+      {/* Testimonial cards — horizontally scrollable */}
+      <div className="flex gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory pb-2 -mx-2 px-2 scrollbar-hide">
         {testimonials.map((t, i) => (
-          <div key={i} className={`${t.featured ? "card-featured" : "card"} card-hover rounded-2xl p-5 sm:p-6 flex flex-col gap-3 sm:gap-4 min-w-[80%] sm:min-w-0 snap-center shrink-0 sm:shrink`}>
+          <div key={i} className={`${t.featured ? "card-featured" : "card"} card-hover rounded-2xl p-5 sm:p-6 flex flex-col gap-3 sm:gap-4 min-w-[80%] sm:min-w-[340px] max-w-[400px] snap-center shrink-0`}>
             {/* Stars */}
             <div className="flex gap-0.5">
               {Array.from({ length: t.stars }).map((_, s) => (
@@ -145,7 +143,6 @@ export default function SocialProof() {
         ))}
       </div>
       </ScrollReveal>
-      </div>
     </section>
   );
 }
