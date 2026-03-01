@@ -35,25 +35,22 @@ export default function WaitlistForm({ large = false, light = false }: { large?:
         style={{ animation: "card-enter 0.35s cubic-bezier(0.22,1,0.36,1) both" }}
       >
         {/* Card container */}
-        <div style={{ width: "min(360px, 100%)", minHeight: 200 }}>
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              position: "relative",
-              animation: "card-flip 0.85s 1.2s cubic-bezier(0.34,1.4,0.64,1) both",
-            }}
-          >
+        <div
+          style={{
+            width: "min(360px, 100%)",
+            animation: "card-flip 0.85s 1.2s cubic-bezier(0.34,1.4,0.64,1) both",
+          }}
+        >
             <div
               style={{
-                position: "absolute",
-                inset: 0,
                 borderRadius: 18,
                 background: "linear-gradient(135deg, #b86d2e 0%, #c97b3a 40%, #e8944a 75%, #f5a965 100%)",
                 boxShadow: "0 16px 48px rgba(201,123,58,0.4), 0 2px 8px rgba(0,0,0,0.15)",
                 display: "flex",
                 flexDirection: "column",
                 padding: "18px 20px",
+                minHeight: 200,
+                position: "relative",
                 overflow: "hidden",
               }}
             >
@@ -99,7 +96,6 @@ export default function WaitlistForm({ large = false, light = false }: { large?:
                 <div style={{ marginLeft: "auto", color: "rgba(255,255,255,0.55)", fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", flexShrink: 0 }}>5 / 5</div>
               </div>
             </div>
-          </div>
         </div>
       </div>
     );

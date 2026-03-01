@@ -106,22 +106,33 @@ export default function Home() {
             <WaitlistForm large />
           </div>
 
-          {/* Trusted-by strip below CTA */}
-          <div className="mt-6 flex flex-col items-center gap-3">
+          {/* Trusted-by strip below CTA — infinite marquee */}
+          <div className="mt-6 flex flex-col items-center gap-3 w-full">
             <p className="text-xs font-medium uppercase tracking-widest" style={{ color: "#9ca3af" }}>Trusted by</p>
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
-              <div className="flex items-center gap-2">
-                <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: 8, background: "#f5f0ea", border: "1px solid rgba(0,0,0,0.06)" }}>
-                  <Image src="/logo-mtb.jpg" alt="MTB Barbershop" width={36} height={36} style={{ objectFit: "contain", padding: 2 }} />
-                </div>
-                <span className="text-xs font-semibold" style={{ color: "#6b7280" }}>MTB Barbershop</span>
-              </div>
-              <div className="hidden sm:block" style={{ width: 1, height: 28, background: "rgba(0,0,0,0.1)" }} />
-              <div className="flex items-center gap-2">
-                <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(0,0,0,0.08)" }}>
-                  <Image src="/logo-relief.jpg" alt="Relief Barbershop" width={36} height={36} style={{ objectFit: "cover", objectPosition: "center" }} />
-                </div>
-                <span className="text-xs font-semibold" style={{ color: "#6b7280" }}>Relief Barbershop</span>
+            <div className="overflow-hidden w-full max-w-lg">
+              <div className="marquee-track">
+                {[0, 1].map((copy) => (
+                  <div key={copy} className="marquee-content" aria-hidden={copy === 1}>
+                    <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
+                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: 8, background: "#f5f0ea", border: "1px solid rgba(0,0,0,0.06)", flexShrink: 0 }}>
+                        <Image src="/logo-mtb.jpg" alt="MTB Barbershop" width={36} height={36} style={{ objectFit: "contain", padding: 2 }} />
+                      </div>
+                      <span className="text-[10px] font-semibold" style={{ color: "#6b7280" }}>MTB Barbershop</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
+                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(0,0,0,0.08)", flexShrink: 0 }}>
+                        <Image src="/logo-relief.jpg" alt="Relief Barbershop" width={36} height={36} style={{ objectFit: "cover", objectPosition: "center" }} />
+                      </div>
+                      <span className="text-[10px] font-semibold" style={{ color: "#6b7280" }}>Relief Barbershop</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
+                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(0,0,0,0.08)", flexShrink: 0 }}>
+                        <Image src="/logo-10cutsjpg.jpg" alt="10 Cuts Barbershop" width={72} height={72} style={{ objectFit: "cover", objectPosition: "center" }} />
+                      </div>
+                      <span className="text-[10px] font-semibold" style={{ color: "#6b7280" }}>10 Cuts Barbershop</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -146,18 +157,19 @@ export default function Home() {
             <ScrollReveal className="sm:hidden">
               <div className="flex flex-col gap-0 px-2">
                 {[
-                  { step: "01", title: "Create your program", desc: "Set your rewards, tiers, and branding in minutes." },
-                  { step: "02", title: "Invite your customers", desc: "Customers download the free app and get their own QR code — you scan it at the till to stamp their card." },
-                  { step: "03", title: "Watch them return", desc: "Customers earn points and redeem rewards — you watch revenue grow." },
+                  { step: "01", title: "Create your program", desc: "Set your rewards, tiers, and branding in minutes.", highlight: "in minutes" },
+                  { step: "02", title: "Invite your customers", desc: "Customers download the free app and get their own QR code — you scan it at the till to stamp their card.", highlight: "scan it at the till" },
+                  { step: "03", title: "Watch them return", desc: "Customers earn points and redeem rewards — you watch revenue grow.", highlight: "revenue grow" },
                 ].map((s, i) => (
                   <div key={i} className="flex gap-4">
                     {/* Timeline rail */}
                     <div className="flex flex-col items-center">
                       <div
-                        className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black shrink-0"
+                        className="w-11 h-11 rounded-2xl flex items-center justify-center text-xs font-black shrink-0"
                         style={{
-                          background: i === 1 ? "linear-gradient(135deg, #c97b3a, #e8944a)" : "rgba(201,123,58,0.12)",
+                          background: i === 1 ? "linear-gradient(135deg, #c97b3a, #e8944a)" : "rgba(201,123,58,0.1)",
                           color: i === 1 ? "#fff" : "#c97b3a",
+                          boxShadow: i === 1 ? "0 4px 12px rgba(201,123,58,0.25)" : "none",
                         }}
                       >
                         {s.step}
@@ -165,9 +177,12 @@ export default function Home() {
                       {i < 2 && <div className="w-px flex-1 my-1" style={{ background: "rgba(201,123,58,0.2)" }} />}
                     </div>
                     {/* Content */}
-                    <div className={`pb-${i < 2 ? "6" : "0"}`}>
-                      <h3 className="text-base font-bold" style={{ color: "#111827" }}>{s.title}</h3>
-                      <p className="text-sm mt-1 leading-relaxed" style={{ color: "#6b7280" }}>{s.desc}</p>
+                    <div className={`pb-${i < 2 ? "6" : "0"} pt-1`}>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: "#c97b3a" }}>{`Step ${s.step}`}</span>
+                      </div>
+                      <h3 className="text-base font-bold mt-0.5" style={{ color: "#111827" }}>{s.title}</h3>
+                      <p className="text-sm font-medium mt-1 leading-relaxed" style={{ color: "#374151" }}>{s.desc}</p>
                     </div>
                   </div>
                 ))}

@@ -34,6 +34,23 @@ function ReliefMark({ size = "md" }: { size?: "sm" | "md" }) {
 
 export { MTBMark, ReliefMark };
 
+function TenCutsMark({ size = "md" }: { size?: "sm" | "md" }) {
+  const h = size === "sm" ? 32 : 48;
+  return (
+    <div style={{ width: h, height: h, overflow: "hidden", borderRadius: "50%", flexShrink: 0, border: "1px solid rgba(0,0,0,0.08)" }}>
+      <Image
+        src="/logo-10cutsjpg.jpg"
+        alt="10 Cuts Barbershop"
+        width={h * 2}
+        height={h * 2}
+        style={{ objectFit: "cover", objectPosition: "center" }}
+      />
+    </div>
+  );
+}
+
+export { TenCutsMark };
+
 const testimonials = [
   {
     quote: "Our regulars actually come back more now. We had customers we hadn't seen in months show up after we sent a tailored offer through Clienty. That was the moment I knew it worked.",
@@ -45,7 +62,14 @@ const testimonials = [
   {
     quote: "I used to have no idea who my best clients were beyond memory. Now I can see exactly who's been in, how often, and who I'm at risk of losing. It's changed how I run the shop.",
     mark: <ReliefMark />,
-    business: "Relief Barbershop",
+    business: "Relief",
+    featured: false,
+    stars: 5,
+  },
+  {
+    quote: "Before Clienty we were handing out paper stamp cards that people kept losing. Now everything's digital, customers love it, and we've seen a real jump in repeat bookings.",
+    mark: <TenCutsMark />,
+    business: "10 Cuts",
     featured: false,
     stars: 5,
   },
@@ -71,26 +95,35 @@ export default function SocialProof() {
         </p>
       </div>
 
-      {/* Trusted-by logo strip */}
+      {/* Trusted-by logo strip — infinite marquee */}
       <div
-        className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 py-5 rounded-2xl"
+        className="overflow-hidden rounded-2xl py-4 sm:py-5"
         style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
       >
-        <div className="flex items-center gap-3">
-          <MTBMark size="sm" />
-          <span className="text-sm font-semibold" style={{ color: "#374151" }}>MTB Barbershop</span>
-        </div>
-        <div className="hidden sm:block" style={{ width: 1, height: 36, background: "rgba(0,0,0,0.1)" }} />
-        <div className="flex items-center gap-3">
-          <ReliefMark size="sm" />
-          <span className="text-sm font-semibold" style={{ color: "#374151" }}>Relief Barbershop</span>
+        <div className="marquee-track">
+          {[0, 1].map((copy) => (
+            <div key={copy} className="marquee-content" aria-hidden={copy === 1}>
+              <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
+                <MTBMark size="sm" />
+                <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>MTB Barbershop</span>
+              </div>
+              <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
+                <ReliefMark size="sm" />
+                <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>Relief Barbershop</span>
+              </div>
+              <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
+                <TenCutsMark size="sm" />
+                <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>10 Cuts Barbershop</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Testimonial cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      {/* Testimonial cards — horizontal scroll on mobile, grid on desktop */}
+      <div className="flex sm:grid sm:grid-cols-3 gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory pb-2 sm:pb-0 -mx-2 px-2 sm:mx-0 sm:px-0 scrollbar-hide">
         {testimonials.map((t, i) => (
-          <div key={i} className={`${t.featured ? "card-featured" : "card"} card-hover rounded-2xl p-6 flex flex-col gap-4`}>
+          <div key={i} className={`${t.featured ? "card-featured" : "card"} card-hover rounded-2xl p-5 sm:p-6 flex flex-col gap-3 sm:gap-4 min-w-[80%] sm:min-w-0 snap-center shrink-0 sm:shrink`}>
             {/* Stars */}
             <div className="flex gap-0.5">
               {Array.from({ length: t.stars }).map((_, s) => (
