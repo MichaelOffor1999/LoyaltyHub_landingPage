@@ -112,7 +112,7 @@ export default function Home() {
             <div className="overflow-hidden w-full max-w-lg">
               <div style={{ display: "flex", flexWrap: "nowrap", width: "max-content", animation: "marquee-scroll 20s linear infinite" }}>
                 {[0, 1, 2, 3].map((copy) => (
-                  <div key={copy} style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", flexShrink: 0, gap: "2rem", padding: "0 1rem" }} aria-hidden={copy > 0}>
+                  <div key={copy} style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", flexShrink: 0, gap: "3.5rem", padding: "0 1.75rem" }} aria-hidden={copy > 0}>
                     <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                       <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: 8, background: "#f5f0ea", border: "1px solid rgba(0,0,0,0.06)", flexShrink: 0 }}>
                         <Image src="/logo-mtb.jpg" alt="MTB Barbershop" width={36} height={36} style={{ objectFit: "contain", padding: 2 }} />
@@ -138,6 +138,11 @@ export default function Home() {
           </div>
           </ScrollReveal>
         </section>
+
+        {/* Industry Grid */}
+        <ScrollReveal className="w-full">
+          <IndustryGrid />
+        </ScrollReveal>
 
         {/* How it works */}
         <section
@@ -204,11 +209,6 @@ export default function Home() {
               ))}
             </ScrollReveal>
         </section>
-
-        {/* Industry Grid */}
-        <ScrollReveal className="w-full">
-          <IndustryGrid />
-        </ScrollReveal>
 
         {/* Feature List */}
         <FeatureList />

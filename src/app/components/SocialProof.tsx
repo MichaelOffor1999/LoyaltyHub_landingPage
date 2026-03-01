@@ -1,3 +1,5 @@
+"use client";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import ScrollReveal from "./ScrollReveal";
 
@@ -76,6 +78,38 @@ const testimonials = [
 ];
 
 export default function SocialProof() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = cardRefs.current.indexOf(entry.target as HTMLDivElement);
+            if (idx !== -1) setActiveIdx(idx);
+          }
+        });
+      },
+      { root: el, threshold: 0.6 }
+    );
+
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollTo = (idx: number) => {
+    const card = cardRefs.current[idx];
+    if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  };
+
   return (
     <section className="w-full mt-8 mb-8">
       <ScrollReveal staggerChildren className="flex flex-col gap-5">
@@ -100,7 +134,7 @@ export default function SocialProof() {
       >
         <div style={{ display: "flex", flexWrap: "nowrap", width: "max-content", animation: "marquee-scroll 20s linear infinite" }}>
           {[0, 1, 2, 3].map((copy) => (
-            <div key={copy} style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", flexShrink: 0, gap: "2.5rem", padding: "0 1.25rem" }} aria-hidden={copy > 0}>
+            <div key={copy} style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", flexShrink: 0, gap: "3.5rem", padding: "0 1.75rem" }} aria-hidden={copy > 0}>
               <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
                 <MTBMark size="sm" />
                 <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>MTB Barbershop</span>
@@ -119,9 +153,10 @@ export default function SocialProof() {
       </div>
 
       {/* Testimonial cards — horizontally scrollable */}
-      <div className="flex gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory pb-2 -mx-2 px-2 scrollbar-hide">
+      </ScrollReveal>
+      <div ref={scrollRef} className="flex gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory pb-2 -mx-2 px-2 scrollbar-hide">
         {testimonials.map((t, i) => (
-          <div key={i} className={`${t.featured ? "card-featured" : "card"} card-hover rounded-2xl p-4 sm:p-6 flex flex-col gap-3 sm:gap-4 min-w-[60%] sm:min-w-[300px] max-w-[340px] snap-center shrink-0`}>
+          <div key={i} ref={(el) => { cardRefs.current[i] = el; }} className={`${t.featured ? "card-featured" : "card"} card-hover rounded-2xl p-4 sm:p-6 flex flex-col gap-3 sm:gap-4 min-w-[60%] sm:min-w-[300px] max-w-[340px] snap-center shrink-0`}>
             {/* Stars */}
             <div className="flex gap-0.5">
               {Array.from({ length: t.stars }).map((_, s) => (
@@ -142,7 +177,31 @@ export default function SocialProof() {
           </div>
         ))}
       </div>
-      </ScrollReveal>
+
+      {/* Scroll dots + swipe hint */}
+      <div className="flex flex-col items-center gap-2 mt-3">
+        <div className="flex gap-2">
+          {testimonials.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollTo(i)}
+              aria-label={`Go to review ${i + 1}`}
+              style={{
+                width: activeIdx === i ? 20 : 8,
+                height: 8,
+                borderRadius: 99,
+                background: activeIdx === i ? "#c97b3a" : "rgba(0,0,0,0.12)",
+                border: "none",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+              }}
+            />
+          ))}
+        </div>
+        <span className="text-[11px] font-medium" style={{ color: "#9ca3af" }}>
+          Swipe for more &rarr;
+        </span>
+      </div>
     </section>
   );
 }

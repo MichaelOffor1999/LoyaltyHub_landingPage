@@ -80,13 +80,11 @@ export default function FeatureList() {
   const o = outcomes[active];
 
   return (
-    <section className="w-full mt-8 mb-8">
-      <div
-        className="w-full rounded-3xl p-8 sm:p-10"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 2px 16px rgba(0,0,0,0.04)" }}
-      >
+    <section
+      className="w-full mt-8 mb-8"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
         {/* Header */}
         <div className="text-center mb-10">
           <div
@@ -221,7 +219,6 @@ export default function FeatureList() {
             </div>
           </div>
         </div>
-      </div>
     </section>
   );
 }
