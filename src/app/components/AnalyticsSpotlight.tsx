@@ -13,7 +13,7 @@ export default function AnalyticsSpotlight() {
         <h2 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: "#111827" }}>
           Know your customers<br />better than ever before
         </h2>
-        <p className="text-sm sm:text-base max-w-xl mx-auto" style={{ color: "#6b7280" }}>
+        <p className="text-sm sm:text-base max-w-xl mx-auto font-semibold" style={{ color: "#374151" }}>
           Most businesses are flying blind. Clienty gives you real data on exactly who walks through your door, what keeps them coming back, and who&apos;s about to leave.
         </p>
       </div>
@@ -267,22 +267,6 @@ export default function AnalyticsSpotlight() {
               <span className="text-xs" style={{ color: "rgba(253,248,243,0.35)" }}>Total this week</span>
               <span className="text-sm font-bold" style={{ color: "#fdf8f3" }}>47 visits</span>
             </div>
-          </div>
-
-          {/* Bottom nav bar — matches real app */}
-          <div className="flex items-center justify-around pt-3 mt-1" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-            {[
-              { label: "Dashboard", icon: <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><rect x="2" y="2" width="5.5" height="5.5" rx="1.5" stroke="rgba(253,248,243,0.35)" strokeWidth="1.3"/><rect x="10.5" y="2" width="5.5" height="5.5" rx="1.5" stroke="rgba(253,248,243,0.35)" strokeWidth="1.3"/><rect x="2" y="10.5" width="5.5" height="5.5" rx="1.5" stroke="rgba(253,248,243,0.35)" strokeWidth="1.3"/><rect x="10.5" y="10.5" width="5.5" height="5.5" rx="1.5" stroke="rgba(253,248,243,0.35)" strokeWidth="1.3"/></svg>, active: false },
-              { label: "Loyalty", icon: <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><path d="M9 2l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z" stroke="rgba(253,248,243,0.35)" strokeWidth="1.3" strokeLinejoin="round"/></svg>, active: false },
-              { label: "Insights", icon: <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><path d="M3 14l4-5 3 3 5-7" stroke="#e8944a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>, active: true },
-              { label: "Scanner", icon: <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><path d="M2 5V3a1 1 0 011-1h2M13 2h2a1 1 0 011 1v2M16 13v2a1 1 0 01-1 1h-2M5 16H3a1 1 0 01-1-1v-2" stroke="rgba(253,248,243,0.35)" strokeWidth="1.3" strokeLinecap="round"/></svg>, active: false },
-              { label: "Settings", icon: <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="9" r="2.5" stroke="rgba(253,248,243,0.35)" strokeWidth="1.3"/><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.4 3.4l1.4 1.4M13.2 13.2l1.4 1.4M3.4 14.6l1.4-1.4M13.2 4.8l1.4-1.4" stroke="rgba(253,248,243,0.35)" strokeWidth="1.3" strokeLinecap="round"/></svg>, active: false },
-            ].map((tab, i) => (
-              <div key={i} className="flex flex-col items-center gap-1" style={{ cursor: "default" }}>
-                {tab.icon}
-                <span className="text-xs font-semibold" style={{ color: tab.active ? "#e8944a" : "rgba(253,248,243,0.35)" }}>{tab.label}</span>
-              </div>
-            ))}
           </div>
         </div>
       </div>

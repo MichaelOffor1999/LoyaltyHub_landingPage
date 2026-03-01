@@ -142,9 +142,9 @@ export default function Home() {
                 Up and running in 3 steps
               </h2>
             </ScrollReveal>
-            {/* Mobile: compact timeline */}
+            {/* Mobile: clean timeline — no card */}
             <ScrollReveal className="sm:hidden">
-              <div className="card rounded-2xl p-5 flex flex-col gap-0">
+              <div className="flex flex-col gap-0 px-2">
                 {[
                   { step: "01", title: "Create your program", desc: "Set your rewards, tiers, and branding in minutes." },
                   { step: "02", title: "Invite your customers", desc: "Customers download the free app and get their own QR code — you scan it at the till to stamp their card." },
@@ -154,7 +154,7 @@ export default function Home() {
                     {/* Timeline rail */}
                     <div className="flex flex-col items-center">
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0"
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black shrink-0"
                         style={{
                           background: i === 1 ? "linear-gradient(135deg, #c97b3a, #e8944a)" : "rgba(201,123,58,0.12)",
                           color: i === 1 ? "#fff" : "#c97b3a",
@@ -165,9 +165,9 @@ export default function Home() {
                       {i < 2 && <div className="w-px flex-1 my-1" style={{ background: "rgba(201,123,58,0.2)" }} />}
                     </div>
                     {/* Content */}
-                    <div className={`pb-${i < 2 ? "5" : "0"}`}>
-                      <h3 className="text-sm font-bold" style={{ color: "#111827" }}>{s.title}</h3>
-                      <p className="text-xs mt-0.5" style={{ color: "#6b7280" }}>{s.desc}</p>
+                    <div className={`pb-${i < 2 ? "6" : "0"}`}>
+                      <h3 className="text-base font-bold" style={{ color: "#111827" }}>{s.title}</h3>
+                      <p className="text-sm mt-1 leading-relaxed" style={{ color: "#6b7280" }}>{s.desc}</p>
                     </div>
                   </div>
                 ))}
