@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 // ← Change this when you buy a domain
-const SITE_URL = "https://clienty.vercel.app";
+const SITE_URL = "https://loyalty-hub-landing-page-wheat.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

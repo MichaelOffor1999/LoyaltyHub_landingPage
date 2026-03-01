@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 // ← Change the URL when you buy a domain
-const SITE_URL = "https://clienty.vercel.app";
+const SITE_URL = "https://loyalty-hub-landing-page-wheat.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
