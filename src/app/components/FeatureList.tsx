@@ -60,6 +60,7 @@ export default function FeatureList() {
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProgress(0);
 
     progressRef.current = setInterval(() => {

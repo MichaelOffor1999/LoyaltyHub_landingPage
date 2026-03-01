@@ -142,7 +142,40 @@ export default function Home() {
                 Up and running in 3 steps
               </h2>
             </ScrollReveal>
-            <ScrollReveal staggerChildren staggerBase={130} className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {/* Mobile: compact timeline */}
+            <ScrollReveal className="sm:hidden">
+              <div className="card rounded-2xl p-5 flex flex-col gap-0">
+                {[
+                  { step: "01", title: "Create your program", desc: "Set your rewards, tiers, and branding in minutes." },
+                  { step: "02", title: "Invite your customers", desc: "Customers download the free app and get their own QR code — you scan it at the till to stamp their card." },
+                  { step: "03", title: "Watch them return", desc: "Customers earn points and redeem rewards — you watch revenue grow." },
+                ].map((s, i) => (
+                  <div key={i} className="flex gap-4">
+                    {/* Timeline rail */}
+                    <div className="flex flex-col items-center">
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0"
+                        style={{
+                          background: i === 1 ? "linear-gradient(135deg, #c97b3a, #e8944a)" : "rgba(201,123,58,0.12)",
+                          color: i === 1 ? "#fff" : "#c97b3a",
+                        }}
+                      >
+                        {s.step}
+                      </div>
+                      {i < 2 && <div className="w-px flex-1 my-1" style={{ background: "rgba(201,123,58,0.2)" }} />}
+                    </div>
+                    {/* Content */}
+                    <div className={`pb-${i < 2 ? "5" : "0"}`}>
+                      <h3 className="text-sm font-bold" style={{ color: "#111827" }}>{s.title}</h3>
+                      <p className="text-xs mt-0.5" style={{ color: "#6b7280" }}>{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollReveal>
+
+            {/* Desktop: 3-column cards */}
+            <ScrollReveal staggerChildren staggerBase={130} className="hidden sm:grid sm:grid-cols-3 gap-6">
               {[
                 { step: "01", title: "Create your program", desc: "Set your rewards, tiers, and branding in minutes." },
                 { step: "02", title: "Invite your customers", desc: "Customers download the free app and get their own QR code — you scan it at the till to stamp their card." },

@@ -1,9 +1,11 @@
+import Link from "next/link";
+
 export default function Terms() {
   return (
     <div className="min-h-screen" style={{ background: "#f7f4ef" }}>
       <div className="max-w-3xl mx-auto px-6 py-20">
         <div className="mb-10">
-          <a href="/" className="text-sm font-semibold" style={{ color: "#c97b3a" }}>← Back to Clienty</a>
+          <Link href="/" className="text-sm font-semibold" style={{ color: "#c97b3a" }}>← Back to Clienty</Link>
         </div>
         <h1 className="text-4xl font-black mb-3" style={{ color: "#111827" }}>Terms of Service</h1>
         <p className="text-sm mb-12" style={{ color: "#9ca3af" }}>Last updated: February 2026</p>

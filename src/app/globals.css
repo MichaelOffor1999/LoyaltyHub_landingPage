@@ -26,6 +26,15 @@ body {
   overflow-x: hidden;
 }
 
+/* Hide scrollbar for horizontal scroll sections */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes glow-pulse {
   0%, 100% { box-shadow: 0 0 20px 2px rgba(201,123,58,0.3); }
   50% { box-shadow: 0 0 40px 8px rgba(201,123,58,0.5); }
