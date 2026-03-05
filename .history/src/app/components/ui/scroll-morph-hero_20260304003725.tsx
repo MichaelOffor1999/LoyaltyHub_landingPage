@@ -1,0 +1,427 @@
+"use client";
+
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { motion, useTransform, useSpring, useMotionValue } from "framer-motion";
+
+// --- Types ---
+export type AnimationPhase = "scatter" | "line" | "circle" | "bottom-strip";
+
+interface FlipCardProps {
+    src: string;
+    index: number;
+    total: number;
+    phase: AnimationPhase;
+    target: { x: number; y: number; rotation: number; scale: number; opacity: number };
+}
+
+// --- FlipCard Component ---
+const IMG_WIDTH = 60;  // Reduced from 100
+const IMG_HEIGHT = 85; // Reduced from 140
+
+function FlipCard({
+    src,
+    index,
+    total,
+    phase,
+    target,
+}: FlipCardProps) {
+    return (
+        <motion.div
+            // Smoothly animate to the coordinates defined by the parent
+            animate={{
+                x: target.x,
+                y: target.y,
+                rotate: target.rotation,
+                scale: target.scale,
+                opacity: target.opacity,
+            }}
+            transition={{
+                type: "spring",
+                stiffness: 40,
+                damping: 15,
+            }}
+
+            // Initial style
+            style={{
+                position: "absolute",
+                width: IMG_WIDTH,
+                height: IMG_HEIGHT,
+                transformStyle: "preserve-3d", // Essential for the 3D hover effect
+                perspective: "1000px",
+            }}
+            className="cursor-pointer group"
+        >
+            <motion.div
+                className="relative h-full w-full"
+                style={{ transformStyle: "preserve-3d" }}
+                transition={{ duration: 0.6, type: "spring", stiffness: 260, damping: 20 }}
+                whileHover={{ rotateY: 180 }}
+            >
+                {/* Front Face */}
+                <div
+                    className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-gray-200"
+                    style={{ backfaceVisibility: "hidden" }}
+                >
+                    <img
+                        src={src}
+                        alt={`hero-${index}`}
+                        className="h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
+                </div>
+
+                {/* Back Face */}
+                <div
+                    className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-gray-900 flex flex-col items-center justify-center p-4 border border-gray-700"
+                    style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+                >
+                    <div className="text-center">
+                        <p className="text-[8px] font-bold text-blue-400 uppercase tracking-widest mb-1">View</p>
+                        <p className="text-xs font-medium text-white">Details</p>
+                    </div>
+                </div>
+            </motion.div>
+        </motion.div>
+    );
+}
+
+// --- Main Hero Component ---
+const TOTAL_IMAGES = 20;
+const MAX_SCROLL = 3000; // Virtual scroll range
+
+// Loyalty & Business Related Images
+const IMAGES = [
+    "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=300&q=80", // Coffee shop loyalty
+    "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=300&q=80", // Shopping rewards
+    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=300&q=80", // Business meeting
+    "https://images.unsplash.com/photo-1556740749-887f6717d7e4?w=300&q=80", // Customer service
+    "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=300&q=80", // Mobile app
+    "https://images.unsplash.com/photo-1556742111-a301076d9d18?w=300&q=80", // Retail store
+    "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?w=300&q=80", // Credit cards
+    "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?w=300&q=80", // Restaurant dining
+    "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&q=80", // Clothing store
+    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=300&q=80", // Team collaboration
+    "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=300&q=80", // Salon/spa
+    "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=300&q=80", // Business person
+    "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&q=80", // Analytics/data
+    "https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=300&q=80", // Shopping bags
+    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300&q=80", // Barber shop
+    "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=300&q=80", // Office workspace
+    "https://images.unsplash.com/photo-1556742031-c6961e8560b0?w=300&q=80", // QR code scanning
+    "https://images.unsplash.com/photo-1556742521-9713bf272865?w=300&q=80", // Gift cards
+    "https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=300&q=80", // Customer happy
+    "https://images.unsplash.com/photo-1556742407-5ab6e0e67212?w=300&q=80", // Mobile payment
+];
+
+// Helper for linear interpolation
+const lerp = (start: number, end: number, t: number) => start * (1 - t) + end * t;
+
+export default function IntroAnimation() {
+    const [introPhase, setIntroPhase] = useState<AnimationPhase>("scatter");
+    const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    // --- Container Size ---
+    useEffect(() => {
+        if (!containerRef.current) return;
+
+        const handleResize = (entries: ResizeObserverEntry[]) => {
+            for (const entry of entries) {
+                setContainerSize({
+                    width: entry.contentRect.width,
+                    height: entry.contentRect.height,
+                });
+            }
+        };
+
+        const observer = new ResizeObserver(handleResize);
+        observer.observe(containerRef.current);
+
+        // Initial set
+        setContainerSize({
+            width: containerRef.current.offsetWidth,
+            height: containerRef.current.offsetHeight,
+        });
+
+        return () => observer.disconnect();
+    }, []);
+
+    // --- Virtual Scroll Logic ---
+    const virtualScroll = useMotionValue(0);
+    const scrollRef = useRef(0); // Keep track of scroll value without re-renders
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const handleWheel = (e: WheelEvent) => {
+            const currentScroll = scrollRef.current;
+            const delta = e.deltaY;
+            
+            // Only prevent default if we're at the beginning
+            // Once user scrolls, allow them to continue to the page
+            const isAtMin = currentScroll <= 0;
+            const isScrollingUp = delta < 0;
+            
+            if (isAtMin && isScrollingUp) {
+                // Allow natural page scroll up
+                return;
+            }
+            
+            // If scrolling down for the first time, capture a small amount then release
+            if (isAtMin && delta > 0) {
+                e.preventDefault();
+                const newScroll = Math.min(delta * 2, 300); // Quick scroll, max 300
+                scrollRef.current = newScroll;
+                virtualScroll.set(newScroll);
+                return;
+            }
+            
+            // After initial scroll, allow page to scroll naturally
+            return;
+        };
+
+        // Touch support
+        let touchStartY = 0;
+        const handleTouchStart = (e: TouchEvent) => {
+            touchStartY = e.touches[0].clientY;
+        };
+        const handleTouchMove = (e: TouchEvent) => {
+            const touchY = e.touches[0].clientY;
+            const deltaY = touchStartY - touchY;
+            touchStartY = touchY;
+
+            const newScroll = Math.min(Math.max(scrollRef.current + deltaY, 0), 300);
+            scrollRef.current = newScroll;
+            virtualScroll.set(newScroll);
+        };
+
+        // Attach listeners to container instead of window for portability
+        container.addEventListener("wheel", handleWheel, { passive: false });
+        container.addEventListener("touchstart", handleTouchStart, { passive: false });
+        container.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+        return () => {
+            container.removeEventListener("wheel", handleWheel);
+            container.removeEventListener("touchstart", handleTouchStart);
+            container.removeEventListener("touchmove", handleTouchMove);
+        };
+    }, [virtualScroll]);
+
+    // 1. Morph Progress: 0 (Circle) -> 1 (Bottom Arc)
+    // Happens between scroll 0 and 600
+    const morphProgress = useTransform(virtualScroll, [0, 600], [0, 1]);
+    const smoothMorph = useSpring(morphProgress, { stiffness: 40, damping: 20 });
+
+    // 2. Scroll Rotation (Shuffling): Starts after morph (e.g., > 600)
+    // Rotates the bottom arc as user continues scrolling
+    const scrollRotate = useTransform(virtualScroll, [600, 3000], [0, 360]);
+    const smoothScrollRotate = useSpring(scrollRotate, { stiffness: 40, damping: 20 });
+
+    // --- Mouse Parallax ---
+    const mouseX = useMotionValue(0);
+    const smoothMouseX = useSpring(mouseX, { stiffness: 30, damping: 20 });
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            const rect = container.getBoundingClientRect();
+            const relativeX = e.clientX - rect.left;
+
+            // Normalize -1 to 1
+            const normalizedX = (relativeX / rect.width) * 2 - 1;
+            // Move +/- 100px
+            mouseX.set(normalizedX * 100);
+        };
+        container.addEventListener("mousemove", handleMouseMove);
+        return () => container.removeEventListener("mousemove", handleMouseMove);
+    }, [mouseX]);
+
+    // --- Intro Sequence ---
+    useEffect(() => {
+        const timer1 = setTimeout(() => setIntroPhase("line"), 500);
+        const timer2 = setTimeout(() => setIntroPhase("circle"), 2500);
+        return () => { clearTimeout(timer1); clearTimeout(timer2); };
+    }, []);
+
+    // --- Random Scatter Positions ---
+    const scatterPositions = useMemo(() => {
+        return IMAGES.map(() => ({
+            x: (Math.random() - 0.5) * 1500,
+            y: (Math.random() - 0.5) * 1000,
+            rotation: (Math.random() - 0.5) * 180,
+            scale: 0.6,
+            opacity: 0,
+        }));
+    }, []);
+
+    // --- Render Loop (Manual Calculation for Morph) ---
+    const [morphValue, setMorphValue] = useState(0);
+    const [rotateValue, setRotateValue] = useState(0);
+    const [parallaxValue, setParallaxValue] = useState(0);
+
+    useEffect(() => {
+        const unsubscribeMorph = smoothMorph.on("change", setMorphValue);
+        const unsubscribeRotate = smoothScrollRotate.on("change", setRotateValue);
+        const unsubscribeParallax = smoothMouseX.on("change", setParallaxValue);
+        return () => {
+            unsubscribeMorph();
+            unsubscribeRotate();
+            unsubscribeParallax();
+        };
+    }, [smoothMorph, smoothScrollRotate, smoothMouseX]);
+
+    // --- Content Opacity ---
+    // Fade in content when arc is formed (morphValue > 0.8)
+    const contentOpacity = useTransform(smoothMorph, [0.8, 1], [0, 1]);
+    const contentY = useTransform(smoothMorph, [0.8, 1], [20, 0]);
+
+    // --- Fade Out Effect ---
+    // After circle forms and user scrolls, fade out entire component
+    // Map scroll range: 1500-2500 -> opacity 1 to 0
+    const fadeOutOpacity = useTransform(virtualScroll, [1500, 2500], [1, 0]);
+    const fadeOutScale = useTransform(virtualScroll, [1500, 2500], [1, 0.95]);
+
+    return (
+        <motion.div 
+            ref={containerRef} 
+            className="relative w-full h-full bg-[#f7f4ef] overflow-hidden"
+            style={{ 
+                opacity: fadeOutOpacity,
+                scale: fadeOutScale,
+            }}
+        >
+            {/* Container */}
+            <div className="flex h-full w-full flex-col items-center justify-center perspective-1000">
+
+                {/* Intro Text (Fades out) */}
+                <div className="absolute z-0 flex flex-col items-center justify-center text-center pointer-events-none top-1/2 -translate-y-1/2">
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                        animate={introPhase === "circle" && morphValue < 0.5 ? { opacity: 1 - morphValue * 2, y: 0, filter: "blur(0px)" } : { opacity: 0, filter: "blur(10px)" }}
+                        transition={{ duration: 1 }}
+                        className="text-2xl font-medium tracking-tight text-gray-800 md:text-4xl"
+                    >
+                        Transform Customer Loyalty
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={introPhase === "circle" && morphValue < 0.5 ? { opacity: 0.5 - morphValue } : { opacity: 0 }}
+                        transition={{ duration: 1, delay: 0.2 }}
+                        className="mt-4 text-xs font-bold tracking-[0.2em]"
+                        style={{ color: "#c97b3a" }}
+                    >
+                        SCROLL TO EXPLORE
+                    </motion.p>
+                </div>
+
+                {/* Arc Active Content (Fades in) */}
+                <motion.div
+                    style={{ opacity: contentOpacity, y: contentY }}
+                    className="absolute top-[10%] z-10 flex flex-col items-center justify-center text-center pointer-events-none px-4"
+                >
+                    <h2 
+                        className="text-3xl md:text-5xl font-semibold tracking-tight mb-4"
+                        style={{ color: "#111827" }}
+                    >
+                        Discover Clienty
+                    </h2>
+                    <p 
+                        className="text-sm md:text-base max-w-lg leading-relaxed"
+                        style={{ color: "#374151", fontWeight: 600 }}
+                    >
+                        Innovative loyalty solutions that turn every customer<br className="hidden md:block" />
+                        into a loyal fan who keeps coming back.
+                    </p>
+                </motion.div>
+
+                {/* Main Container */}
+                <div className="relative flex items-center justify-center w-full h-full">
+                    {IMAGES.slice(0, TOTAL_IMAGES).map((src, i) => {
+                        let target = { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1 };
+
+                        // 1. Intro Phases (Scatter -> Line)
+                        if (introPhase === "scatter") {
+                            target = scatterPositions[i];
+                        } else if (introPhase === "line") {
+                            const lineSpacing = 70; // Adjusted for smaller images (60px width + 10px gap)
+                            const lineTotalWidth = TOTAL_IMAGES * lineSpacing;
+                            const lineX = i * lineSpacing - lineTotalWidth / 2;
+                            target = { x: lineX, y: 0, rotation: 0, scale: 1, opacity: 1 };
+                        } else {
+                            // 2. Circle Phase & Morph Logic
+
+                            // Responsive Calculations
+                            const isMobile = containerSize.width < 768;
+                            const minDimension = Math.min(containerSize.width, containerSize.height);
+
+                            // A. Calculate Circle Position
+                            const circleRadius = Math.min(minDimension * 0.35, 350);
+
+                            const circleAngle = (i / TOTAL_IMAGES) * 360;
+                            const circleRad = (circleAngle * Math.PI) / 180;
+                            const circlePos = {
+                                x: Math.cos(circleRad) * circleRadius,
+                                y: Math.sin(circleRad) * circleRadius,
+                                rotation: circleAngle + 90,
+                            };
+
+                            // B. Calculate Bottom Arc Position
+                            // "Rainbow" Arch: Convex up. Center is highest point.
+
+                            // Radius:
+                            const baseRadius = Math.min(containerSize.width, containerSize.height * 1.5);
+                            const arcRadius = baseRadius * (isMobile ? 1.4 : 1.1);
+
+                            // Position:
+                            const arcApexY = containerSize.height * (isMobile ? 0.35 : 0.25);
+                            const arcCenterY = arcApexY + arcRadius;
+
+                            // Spread angle:
+                            const spreadAngle = isMobile ? 100 : 130;
+                            const startAngle = -90 - (spreadAngle / 2);
+                            const step = spreadAngle / (TOTAL_IMAGES - 1);
+
+                            // Apply Scroll Rotation (Shuffle) with Bounds
+                            const scrollProgress = Math.min(Math.max(rotateValue / 360, 0), 1);
+                            const maxRotation = spreadAngle * 0.8;
+                            const boundedRotation = -scrollProgress * maxRotation;
+
+                            const currentArcAngle = startAngle + (i * step) + boundedRotation;
+                            const arcRad = (currentArcAngle * Math.PI) / 180;
+
+                            const arcPos = {
+                                x: Math.cos(arcRad) * arcRadius + parallaxValue,
+                                y: Math.sin(arcRad) * arcRadius + arcCenterY,
+                                rotation: currentArcAngle + 90,
+                                scale: isMobile ? 1.4 : 1.8, // Increased scale for active state
+                            };
+
+                            // C. Interpolate (Morph)
+                            target = {
+                                x: lerp(circlePos.x, arcPos.x, morphValue),
+                                y: lerp(circlePos.y, arcPos.y, morphValue),
+                                rotation: lerp(circlePos.rotation, arcPos.rotation, morphValue),
+                                scale: lerp(1, arcPos.scale, morphValue),
+                                opacity: 1,
+                            };
+                        }
+
+                        return (
+                            <FlipCard
+                                key={i}
+                                src={src}
+                                index={i}
+                                total={TOTAL_IMAGES}
+                                phase={introPhase}
+                                target={target}
+                            />
+                        );
+                    })}
+                </div>
+            </div>
+        </motion.div>
+    );
+}
