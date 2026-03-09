@@ -41,7 +41,8 @@ export default function Home() {
           src="https://images.unsplash.com/photo-1637777304873-68c6edca55e9?auto=format&fit=crop&w=2400&q=80"
           alt=""
           aria-hidden="true"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", opacity: 0.5 }}
+          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          style={{ objectPosition: "60% center" }}
         />
         {/* Dark gradient overlay — keeps text crisp, darkens bottom for panel transition */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.72) 100%)", zIndex: 1 }} />
@@ -253,31 +254,39 @@ export default function Home() {
       </div>{/* end panel 3 */}
 
       {/* ─── Panel 4: CTA + Footer ─── */}
-      <div className="w-full relative" style={{ borderRadius: "28px 28px 0 0", background: "linear-gradient(160deg, #c97b3a 0%, #e8944a 50%, #f5a55a 100%)" }}>
-        <div className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 py-24 text-center">
+      <div className="w-full relative overflow-hidden" style={{ background: "#0f0d0a" }}>
+        {/* Subtle radial glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(201,123,58,0.15) 0%, transparent 70%)" }} />
+        <div className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 py-24 text-center relative z-10">
           <ScrollReveal staggerChildren variant="scale-up" staggerBase={120} className="w-full flex flex-col items-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "#fff" }}>
+            <div
+              className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-5"
+              style={{ background: "rgba(201,123,58,0.12)", color: "#e8944a", border: "1px solid rgba(201,123,58,0.3)" }}
+            >
+              Get started
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "#f0ece6" }}>
               Ready to grow your business?
             </h2>
-            <p className="text-base mb-8 max-w-lg" style={{ color: "rgba(255,255,255,0.85)" }}>
-              Join hundreds of business owners already on the waitlist. Sign up today and get your <span style={{ fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.5)" }}>first month completely free</span> — no credit card required.
+            <p className="text-base mb-8 max-w-lg" style={{ color: "rgba(240,236,230,0.65)" }}>
+              Join hundreds of business owners already on the waitlist. Sign up today and get your <span style={{ fontWeight: 700, color: "#e8944a" }}>first month completely free</span> — no credit card required.
             </p>
             <div className="w-full max-w-xl">
-              <WaitlistForm large light />
+              <WaitlistForm large />
             </div>
           </ScrollReveal>
 
           {/* Footer */}
-          <footer className="w-full pt-16 mt-16 flex flex-col sm:flex-row items-center justify-between gap-4 border-t" style={{ borderColor: "rgba(255,255,255,0.25)" }}>
+          <footer className="w-full pt-16 mt-16 flex flex-col sm:flex-row items-center justify-between gap-4 border-t" style={{ borderColor: "rgba(240,236,230,0.1)" }}>
             <div className="flex items-center gap-2">
               <Image src="/favicon.png" alt="clientIn logo" width={24} height={24} className="rounded-md" />
-              <span className="text-sm font-bold" style={{ color: "#fff" }}>clientIn</span>
+              <span className="text-sm font-bold" style={{ color: "#f0ece6" }}>clientIn</span>
             </div>
             <div className="flex items-center gap-4">
-              <a href="/terms" className="text-xs hover:underline py-2 px-1" aria-label="Terms of Service" style={{ color: "rgba(255,255,255,0.7)" }}>Terms of Service</a>
-              <a href="/privacy" className="text-xs hover:underline py-2 px-1" aria-label="Privacy Policy" style={{ color: "rgba(255,255,255,0.7)" }}>Privacy Policy</a>
+              <a href="/terms" className="text-xs hover:underline py-2 px-1" aria-label="Terms of Service" style={{ color: "rgba(240,236,230,0.5)" }}>Terms of Service</a>
+              <a href="/privacy" className="text-xs hover:underline py-2 px-1" aria-label="Privacy Policy" style={{ color: "rgba(240,236,230,0.5)" }}>Privacy Policy</a>
             </div>
-            <span className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>
+            <span className="text-xs" style={{ color: "rgba(240,236,230,0.4)" }}>
               &copy; {new Date().getFullYear()} clientIn. All rights reserved.
             </span>
           </footer>

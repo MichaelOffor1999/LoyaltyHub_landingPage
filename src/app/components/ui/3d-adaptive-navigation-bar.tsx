@@ -118,13 +118,13 @@ export function AdaptivePillNav() {
     >
       {/* Left: Logo — always visible */}
       <div
-        className="absolute left-8 sm:left-14 flex items-center gap-2 pointer-events-auto"
+        className="absolute left-4 sm:left-14 flex items-center gap-2 pointer-events-auto"
         style={{ top: "50%", transform: "translateY(-50%)" }}
       >
         <a href="#top" aria-label="clientIn — back to top" className="flex items-center">
           <span
-            className="font-black text-base tracking-[0.2em] uppercase"
-            style={{ color: "#ffffff", letterSpacing: "0.2em" }}
+            className="font-black text-sm sm:text-base tracking-[0.15em] sm:tracking-[0.2em] uppercase"
+            style={{ color: "#ffffff" }}
           >
             clientIn
           </span>

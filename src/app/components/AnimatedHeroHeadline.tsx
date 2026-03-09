@@ -29,7 +29,7 @@ export default function AnimatedHeroHeadline() {
       variants={container}
       initial="hidden"
       animate="show"
-      className="font-extrabold leading-tight tracking-tight mb-0 text-center uppercase whitespace-nowrap"
+      className="font-extrabold leading-tight tracking-tight mb-0 text-center uppercase sm:whitespace-nowrap"
       style={{ perspective: 1000, letterSpacing: "-0.03em", lineHeight: 1.05, margin: "0 auto" }}
     >
       {lines.map((parts, li) => (
