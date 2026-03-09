@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import { motion, useSpring, AnimatePresence } from "framer-motion";
-import { ThemeToggle } from "./theme-toggle";
+
 
 interface NavItem {
   label: string;
@@ -119,22 +118,15 @@ export function AdaptivePillNav() {
     >
       {/* Left: Logo — always visible */}
       <div
-        className="absolute left-5 flex items-center gap-2 pointer-events-auto"
+        className="absolute left-8 sm:left-14 flex items-center gap-2 pointer-events-auto"
         style={{ top: "50%", transform: "translateY(-50%)" }}
       >
-        <a href="#top" aria-label="Clienty — back to top" className="flex items-center gap-2">
-          <Image
-            src="/favicon.png"
-            alt="Clienty logo"
-            width={32}
-            height={32}
-            className="rounded-lg"
-          />
+        <a href="#top" aria-label="clientIn — back to top" className="flex items-center">
           <span
-            className="hidden sm:block font-extrabold text-base tracking-tight"
-            style={{ color: "var(--foreground)" }}
+            className="font-black text-base tracking-[0.2em] uppercase"
+            style={{ color: "#ffffff", letterSpacing: "0.2em" }}
           >
-            Clienty
+            clientIn
           </span>
         </a>
       </div>
@@ -299,12 +291,11 @@ export function AdaptivePillNav() {
         </div>
       </motion.nav>
 
-      {/* Right: Theme toggle + CTA — always visible */}
+      {/* Right: CTA — always visible */}
       <div
-        className="absolute right-5 flex items-center gap-2.5 pointer-events-auto"
+        className="absolute right-8 sm:right-14 flex items-center gap-2.5 pointer-events-auto"
         style={{ top: "50%", transform: "translateY(-50%)" }}
       >
-        <ThemeToggle />
         <a
           href="#waitlist"
           className="rounded-full px-4 py-2 text-sm font-bold transition hover:opacity-90"

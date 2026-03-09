@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "./components/ui/theme-provider";
-import IntroAnimation from "./components/ui/scroll-morph-hero";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,14 +9,13 @@ const inter = Inter({
   display: "swap",
 });
 
-// ← Change this when you buy a domain
-const SITE_URL = "https://loyalty-hub-landing-page-wheat.vercel.app";
+const SITE_URL = "https://clientin.co";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Clienty — Turn Every Customer Into a Loyal Fan",
-    template: "%s | Clienty",
+    default: "clientIn — Turn Every Customer Into a Loyal Fan",
+    template: "%s | clientIn",
   },
   description:
     "The simplest way to reward your best customers, boost repeat business, and grow your revenue. Digital loyalty cards, customer insights, and automated re-engagement — all in one app.",
@@ -31,17 +28,17 @@ export const metadata: Metadata = {
     "stamp card app",
     "customer rewards",
     "loyalty app",
-    "Clienty",
+    "clientIn",
   ],
-  authors: [{ name: "Clienty" }],
-  creator: "Clienty",
-  publisher: "Clienty",
+  authors: [{ name: "clientIn" }],
+  creator: "clientIn",
+  publisher: "clientIn",
   openGraph: {
     type: "website",
     locale: "en_GB",
     url: SITE_URL,
-    siteName: "Clienty",
-    title: "Clienty — Turn Every Customer Into a Loyal Fan",
+    siteName: "clientIn",
+    title: "clientIn — Turn Every Customer Into a Loyal Fan",
     description:
       "Digital loyalty cards, customer insights, and automated re-engagement. The simplest way to reward your best customers and grow your revenue.",
     images: [
@@ -49,13 +46,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Clienty — Turn Every Customer Into a Loyal Fan",
+        alt: "clientIn — Turn Every Customer Into a Loyal Fan",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Clienty — Turn Every Customer Into a Loyal Fan",
+    title: "clientIn — Turn Every Customer Into a Loyal Fan",
     description:
       "Digital loyalty cards, customer insights, and automated re-engagement. The simplest way to reward your best customers and grow your revenue.",
     images: ["/og-image.png"],
@@ -85,22 +82,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* Apply saved theme before first paint to avoid flash */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('clienty-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
-          }}
-        />
-      </head>
+      <head />
       <body className={`${inter.variable} antialiased`}>
-        <ThemeProvider>
-          {/* Scroll-morph intro animation — fixed full-screen overlay, fades out on scroll */}
-          <IntroAnimation />
-          <div className="relative z-10">
             {children}
-          </div>
-        </ThemeProvider>
       </body>
     </html>
   );

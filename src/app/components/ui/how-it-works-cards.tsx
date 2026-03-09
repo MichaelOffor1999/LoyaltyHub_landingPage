@@ -79,7 +79,7 @@ function HowItWorksCard({
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
       className={cn(
-        "relative flex h-[200px] w-[320px] sm:w-[380px] select-none flex-col justify-between",
+        "relative flex h-[180px] w-[280px] sm:w-[320px] select-none flex-col justify-between",
         "rounded-2xl px-5 py-4 cursor-pointer",
         "transition-all duration-500",
         "shadow-[0_8px_32px_rgba(0,0,0,0.18)]",
@@ -145,19 +145,19 @@ const CARDS: Omit<HowItWorksCardProps, "onHover" | "onLeave" | "isActive" | "onT
     step: "01",
     gradient: "linear-gradient(135deg, #1e4d2b 0%, #2d7a45 100%)",
     customerName: "Leo T.",
-    businessName: "Barista & Co",
-    stamps: 2,
-    totalStamps: 4,
-    reward: "Free Brunch",
+    businessName: "Blade & Fade",
+    stamps: 4,
+    totalStamps: 6,
+    reward: "Free Haircut",
   },
   {
     step: "02",
     gradient: "linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 100%)",
     customerName: "Sarah K.",
-    businessName: "PureMotion Gym",
-    stamps: 7,
-    totalStamps: 10,
-    reward: "Free Month",
+    businessName: "Glow Studio",
+    stamps: 3,
+    totalStamps: 5,
+    reward: "Free Facial",
   },
   {
     step: "03",
@@ -179,12 +179,12 @@ export default function HowItWorksCards() {
   const getCardClass = (index: number, base: string) => {
     // Back card (0) hovered → fan middle (1) and front (2) away
     if (focused === 0 && index === 1)
-      return base + " !translate-y-20 sm:!translate-y-28 !translate-x-12 sm:!translate-x-20";
+      return base + " !translate-y-16 sm:!translate-y-20 !translate-x-10 sm:!translate-x-14";
     if (focused === 0 && index === 2)
-      return base + " !translate-y-28 sm:!translate-y-44 !translate-x-20 sm:!translate-x-36";
+      return base + " !translate-y-24 sm:!translate-y-32 !translate-x-16 sm:!translate-x-24";
     // Middle card (1) hovered → fan front (2) away
     if (focused === 1 && index === 2)
-      return base + " !translate-y-24 sm:!translate-y-36 !translate-x-20 sm:!translate-x-36";
+      return base + " !translate-y-20 sm:!translate-y-28 !translate-x-16 sm:!translate-x-24";
     return base;
   };
 
@@ -192,9 +192,9 @@ export default function HowItWorksCards() {
     // Back card
     "[grid-area:stack] hover:-translate-y-8 before:absolute before:w-full before:h-full before:inset-0 before:rounded-2xl before:content-[''] before:bg-background/50 before:transition-opacity before:duration-500 hover:before:opacity-0 before:pointer-events-none grayscale-[60%] hover:grayscale-0",
     // Middle card
-    "[grid-area:stack] translate-x-6 sm:translate-x-10 translate-y-5 sm:translate-y-8 hover:-translate-y-1 before:absolute before:w-full before:h-full before:inset-0 before:rounded-2xl before:content-[''] before:bg-background/35 before:transition-opacity before:duration-500 hover:before:opacity-0 before:pointer-events-none grayscale-[30%] hover:grayscale-0",
+    "[grid-area:stack] translate-x-5 sm:translate-x-8 translate-y-4 sm:translate-y-6 hover:-translate-y-1 before:absolute before:w-full before:h-full before:inset-0 before:rounded-2xl before:content-[''] before:bg-background/35 before:transition-opacity before:duration-500 hover:before:opacity-0 before:pointer-events-none grayscale-[30%] hover:grayscale-0",
     // Front card (no overlay, full colour)
-    "[grid-area:stack] translate-x-12 sm:translate-x-20 translate-y-10 sm:translate-y-16 hover:translate-y-8 sm:hover:translate-y-12",
+    "[grid-area:stack] translate-x-10 sm:translate-x-16 translate-y-8 sm:translate-y-12 hover:translate-y-6 sm:hover:translate-y-9",
   ];
 
   return (

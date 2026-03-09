@@ -9,15 +9,13 @@ import ScrollReveal from "./components/ScrollReveal";
 import StepCard from "./components/StepCard";
 import HowItWorksCards from "./components/ui/how-it-works-cards";
 import { AdaptivePillNav } from "./components/ui/3d-adaptive-navigation-bar";
-import { HeroOrbitalTimeline } from "./components/ui/radial-orbital-timeline";
 import { HeroSplineCard } from "./components/ui/hero-spline-card";
+import TopoBackground from "./components/ui/topo-background";
+import AnimatedHeroHeadline from "./components/AnimatedHeroHeadline";
 
 export default function Home() {
   return (
-    <div className="min-h-screen font-sans" style={{ background: "transparent" }}>
-
-      {/* Spacer — gives the scroll-morph intro animation space to fade out before content */}
-      <div className="h-screen w-full pointer-events-none" aria-hidden="true" />
+    <div className="min-h-screen font-sans" style={{ background: "var(--background)" }}>
 
       {/* Skip to content — accessibility */}
       <a
@@ -31,88 +29,103 @@ export default function Home() {
       {/* Adaptive pill navigation — fixed, centred, always on top */}
       <AdaptivePillNav />
 
-      {/* Top Banner */}
-      <div
-        className="w-full py-2.5 px-4 flex items-center justify-center text-sm font-semibold gap-2"
-        style={{ background: "rgba(201,123,58,0.12)", borderBottom: "1px solid rgba(201,123,58,0.2)", color: "#e8944a" }}
-      >
-        <span>🎁</span>
-        <span className="text-center text-xs sm:text-sm">Limited offer: Sign up for early access and get your <strong>first month completely free</strong></span>
-      </div>
+      {/* ─── Full-bleed dark hero — sticky so light content slides over it ─── */}
+      <div className="w-full" style={{ position: "sticky", top: 0, zIndex: 0, background: "#0a0807", minHeight: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        {/* Hero photo — warm salon/beauty scene, full-bleed */}
+        {/* Previous options:
+          Barbershop: https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=2400&q=80
+          Salon B&W: https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=2400&q=80
+        */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://images.unsplash.com/photo-1637777304873-68c6edca55e9?auto=format&fit=crop&w=2400&q=80"
+          alt=""
+          aria-hidden="true"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", opacity: 0.5 }}
+        />
+        {/* Dark gradient overlay — keeps text crisp, darkens bottom for panel transition */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.72) 100%)", zIndex: 1 }} />
+        {/* Topographic contour-line background — sits on top of photo */}
+        <TopoBackground />
 
-      <main id="main-content" className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 relative z-10">
+        {/* Hero — full width, nav-inset padding */}
+        <div className="w-full px-8 sm:px-14 relative flex flex-col pt-[72px]" style={{ zIndex: 3 }}>
 
-        {/* Hero */}
-        <section id="top" className="w-full pt-20 pb-10">
-          <ScrollReveal staggerChildren variant="fade-up" staggerBase={130} className="w-full flex flex-col lg:flex-row items-center lg:items-start lg:justify-between gap-12 lg:gap-8 text-center lg:text-left">
-            {/* Left: text + CTA */}
-            <div className="flex flex-col items-center lg:items-start flex-1 max-w-xl">
-              <div
-                className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold mb-8"
-                style={{ background: "rgba(201,123,58,0.12)", border: "1px solid rgba(201,123,58,0.3)", color: "#e8944a" }}
-              >
-                <span className="w-2 h-2 rounded-full inline-block" style={{ background: "#e8944a" }} />
-                Now accepting early access applications
-              </div>
+          {/* ── First viewport: Starlink-style — headline upper-centre, form anchored near bottom ── */}
+          <section id="top" className="w-full flex flex-col items-center" style={{ minHeight: "calc(100dvh - 72px)" }}>
 
-              <h1
-                className="text-3xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight mb-6"
-                style={{ color: "var(--foreground)" }}
-              >
-                Turn Every Customer<br />
-                Into a{" "}
-                <span style={{ background: "linear-gradient(90deg, #c97b3a, #e8944a, #f5b97a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                  Loyal Fan
-                </span>
-              </h1>
+            {/* Top spacer — smaller to push everything up */}
+            <div style={{ flex: "0.3" }} />
 
-              <p className="text-lg sm:text-xl max-w-lg leading-snug mb-8" style={{ color: "var(--text-sub)", fontWeight: 500 }}>
-                Stop guessing. See who&apos;s coming back,{" "}
-                who&apos;s drifting, and what to do about it.
-              </p>
-
-              <div className="w-full max-w-xl" id="waitlist">
-                <WaitlistForm large />
-              </div>
+            {/* Headline — centred, single line */}
+            <div className="w-full flex flex-col justify-center items-center" style={{ fontSize: "clamp(1.8rem, 5vw, 4rem)" }}>
+              <AnimatedHeroHeadline />
             </div>
 
-            {/* Right: interactive 3D robot with loyalty stamp overlay */}
-            <div className="shrink-0 w-full lg:w-[460px]">
+            {/* Subtitle — bold, Starlink-style */}
+            <ScrollReveal variant="fade-up" delay={700} className="flex flex-col items-center w-full text-center mt-4">
+              <p className="max-w-2xl" style={{ lineHeight: 1.5 }}>
+                <span className="block text-lg sm:text-xl md:text-2xl font-bold" style={{ color: "rgba(255,255,255,0.9)" }}>Stop guessing.</span>
+                <span className="block text-lg sm:text-xl md:text-2xl font-bold" style={{ color: "rgba(255,255,255,0.9)" }}>Know who&apos;s loyal and who&apos;s leaving.</span>
+              </p>
+            </ScrollReveal>
+
+            {/* Form — closer to subtitle */}
+            <ScrollReveal variant="fade-up" delay={900} className="flex flex-col items-center w-full text-center mt-8">
+              <div className="w-full max-w-xl" id="waitlist">
+                <WaitlistForm large light />
+              </div>
+            </ScrollReveal>
+
+            {/* Bottom spacer — fills remaining space */}
+            <div style={{ flex: "1" }} />
+
+          </section>
+
+          {/* ── Below the fold: card ── */}
+          <div className="w-full flex flex-col items-center pb-16">
+            {/* Interactive 3D loyalty card */}
+            <div className="w-full max-w-[460px]">
               <HeroSplineCard />
             </div>
-          </ScrollReveal>
+          </div>
 
-          {/* Trusted-by strip — full width below both columns */}
-          <div className="mt-8 flex flex-col items-center gap-3 w-full">
-            <p className="text-xs font-medium uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>Trusted by</p>
+          {/* Trusted-by strip */}
+          <div className="pb-16 flex flex-col items-center gap-3 w-full">
+            <p className="text-xs font-medium uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>Trusted by</p>
             <div className="overflow-hidden w-full max-w-lg">
               <div style={{ display: "flex", flexWrap: "nowrap", width: "max-content", animation: "marquee-scroll 20s linear infinite" }}>
                 {[0, 1, 2, 3].map((copy) => (
                   <div key={copy} style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", flexShrink: 0, gap: "3.5rem", padding: "0 1.75rem" }} aria-hidden={copy > 0}>
                     <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
-                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: 8, background: "var(--surface)", border: "1px solid var(--surface-border)", flexShrink: 0 }}>
+                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: 8, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)", flexShrink: 0 }}>
                         <Image src="/logo-mtb.jpg" alt="MTB Barbershop" width={36} height={36} style={{ objectFit: "contain", padding: 2 }} />
                       </div>
-                      <span className="text-[10px] font-semibold" style={{ color: "var(--text-muted)" }}>MTB Barbershop</span>
+                      <span className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.45)" }}>MTB Barbershop</span>
                     </div>
                     <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
-                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid var(--surface-border)", flexShrink: 0 }}>
+                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(255,255,255,0.15)", flexShrink: 0 }}>
                         <Image src="/logo-relief.jpg" alt="Relief" width={36} height={36} style={{ objectFit: "cover", objectPosition: "center" }} />
                       </div>
-                      <span className="text-[10px] font-semibold" style={{ color: "var(--text-muted)" }}>Relief</span>
+                      <span className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.45)" }}>Relief</span>
                     </div>
                     <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
-                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid var(--surface-border)", flexShrink: 0 }}>
+                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(255,255,255,0.15)", flexShrink: 0 }}>
                         <Image src="/logo-10cuts.jpg" alt="10 Cuts" width={72} height={72} style={{ objectFit: "cover", objectPosition: "center" }} />
                       </div>
-                      <span className="text-[10px] font-semibold" style={{ color: "var(--text-muted)" }}>10 Cuts</span>
+                      <span className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.45)" }}>10 Cuts</span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </section>
+        </div>{/* end hero constrained */}
+      </div>{/* end dark hero */}
+
+      {/* ─── Panel 2: Industry + How it Works — scrolls over dark hero ─── */}
+      <div className="w-full relative" style={{ position: "relative", zIndex: 10, background: "#1a1612", borderRadius: "28px 28px 0 0", boxShadow: "0 -8px 40px rgba(0,0,0,0.5)", marginTop: "-2px" }}>
+      <main id="main-content" className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 pt-12">
 
         {/* Industry Grid */}
         <ScrollReveal className="w-full" variant="scale-up" threshold={0.08}>
@@ -138,8 +151,11 @@ export default function Home() {
             </h2>
           </ScrollReveal>
 
-          {/* Mobile: clean timeline */}
+          {/* Mobile: cards + timeline */}
           <ScrollReveal className="sm:hidden" variant="fade-up">
+            <div className="flex justify-center mb-8" style={{ transform: "scale(0.82)", transformOrigin: "top center" }}>
+              <HowItWorksCards />
+            </div>
             <div className="flex flex-col gap-0 px-2">
               {[
                 { step: "01", title: "Create your program", desc: "Set your rewards, tiers, and branding in minutes." },
@@ -171,9 +187,9 @@ export default function Home() {
           </ScrollReveal>
 
           {/* Desktop: stacked loyalty cards + step list side-by-side */}
-          <ScrollReveal className="hidden sm:flex items-center justify-center gap-16 lg:gap-24" staggerChildren variant="fade-left" staggerBase={160}>
+          <ScrollReveal className="hidden sm:flex items-center justify-center gap-10 lg:gap-16" staggerChildren variant="fade-left" staggerBase={160}>
             {/* Left: stacked cards */}
-            <div className="shrink-0 py-10 pl-6">
+            <div className="shrink-0 py-10 pl-4 max-w-[380px]">
               <HowItWorksCards />
             </div>
 
@@ -206,28 +222,39 @@ export default function Home() {
           </ScrollReveal>
         </section>
 
-        {/* Feature List */}
-        <section id="features" className="w-full">
-          <FeatureList />
-        </section>
+      </main>
+      </div>{/* end panel 2 */}
 
-        {/* Analytics Spotlight */}
-        <ScrollReveal className="w-full" variant="flip-up" threshold={0.08}>
-          <AnalyticsSpotlight />
-        </ScrollReveal>
+      {/* ─── Panel 3: Features + Analytics + Social Proof + FAQ ─── */}
+      <div className="w-full relative" style={{ background: "#141210" }}>
+        <div className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 py-16">
 
-        {/* Social Proof */}
-        <SocialProof />
+          {/* Feature List */}
+          <section id="features" className="w-full">
+            <FeatureList />
+          </section>
 
-        {/* FAQ */}
-        <div id="faq" className="w-full">
-          <ScrollReveal className="w-full" variant="fade-up" threshold={0.06}>
-            <FAQ />
+          {/* Analytics Spotlight */}
+          <ScrollReveal className="w-full" variant="flip-up" threshold={0.08}>
+            <AnalyticsSpotlight />
           </ScrollReveal>
-        </div>
 
-        {/* Bottom CTA */}
-        <section className="w-full mt-24 mb-16 flex flex-col items-center text-center rounded-3xl py-14 px-5 sm:px-8" style={{ background: "linear-gradient(135deg, #c97b3a, #e8944a)", boxShadow: "0 8px 60px rgba(201,123,58,0.35)" }}>
+          {/* Social Proof */}
+          <SocialProof />
+
+          {/* FAQ */}
+          <div id="faq" className="w-full">
+            <ScrollReveal className="w-full" variant="fade-up" threshold={0.06}>
+              <FAQ />
+            </ScrollReveal>
+          </div>
+
+        </div>
+      </div>{/* end panel 3 */}
+
+      {/* ─── Panel 4: CTA + Footer ─── */}
+      <div className="w-full relative" style={{ borderRadius: "28px 28px 0 0", background: "linear-gradient(160deg, #c97b3a 0%, #e8944a 50%, #f5a55a 100%)" }}>
+        <div className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 py-24 text-center">
           <ScrollReveal staggerChildren variant="scale-up" staggerBase={120} className="w-full flex flex-col items-center">
             <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "#fff" }}>
               Ready to grow your business?
@@ -239,23 +266,23 @@ export default function Home() {
               <WaitlistForm large light />
             </div>
           </ScrollReveal>
-        </section>
 
-        {/* Footer */}
-        <footer className="w-full py-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t" style={{ borderColor: "var(--footer-border)" }}>
-          <div className="flex items-center gap-2">
-            <Image src="/favicon.png" alt="Clienty logo" width={24} height={24} className="rounded-md" />
-            <span className="text-sm font-bold" style={{ color: "var(--foreground)" }}>Clienty</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <a href="/terms" className="text-xs hover:underline py-2 px-1" aria-label="Terms of Service" style={{ color: "var(--text-muted)" }}>Terms of Service</a>
-            <a href="/privacy" className="text-xs hover:underline py-2 px-1" aria-label="Privacy Policy" style={{ color: "var(--text-muted)" }}>Privacy Policy</a>
-          </div>
-          <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-            &copy; {new Date().getFullYear()} Clienty. All rights reserved.
-          </span>
-        </footer>
-      </main>
+          {/* Footer */}
+          <footer className="w-full pt-16 mt-16 flex flex-col sm:flex-row items-center justify-between gap-4 border-t" style={{ borderColor: "rgba(255,255,255,0.25)" }}>
+            <div className="flex items-center gap-2">
+              <Image src="/favicon.png" alt="clientIn logo" width={24} height={24} className="rounded-md" />
+              <span className="text-sm font-bold" style={{ color: "#fff" }}>clientIn</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <a href="/terms" className="text-xs hover:underline py-2 px-1" aria-label="Terms of Service" style={{ color: "rgba(255,255,255,0.7)" }}>Terms of Service</a>
+              <a href="/privacy" className="text-xs hover:underline py-2 px-1" aria-label="Privacy Policy" style={{ color: "rgba(255,255,255,0.7)" }}>Privacy Policy</a>
+            </div>
+            <span className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>
+              &copy; {new Date().getFullYear()} clientIn. All rights reserved.
+            </span>
+          </footer>
+        </div>
+      </div>{/* end panel 5 */}
     </div>
   );
 }

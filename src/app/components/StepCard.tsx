@@ -7,14 +7,14 @@ export default function StepCard({ step, title, desc, featured }: { step: string
     <div
       className={cn(
         "relative flex h-full select-none flex-col gap-3 rounded-2xl border p-6",
-        "bg-white/75 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.06)]",
+        "bg-white/5 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.2)]",
         "transition-all duration-500 hover:shadow-[0_18px_70px_rgba(201,123,58,0.16)]",
         "before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:opacity-0 before:transition-opacity before:duration-500",
         "before:bg-[radial-gradient(120%_120%_at_10%_0%,rgba(232,148,74,0.18)_0%,transparent_60%)]",
         "hover:before:opacity-100",
         featured
           ? "border-[rgba(201,123,58,0.35)]"
-          : "border-[rgba(17,24,39,0.08)] hover:border-[rgba(201,123,58,0.25)]",
+          : "border-[rgba(255,255,255,0.08)] hover:border-[rgba(201,123,58,0.25)]",
       )}
     >
       {/* Step badge */}

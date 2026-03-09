@@ -60,7 +60,7 @@ export default function WaitlistForm({ large = false, light = false }: { large?:
               {/* Brand name + member email */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div>
-                  <div style={{ color: "#fff", fontWeight: 800, fontSize: 15, letterSpacing: "0.04em" }}>Clienty</div>
+                  <div style={{ color: "#fff", fontWeight: 800, fontSize: 15, letterSpacing: "0.04em" }}>clientIn</div>
                   <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 9.5, fontWeight: 700, letterSpacing: "0.16em", marginTop: 2, textTransform: "uppercase" }}>Early Access</div>
                 </div>
                 <div style={{ textAlign: "right", minWidth: 0, maxWidth: 180, overflow: "hidden" }}>
@@ -105,7 +105,7 @@ export default function WaitlistForm({ large = false, light = false }: { large?:
     <div className="w-full">
       <form
         onSubmit={handleSubmit}
-        className={`flex flex-col sm:flex-row gap-3 w-full ${large ? "max-w-xl" : "max-w-md"} mx-auto mt-6`}
+        className={`flex flex-col gap-0 w-full ${large ? "max-w-xl" : "max-w-md"} mx-auto mt-6`}
       >
         {/* Honeypot — hidden from real users, bots auto-fill it */}
         <input
@@ -116,48 +116,83 @@ export default function WaitlistForm({ large = false, light = false }: { large?:
           aria-hidden="true"
           style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }}
         />
-        <input
-          type="email"
-          required
-          placeholder="Enter your email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="flex-1 rounded-xl px-5 py-3.5 text-base font-medium focus:outline-none"
-          style={light ? {
-            background: "rgba(255,255,255,0.95)",
-            border: "1px solid rgba(255,255,255,0.6)",
-            color: "#111827",
-          } : {
-            background: "#ffffff",
-            border: "1px solid rgba(0,0,0,0.12)",
-            color: "#111827",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-          }}
-          disabled={status === "loading"}
-        />
-        <button
-          type="submit"
-          className="rounded-xl px-7 py-3.5 text-base font-bold transition-all hover:opacity-90 disabled:opacity-60 whitespace-nowrap"
-          style={light ? {
-            background: "#fff",
-            color: "#c97b3a",
-            boxShadow: "0 2px 12px rgba(0,0,0,0.15)",
-          } : {
-            background: "linear-gradient(135deg, #c97b3a, #e8944a)",
-            color: "#fff",
-            boxShadow: "0 0 20px 2px rgba(201,123,58,0.3)",
-          }}
-          disabled={status === "loading"}
-        >
-          {status === "loading" ? "Joining..." : "Get Early Access"}
-        </button>
+        {light ? (
+          /* ── Starlink-style: stacked with gap on mobile, inline on lg ── */
+          <div className="flex flex-col lg:flex-row gap-3 w-full">
+            <input
+              type="email"
+              required
+              placeholder="EMAIL"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="flex-1 px-5 py-4 text-sm font-semibold tracking-wide focus:outline-none rounded-md"
+              style={{
+                background: "rgba(255,255,255,0.07)",
+                border: "1px solid rgba(255,255,255,0.22)",
+                color: "#ffffff",
+                letterSpacing: "0.12em",
+              }}
+              disabled={status === "loading"}
+            />
+            <button
+              type="submit"
+              className="px-8 py-4 text-sm font-black tracking-widest uppercase transition-all hover:bg-gray-100 disabled:opacity-60 whitespace-nowrap rounded-md"
+              style={{
+                background: "#ffffff",
+                color: "#0a0a0a",
+                letterSpacing: "0.12em",
+              }}
+              disabled={status === "loading"}
+            >
+              {status === "loading" ? "JOINING..." : "GET EARLY ACCESS"}
+            </button>
+          </div>
+        ) : (
+          /* ── Default inline layout ── */
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              type="email"
+              required
+              placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="flex-1 rounded-xl px-5 py-3.5 text-base font-medium focus:outline-none"
+              style={{
+                background: "#ffffff",
+                border: "1px solid rgba(0,0,0,0.12)",
+                color: "#111827",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+              }}
+              disabled={status === "loading"}
+            />
+            <button
+              type="submit"
+              className="rounded-xl px-7 py-3.5 text-base font-bold transition-all hover:opacity-90 disabled:opacity-60 whitespace-nowrap"
+              style={{
+                background: "linear-gradient(135deg, #c97b3a, #e8944a)",
+                color: "#fff",
+                boxShadow: "0 0 20px 2px rgba(201,123,58,0.3)",
+              }}
+              disabled={status === "loading"}
+            >
+              {status === "loading" ? "Joining..." : "Get Early Access"}
+            </button>
+          </div>
+        )}
       </form>
       {status === "error" && (
         <p className="text-red-400 text-sm mt-2 text-center">Something went wrong. Try again.</p>
       )}
-      <p className="text-center text-xs mt-3" style={{ color: light ? "rgba(255,255,255,0.7)" : "#9ca3af" }}>
-         Early access members get 1 month free. No credit card required. No spam, ever.
-      </p>
+      {light ? (
+        <p className="text-center text-xs mt-4" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.02em" }}>
+          By clicking Get Early Access, you agree to our{" "}
+          <a href="/privacy" className="underline" style={{ color: "rgba(255,255,255,0.65)" }}>Privacy Policy</a>
+        </p>
+      ) : (
+        <p className="text-center text-xs mt-3" style={{ color: "#9ca3af" }}>
+          Early access members get 1 month free. No credit card required. No spam, ever.
+        </p>
+      )}
     </div>
   );
 }

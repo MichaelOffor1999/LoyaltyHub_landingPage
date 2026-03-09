@@ -1,48 +1,25 @@
 @import "tailwindcss";
 
-/* ─── Dark mode (default) ─── */
-:root,
-[data-theme="dark"] {
-  --background: #0a0a0f;
-  --foreground: #f1f0ee;
+/* ─── Dark espresso theme ─── */
+:root {
+  --background: #1a1612;
+  --foreground: #f0ece6;
   --brand: #c97b3a;
   --brand-light: #e8944a;
   --surface: rgba(255,255,255,0.04);
   --surface-border: rgba(255,255,255,0.08);
-  --muted: rgba(255,255,255,0.5);
-  --nav-bg: rgba(10,10,15,0.85);
-  --nav-border: rgba(255,255,255,0.07);
-  --card-bg: rgba(255,255,255,0.05);
-  --card-border: rgba(255,255,255,0.09);
-  --section-alt-bg: rgba(255,255,255,0.03);
-  --section-alt-border: rgba(255,255,255,0.07);
-  --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.025) 100%);
+  --muted: rgba(240,236,230,0.5);
+  --nav-bg: rgba(26,22,18,0.92);
+  --nav-border: rgba(255,255,255,0.08);
+  --card-bg: rgba(30,26,22,0.9);
+  --card-border: rgba(255,255,255,0.08);
+  --section-alt-bg: rgba(255,255,255,0.02);
+  --section-alt-border: rgba(255,255,255,0.06);
+  --glass-bg: linear-gradient(135deg, rgba(30,26,22,0.8) 0%, rgba(30,26,22,0.6) 100%);
   --glass-border: rgba(255,255,255,0.1);
-  --footer-border: rgba(255,255,255,0.07);
-  --text-muted: rgba(241,240,238,0.4);
-  --text-sub: rgba(241,240,238,0.7);
-}
-
-/* ─── Light mode ─── */
-[data-theme="light"] {
-  --background: #f8f7f5;
-  --foreground: #1a1814;
-  --brand: #c97b3a;
-  --brand-light: #e8944a;
-  --surface: rgba(0,0,0,0.03);
-  --surface-border: rgba(0,0,0,0.08);
-  --muted: rgba(26,24,20,0.5);
-  --nav-bg: rgba(248,247,245,0.92);
-  --nav-border: rgba(0,0,0,0.08);
-  --card-bg: rgba(255,255,255,0.9);
-  --card-border: rgba(0,0,0,0.08);
-  --section-alt-bg: rgba(0,0,0,0.02);
-  --section-alt-border: rgba(0,0,0,0.06);
-  --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.6) 100%);
-  --glass-border: rgba(0,0,0,0.1);
-  --footer-border: rgba(0,0,0,0.08);
-  --text-muted: rgba(26,24,20,0.45);
-  --text-sub: rgba(26,24,20,0.65);
+  --footer-border: rgba(255,255,255,0.08);
+  --text-muted: rgba(240,236,230,0.45);
+  --text-sub: rgba(240,236,230,0.65);
 }
 
 @theme inline {
@@ -241,4 +218,12 @@ body {
   background: linear-gradient(135deg, rgba(201,123,58,0.15) 0%, rgba(255,255,255,0.04) 100%);
   border: 1px solid rgba(201,123,58,0.35);
   box-shadow: 0 4px 20px rgba(201,123,58,0.12);
+}
+
+/* Starlink-style dark input placeholder */
+input[placeholder="EMAIL"]::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
 }

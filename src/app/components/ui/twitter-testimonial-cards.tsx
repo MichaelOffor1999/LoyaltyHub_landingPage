@@ -84,7 +84,7 @@ function TestimonialCard({
       onMouseLeave={onLeave}
       className={cn(
         "relative flex h-auto min-h-[140px] sm:min-h-[180px] w-[260px] sm:w-[380px] -skew-y-[8deg] select-none flex-col rounded-2xl border border-border bg-card/90 backdrop-blur-sm px-3 sm:px-4 py-3 sm:py-4 transition-all duration-500 hover:border-border/80 hover:bg-card cursor-pointer",
-        "dark:after:absolute dark:after:-right-1 dark:after:top-[-5%] dark:after:h-[110%] dark:after:w-[20rem] dark:after:bg-gradient-to-l dark:after:from-background dark:after:to-transparent dark:after:content-[''] dark:after:pointer-events-none",
+
         isActive && "ring-2 ring-primary/50",
         className,
       )}

@@ -29,7 +29,7 @@ export { MTBMark, ReliefMark };
 function TenCutsMark({ size = "md" }: { size?: "sm" | "md" }) {
   const h = size === "sm" ? 32 : 48;
   return (
-    <div style={{ width: h, height: h, overflow: "hidden", borderRadius: "50%", flexShrink: 0, border: "1px solid rgba(0,0,0,0.08)" }}>
+    <div style={{ width: h, height: h, overflow: "hidden", borderRadius: "50%", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)" }}>
       <Image src="/logo-10cuts.jpg" alt="10 Cuts" width={h * 2} height={h * 2} style={{ objectFit: "cover", objectPosition: "center" }} />
     </div>
   );
@@ -40,12 +40,12 @@ export { TenCutsMark };
 const testimonials = [
   {
     id: 1,
-    quote: "Our regulars actually come back more now. We had customers we hadn't seen in months show up after we sent a tailored offer through Clienty. That was the moment I knew it worked.",
+    quote: "Our regulars actually come back more now. We had customers we hadn't seen in months show up after we sent a tailored offer through clientIn. That was the moment I knew it worked.",
     mark: <MTBMark />,
     markSm: <MTBMark size="sm" />,
     business: "MTB Barbershop",
     stars: 5,
-    imageSrc: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&q=80",
+    imageSrc: "/mtb-testimonial.jpg",
   },
   {
     id: 2,
@@ -54,16 +54,16 @@ const testimonials = [
     markSm: <ReliefMark size="sm" />,
     business: "Relief",
     stars: 5,
-    imageSrc: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80",
+    imageSrc: "/relief-testimonial.jpg",
   },
   {
     id: 3,
-    quote: "Before Clienty we were handing out paper stamp cards that people kept losing. Now everything's digital, customers love it, and we've seen a real jump in repeat bookings.",
+    quote: "Before clientIn we were handing out paper stamp cards that people kept losing. Now everything's digital, customers love it, and we've seen a real jump in repeat bookings.",
     mark: <TenCutsMark />,
     markSm: <TenCutsMark size="sm" />,
     business: "10 Cuts",
     stars: 5,
-    imageSrc: "https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=600&q=80",
+    imageSrc: "/10cuts-testimonial.jpg",
   },
 ];
 
@@ -115,35 +115,15 @@ export default function SocialProof() {
           >
             Real businesses. Real results.
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "#111827" }}>
+          <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "var(--foreground)" }}>
             Already trusted by local businesses
           </h2>
-          <p className="mt-3 text-sm" style={{ color: "#6b7280" }}>
-            These are real business owners using Clienty today.
+          <p className="mt-3 text-sm" style={{ color: "rgba(240,236,230,0.55)" }}>
+            These are real business owners using clientIn today.
           </p>
         </div>
 
-        {/* Trusted-by logo strip — infinite marquee */}
-        <div className="overflow-hidden rounded-2xl py-4 sm:py-5">
-          <div style={{ display: "flex", flexWrap: "nowrap", width: "max-content", animation: "marquee-scroll 20s linear infinite" }}>
-            {[0, 1, 2, 3].map((copy) => (
-              <div key={copy} style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", flexShrink: 0, gap: "3.5rem", padding: "0 1.75rem" }} aria-hidden={copy > 0}>
-                <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
-                  <MTBMark size="sm" />
-                  <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>MTB Barbershop</span>
-                </div>
-                <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
-                  <ReliefMark size="sm" />
-                  <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>Relief</span>
-                </div>
-                <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
-                  <TenCutsMark size="sm" />
-                  <span className="text-[10px] sm:text-xs font-semibold" style={{ color: "#374151" }}>10 Cuts</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+
       </ScrollReveal>
 
       {/* Testimonial cards — image background with gradient overlay */}
@@ -209,7 +189,7 @@ export default function SocialProof() {
                 width: activeIdx === i ? 20 : 8,
                 height: 8,
                 borderRadius: 99,
-                background: activeIdx === i ? "#c97b3a" : "rgba(0,0,0,0.12)",
+                background: activeIdx === i ? "#c97b3a" : "rgba(255,255,255,0.1)",
                 border: "none",
                 cursor: "pointer",
                 transition: "all 0.3s ease",
@@ -217,7 +197,7 @@ export default function SocialProof() {
             />
           ))}
         </div>
-        <span className="text-[11px] font-medium" style={{ color: "#9ca3af" }}>
+        <span className="text-[11px] font-medium" style={{ color: "rgba(240,236,230,0.4)" }}>
           Swipe for more &rarr;
         </span>
       </div>

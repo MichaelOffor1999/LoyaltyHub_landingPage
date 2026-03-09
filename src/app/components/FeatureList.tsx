@@ -6,7 +6,7 @@ const DURATION = 7000; // ms per slide
 const outcomes = [
   {
     pain: "You're losing regulars and don't know why",
-    solution: "Clienty tells you exactly which customers haven't come back — before they're gone for good.",
+    solution: "clientIn tells you exactly which customers haven't come back — before they're gone for good.",
     outcome: "Bring back customers you'd have lost",
     bullets: [
       "Automatic at-risk alerts when a regular goes quiet",
@@ -16,7 +16,7 @@ const outcomes = [
   },
   {
     pain: "You have 40 regulars. You can't contact a single one of them.",
-    solution: "Clienty gives you a direct line to every customer who's ever walked through your door — so when it's a quiet Tuesday, you can actually do something about it.",
+    solution: "clientIn gives you a direct line to every customer who's ever walked through your door — so when it's a quiet Tuesday, you can actually do something about it.",
     outcome: "Own your customer relationships",
     bullets: [
       "Send targeted offers directly to customers in the app",
@@ -26,7 +26,7 @@ const outcomes = [
   },
   {
     pain: "You're giving discounts to customers who were coming back anyway.",
-    solution: "Clienty shows you exactly who needs an incentive and who doesn't — so every offer you send earns its cost back, and then some.",
+    solution: "clientIn shows you exactly who needs an incentive and who doesn't — so every offer you send earns its cost back, and then some.",
     outcome: "Spend less on discounts, make more from loyalty",
     bullets: [
       "See which customers are at risk vs. reliably returning",
@@ -91,9 +91,9 @@ export default function FeatureList() {
             className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
             style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
           >
-            Why businesses choose Clienty
+            Why businesses choose clientIn
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "#111827" }}>
+          <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "var(--foreground)" }}>
             Built around the problems<br />you actually have
           </h2>
         </div>
@@ -111,8 +111,8 @@ export default function FeatureList() {
                   onClick={() => goTo(i)}
                   className="text-left rounded-2xl px-5 py-4 relative overflow-hidden"
                   style={{
-                    background: isActive ? "rgba(201,123,58,0.07)" : "rgba(0,0,0,0.02)",
-                    border: isActive ? "1px solid rgba(201,123,58,0.3)" : "1px solid rgba(0,0,0,0.06)",
+                    background: isActive ? "rgba(201,123,58,0.07)" : "rgba(255,255,255,0.04)",
+                    border: isActive ? "1px solid rgba(201,123,58,0.3)" : "1px solid rgba(255,255,255,0.08)",
                     cursor: "pointer",
                     transition: "background 0.25s ease, border-color 0.25s ease",
                   }}
@@ -133,7 +133,7 @@ export default function FeatureList() {
                   )}
                   <p
                     className="text-sm font-semibold leading-snug"
-                    style={{ color: isActive ? "#111827" : "#9ca3af", transition: "color 0.25s ease" }}
+                    style={{ color: isActive ? "var(--foreground)" : "rgba(240,236,230,0.4)", transition: "color 0.25s ease" }}
                   >
                     &ldquo;{item.pain}&rdquo;
                   </p>
@@ -165,7 +165,7 @@ export default function FeatureList() {
                 {o.outcome}
               </div>
 
-              <p className="text-base leading-relaxed font-medium" style={{ color: "#374151" }}>
+              <p className="text-base leading-relaxed font-medium" style={{ color: "rgba(240,236,230,0.75)" }}>
                 {o.solution}
               </p>
 
@@ -175,7 +175,7 @@ export default function FeatureList() {
                     key={j}
                     className="flex items-start gap-2.5 text-sm"
                     style={{
-                      color: "#374151",
+                      color: "rgba(240,236,230,0.75)",
                       opacity: contentVisible ? 1 : 0,
                       transform: contentVisible ? "translateY(0)" : "translateY(6px)",
                       transition: `opacity 0.3s ease ${j * 80 + 120}ms, transform 0.3s ease ${j * 80 + 120}ms`,
@@ -202,7 +202,7 @@ export default function FeatureList() {
                       width: i === active ? 20 : 7,
                       height: 7,
                       borderRadius: 99,
-                      background: i === active ? "#c97b3a" : "rgba(0,0,0,0.12)",
+                      background: i === active ? "#c97b3a" : "rgba(255,255,255,0.1)",
                       transition: "width 0.3s ease, background 0.3s ease",
                       border: "none",
                       cursor: "pointer",
@@ -212,7 +212,7 @@ export default function FeatureList() {
                 ))}
               </div>
               {paused && (
-                <span className="text-xs font-medium" style={{ color: "#9ca3af" }}>
+                <span className="text-xs font-medium" style={{ color: "rgba(240,236,230,0.4)" }}>
                   paused
                 </span>
               )}
