@@ -8,7 +8,6 @@ import WaitlistForm from "./components/WaitlistForm";
 import ScrollReveal from "./components/ScrollReveal";
 import StepCard from "./components/StepCard";
 import HowItWorksCards from "./components/ui/how-it-works-cards";
-import { AdaptivePillNav } from "./components/ui/3d-adaptive-navigation-bar";
 import { HeroSplineCard } from "./components/ui/hero-spline-card";
 import TopoBackground from "./components/ui/topo-background";
 import AnimatedHeroHeadline from "./components/AnimatedHeroHeadline";
@@ -26,8 +25,21 @@ export default function Home() {
         Skip to main content
       </a>
 
-      {/* Adaptive pill navigation — fixed, centred, always on top */}
-      <AdaptivePillNav />
+      {/* ─── Top bar: logo + CTA ─── */}
+      <div className="fixed top-0 inset-x-0 z-[60] flex items-center justify-between px-5 sm:px-10 py-4 pointer-events-none">
+        <a href="#top" className="pointer-events-auto">
+          <span className="font-black text-sm sm:text-base tracking-[0.15em] uppercase" style={{ color: "#ffffff" }}>
+            clientIn
+          </span>
+        </a>
+        <a
+          href="#waitlist"
+          className="pointer-events-auto px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold tracking-wider uppercase transition-all hover:opacity-90"
+          style={{ border: "1px solid rgba(255,255,255,0.3)", color: "#ffffff", backdropFilter: "blur(8px)", background: "rgba(255,255,255,0.08)" }}
+        >
+          Join Waitlist
+        </a>
+      </div>
 
       {/* ─── Full-bleed dark hero — sticky so light content slides over it ─── */}
       <div className="w-full" style={{ position: "sticky", top: 0, zIndex: 0, background: "#0a0807", minHeight: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -38,7 +50,7 @@ export default function Home() {
         */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1637777304873-68c6edca55e9?auto=format&fit=crop&w=2400&q=80"
+          src="https://images.unsplash.com/photo-1634449862841-8c6e970117e5?auto=format&fit=crop&w=2400&q=80"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover opacity-50"
@@ -59,7 +71,7 @@ export default function Home() {
             <div style={{ flex: "0.3" }} />
 
             {/* Headline — centred, single line */}
-            <div className="w-full flex flex-col justify-center items-center" style={{ fontSize: "clamp(1.8rem, 5vw, 4rem)" }}>
+            <div className="w-full flex flex-col justify-center items-center" style={{ fontSize: "clamp(1.2rem, 5vw, 4rem)" }}>
               <AnimatedHeroHeadline />
             </div>
 
