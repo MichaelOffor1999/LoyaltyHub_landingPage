@@ -42,22 +42,23 @@ export default function Home() {
       </div>
 
       {/* ─── Full-bleed dark hero — sticky so light content slides over it ─── */}
-      <div className="w-full" style={{ position: "sticky", top: 0, zIndex: 0, background: "#0a0807", minHeight: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        {/* Hero photo — warm salon/beauty scene, full-bleed */}
-        {/* Previous options:
-          Barbershop: https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=2400&q=80
-          Salon B&W: https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=2400&q=80
-        */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://images.unsplash.com/photo-1634449862841-8c6e970117e5?auto=format&fit=crop&w=2400&q=80"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
-          style={{ objectPosition: "60% center" }}
-        />
+      <div
+        className="w-full"
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 0,
+          minHeight: "100dvh",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          backgroundImage: "url('https://images.unsplash.com/photo-1671750145646-0f4d791b8025?auto=format&fit=crop&w=2400&q=80')",
+          backgroundSize: "cover",
+          backgroundPosition: "center center",
+        }}
+      >
         {/* Dark gradient overlay — keeps text crisp, darkens bottom for panel transition */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.72) 100%)", zIndex: 1 }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.7) 100%)", zIndex: 1 }} />
         {/* Topographic contour-line background — sits on top of photo */}
         <TopoBackground />
 
