@@ -52,10 +52,7 @@ export default function Home() {
           display: "flex",
           flexDirection: "column",
             overflow: "hidden",
-            backgroundImage: "url('/test3.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center 100%",
-            backgroundRepeat: "no-repeat",
+            background: "linear-gradient(135deg, #0d0805 0%, #1a0f06 30%, #2b1608 55%, #1a0c05 80%, #0a0604 100%)",
         }}
       >
         {/* Dark gradient overlay — keeps text crisp, darkens bottom for panel transition */}
