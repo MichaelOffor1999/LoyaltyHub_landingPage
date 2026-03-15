@@ -9,7 +9,6 @@ import ScrollReveal from "./components/ScrollReveal";
 import StepCard from "./components/StepCard";
 import HowItWorksCards from "./components/ui/how-it-works-cards";
 import { HeroSplineCard } from "./components/ui/hero-spline-card";
-import TopoBackground from "./components/ui/topo-background";
 import AnimatedHeroHeadline from "./components/AnimatedHeroHeadline";
 
 export default function Home() {
@@ -52,14 +51,11 @@ export default function Home() {
           display: "flex",
           flexDirection: "column",
             overflow: "hidden",
-            background: "linear-gradient(135deg, #0d0805 0%, #1a0f06 30%, #2b1608 55%, #1a0c05 80%, #0a0604 100%)",
+            background: "linear-gradient(160deg, #0f0a06 0%, #1e1008 35%, #2a1509 60%, #1a0d06 80%, #0c0704 100%)",
         }}
       >
         {/* Dark gradient overlay — keeps text crisp, darkens bottom for panel transition */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.4) 45%, rgba(0,0,0,0.78) 100%)", zIndex: 1 }} />
-        {/* Topographic contour-line background — sits on top of photo */}
-        <TopoBackground />
-
         {/* Hero — full width, nav-inset padding */}
         <div className="w-full px-8 sm:px-14 relative flex flex-col pt-[72px]" style={{ zIndex: 3 }}>
 
