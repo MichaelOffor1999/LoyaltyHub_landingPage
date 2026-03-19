@@ -199,6 +199,9 @@ function TrialForm({
             >
               Email Address
             </label>
+            <p className="text-xs -mt-0.5" style={{ color: "var(--text-muted)" }}>
+              Use the same email you signed up with on clientIn.
+            </p>
             <input
               id="ownerEmail"
               name="ownerEmail"

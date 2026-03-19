@@ -4,7 +4,6 @@ import IndustryGrid from "./components/IndustryGrid";
 import SocialProof from "./components/SocialProof";
 import AnalyticsSpotlight from "./components/AnalyticsSpotlight";
 import FAQ from "./components/FAQ";
-import WaitlistForm from "./components/WaitlistForm";
 import ScrollReveal from "./components/ScrollReveal";
 import StepCard from "./components/StepCard";
 import HowItWorksCards from "./components/ui/how-it-works-cards";
@@ -32,11 +31,11 @@ export default function Home() {
           </span>
         </a>
         <a
-          href="#waitlist"
+          href="/subscribe"
           className="pointer-events-auto px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold tracking-wider uppercase transition-all hover:opacity-90"
           style={{ border: "1px solid rgba(255,255,255,0.3)", color: "#ffffff", backdropFilter: "blur(8px)", background: "rgba(255,255,255,0.08)" }}
         >
-          Join Waitlist
+          Start Free Trial
         </a>
       </div>
 
@@ -78,11 +77,27 @@ export default function Home() {
               </p>
             </ScrollReveal>
 
-            {/* Form — closer to subtitle */}
+            {/* CTA buttons — closer to subtitle */}
             <ScrollReveal variant="fade-up" delay={900} className="flex flex-col items-center w-full text-center mt-8">
-              <div className="w-full max-w-xl" id="waitlist">
-                <WaitlistForm large light />
+              <div className="flex flex-col sm:flex-row items-center gap-3" id="waitlist">
+                <a
+                  href="/subscribe"
+                  className="px-8 py-4 rounded-xl text-sm font-black tracking-widest uppercase transition-all hover:opacity-90 whitespace-nowrap"
+                  style={{ background: "#ffffff", color: "#0a0a0a", letterSpacing: "0.1em" }}
+                >
+                  Start Free Trial
+                </a>
+                <a
+                  href="#how-it-works"
+                  className="px-8 py-4 rounded-xl text-sm font-bold tracking-wider uppercase transition-all hover:opacity-80 whitespace-nowrap"
+                  style={{ background: "rgba(255,255,255,0.08)", color: "#ffffff", border: "1px solid rgba(255,255,255,0.22)" }}
+                >
+                  See How It Works
+                </a>
               </div>
+              <p className="text-xs mt-4" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.02em" }}>
+                30-day free trial · No credit card required · Cancel anytime
+              </p>
             </ScrollReveal>
 
             {/* Bottom spacer — fills remaining space */}
@@ -276,11 +291,24 @@ export default function Home() {
               Ready to grow your business?
             </h2>
             <p className="text-base mb-8 max-w-lg" style={{ color: "rgba(240,236,230,0.65)" }}>
-              Join hundreds of business owners already on the waitlist. Sign up today and get your <span style={{ fontWeight: 700, color: "#e8944a" }}>first month completely free</span> — no credit card required.
+              Join hundreds of business owners already using clientIn. Start your <span style={{ fontWeight: 700, color: "#e8944a" }}>30-day free trial</span> today — no credit card required, cancel anytime.
             </p>
-            <div className="w-full max-w-xl">
-              <WaitlistForm large />
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <a
+                href="/subscribe"
+                className="px-10 py-4 rounded-xl text-base font-black tracking-wider uppercase transition-all hover:opacity-90 whitespace-nowrap"
+                style={{
+                  background: "linear-gradient(135deg, #c97b3a, #e8944a)",
+                  color: "#fff",
+                  boxShadow: "0 0 30px 2px rgba(201,123,58,0.35)",
+                }}
+              >
+                View Pricing & Start Trial
+              </a>
             </div>
+            <p className="text-xs mt-4" style={{ color: "rgba(240,236,230,0.4)" }}>
+              Solo from €29/mo · Growing from €59/mo · Scale from €89/mo
+            </p>
           </ScrollReveal>
 
           {/* Footer */}
