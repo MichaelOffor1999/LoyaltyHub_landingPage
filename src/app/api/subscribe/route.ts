@@ -32,22 +32,25 @@ export async function POST(req: NextRequest) {
     // 1. Create Supabase client with service role (bypasses RLS)
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // 2. Check if an auth user already exists for this email
-    const { data: existingUsers } = await supabase.auth.admin.listUsers();
-    const existingUser = existingUsers?.users?.find((u) => u.email === ownerEmail);
+    // 2. Look up the auth user by email (handles already-registered users)
+    const { data: userList } = await supabase.auth.admin.listUsers({ perPage: 1000 });
+    let existingUser = userList?.users?.find(
+      (u) => u.email?.toLowerCase() === ownerEmail.toLowerCase()
+    );
 
+    // Also try the business_email column as a fallback lookup
     let ownerId: string;
 
     if (existingUser) {
       ownerId = existingUser.id;
       console.log(`[subscribe] found existing auth user ${ownerId} for ${ownerEmail}`);
     } else {
-      // Create a new auth user with a random password — they'll set it later via magic link
-      const tempPassword = uuidv4(); // random secure password
+      // No auth user yet — create one with a temp password
+      const tempPassword = uuidv4();
       const { data: newUser, error: authError } = await supabase.auth.admin.createUser({
         email: ownerEmail,
         password: tempPassword,
-        email_confirm: true, // mark as confirmed so they can log in
+        email_confirm: true,
       });
 
       if (authError || !newUser?.user) {
@@ -62,20 +65,21 @@ export async function POST(req: NextRequest) {
       console.log(`[subscribe] created auth user ${ownerId} for ${ownerEmail}`);
     }
 
-    // 3. Check if a business already exists for this owner — avoid duplicates
+    // 3. Find business by owner_id OR by business_email — user may already have one
     const { data: existingBusiness } = await supabase
       .from("businesses")
       .select("id")
-      .eq("owner_id", ownerId)
+      .or(`owner_id.eq.${ownerId},business_email.ilike.${ownerEmail}`)
       .maybeSingle();
 
     let businessId: string;
 
     if (existingBusiness) {
+      // Business already exists — just proceed to checkout
       businessId = existingBusiness.id;
-      console.log(`[subscribe] reusing existing business ${businessId} for owner ${ownerId}`);
+      console.log(`[subscribe] reusing existing business ${businessId} for ${ownerEmail}`);
     } else {
-      // 4. Insert a new business row with the real owner_id
+      // Create a new business row
       const trialEndsAt = new Date();
       trialEndsAt.setDate(trialEndsAt.getDate() + 30);
 
@@ -102,7 +106,7 @@ export async function POST(req: NextRequest) {
       }
 
       businessId = business.id;
-      console.log(`[subscribe] created business ${businessId} for owner ${ownerId}`);
+      console.log(`[subscribe] created business ${businessId} for ${ownerEmail}`);
     }
 
     // 4. Call the Stripe backend with the real Supabase UUID
