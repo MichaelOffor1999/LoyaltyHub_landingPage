@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Check, Zap, Star, Rocket, X, Loader2 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+import { Check, Zap, Star, Rocket, X, Loader2, ArrowLeft, RefreshCw } from "lucide-react";
+
+// ─── Supabase browser client (anon key — safe to expose) ────────────
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 // ─── Plan definitions ───────────────────────────────────────────────
 type PlanKey = "solo" | "growing" | "scale";
@@ -64,60 +71,249 @@ const PLANS: Plan[] = [
   },
 ];
 
-// ─── Inline form / modal ─────────────────────────────────────────────
-interface FormState {
-  businessName: string;
-  ownerEmail: string;
-}
+// ─── OTP input (6 boxes) ────────────────────────────────────────────
+const OTP_LENGTH = 6;
 
-function TrialForm({
-  plan,
-  onClose,
+function OtpInput({
+  value,
+  onChange,
+  disabled,
 }: {
-  plan: Plan;
-  onClose: () => void;
+  value: string;
+  onChange: (v: string) => void;
+  disabled?: boolean;
 }) {
-  const [form, setForm] = useState<FormState>({
-    businessName: "",
-    ownerEmail: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  // Keep individual boxes in sync with the `value` string
+  const digits = value.padEnd(OTP_LENGTH, "").slice(0, OTP_LENGTH).split("");
+
+  const focus = (i: number) => inputRefs.current[i]?.focus();
+
+  const handleChange = (i: number, raw: string) => {
+    // Allow paste into any box — take up to 6 digits from the pasted string
+    const cleaned = raw.replace(/\D/g, "").slice(0, OTP_LENGTH - i);
+    if (!cleaned) return;
+
+    const next = digits.map((d, idx) => {
+      if (idx >= i && idx < i + cleaned.length) return cleaned[idx - i];
+      return d;
+    });
+
+    const newVal = next.join("").trimEnd();
+    onChange(newVal);
+
+    // Move focus to the next empty box
+    const nextFocus = Math.min(i + cleaned.length, OTP_LENGTH - 1);
+    focus(nextFocus);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, plan: plan.key }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error ?? "Something went wrong. Please try again.");
-        setLoading(false);
-        return;
+  const handleKeyDown = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace") {
+      e.preventDefault();
+      if (digits[i]) {
+        // Clear current
+        const next = [...digits];
+        next[i] = "";
+        onChange(next.join(""));
+      } else if (i > 0) {
+        // Move back and clear previous
+        const next = [...digits];
+        next[i - 1] = "";
+        onChange(next.join(""));
+        focus(i - 1);
       }
-
-      // Redirect to Stripe checkout
-      window.location.href = data.url;
-    } catch {
-      setError("Network error. Please check your connection and try again.");
-      setLoading(false);
+    } else if (e.key === "ArrowLeft" && i > 0) {
+      focus(i - 1);
+    } else if (e.key === "ArrowRight" && i < OTP_LENGTH - 1) {
+      focus(i + 1);
     }
   };
 
   return (
-    /* Backdrop */
+    <div className="flex items-center gap-2 justify-center my-2">
+      {Array.from({ length: OTP_LENGTH }).map((_, i) => (
+        <input
+          key={i}
+          ref={(el) => { inputRefs.current[i] = el; }}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          maxLength={OTP_LENGTH} // allow paste
+          autoComplete={i === 0 ? "one-time-code" : "off"}
+          value={digits[i] ?? ""}
+          disabled={disabled}
+          onChange={(e) => handleChange(i, e.target.value)}
+          onKeyDown={(e) => handleKeyDown(i, e)}
+          onFocus={(e) => e.target.select()}
+          className="w-11 h-14 rounded-xl text-center text-xl font-bold outline-none transition-all disabled:opacity-50"
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            border: digits[i]
+              ? "1.5px solid var(--brand)"
+              : "1px solid var(--card-border)",
+            color: "var(--foreground)",
+            caretColor: "var(--brand)",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ─── Resend timer ────────────────────────────────────────────────────
+const RESEND_COOLDOWN = 30; // seconds
+
+function ResendButton({
+  onResend,
+  disabled,
+}: {
+  onResend: () => void;
+  disabled: boolean;
+}) {
+  const [seconds, setSeconds] = useState(RESEND_COOLDOWN);
+
+  useEffect(() => {
+    if (seconds <= 0) return;
+    const t = setTimeout(() => setSeconds((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [seconds]);
+
+  const canResend = seconds <= 0 && !disabled;
+
+  const handleClick = () => {
+    if (!canResend) return;
+    setSeconds(RESEND_COOLDOWN);
+    onResend();
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={!canResend}
+      className="flex items-center gap-1.5 text-xs font-medium transition-opacity disabled:opacity-40"
+      style={{ color: canResend ? "var(--brand)" : "var(--text-muted)" }}
+    >
+      <RefreshCw className="w-3 h-3" />
+      {seconds > 0 ? `Resend code in ${seconds}s` : "Resend code"}
+    </button>
+  );
+}
+
+// ─── Inline input style helpers ──────────────────────────────────────
+const inputBase: React.CSSProperties = {
+  background: "rgba(255,255,255,0.06)",
+  border: "1px solid var(--card-border)",
+  color: "var(--foreground)",
+};
+
+function focusBrand(e: React.FocusEvent<HTMLInputElement>) {
+  e.currentTarget.style.border = "1px solid var(--brand)";
+}
+function blurBorder(e: React.FocusEvent<HTMLInputElement>) {
+  e.currentTarget.style.border = "1px solid var(--card-border)";
+}
+
+// ─── Multi-step trial modal ──────────────────────────────────────────
+type Step = "details" | "otp" | "loading";
+
+interface TrialFormProps {
+  plan: Plan;
+  onClose: () => void;
+}
+
+function TrialForm({ plan, onClose }: TrialFormProps) {
+  const [step, setStep] = useState<Step>("details");
+  const [businessName, setBusinessName] = useState("");
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // ── Step 1: send OTP (called directly from browser — no server round-trip needed) ──
+  const sendOtp = useCallback(async (targetEmail: string) => {
+    setSendingOtp(true);
+    setError(null);
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email: targetEmail,
+      options: { shouldCreateUser: true },
+    });
+
+    setSendingOtp(false);
+
+    if (error) {
+      setError(error.message ?? "Failed to send code. Please try again.");
+      return false;
+    }
+    return true;
+  }, []);
+
+  const handleDetailsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const ok = await sendOtp(email);
+    if (ok) setStep("otp");
+  };
+
+  // ── Step 2: verify OTP ───────────────────────────────────────────
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (otp.length < OTP_LENGTH) {
+      setError("Please enter the full 6-digit code.");
+      return;
+    }
+
+    setVerifying(true);
+    setError(null);
+
+    const { data, error: verifyErr } = await supabase.auth.verifyOtp({
+      email,
+      token: otp,
+      type: "email",
+    });
+
+    if (verifyErr || !data.session) {
+      setVerifying(false);
+      setError(verifyErr?.message ?? "Incorrect code. Please try again.");
+      return;
+    }
+
+    // OTP verified — now call our backend with the access token
+    setStep("loading");
+    const accessToken = data.session.access_token;
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ businessName, plan: plan.key }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        setError(json.error ?? "Something went wrong. Please try again.");
+        setStep("otp");
+        setVerifying(false);
+        return;
+      }
+
+      // Redirect to Stripe checkout
+      window.location.href = json.url;
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+      setStep("otp");
+      setVerifying(false);
+    }
+  };
+
+  // ── Shared backdrop + card wrapper ───────────────────────────────
+  return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}
@@ -130,7 +326,7 @@ function TrialForm({
           border: "1px solid var(--card-border)",
         }}
       >
-        {/* Close */}
+        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 rounded-full p-1.5 transition-colors hover:bg-white/10"
@@ -139,114 +335,161 @@ function TrialForm({
           <X className="w-4 h-4" style={{ color: "var(--muted)" }} />
         </button>
 
-        {/* Header */}
-        <div className="mb-6">
-          <span
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold mb-3"
-            style={{ background: "rgba(201,123,58,0.15)", color: "var(--brand)" }}
-          >
-            {plan.icon}
-            {plan.name} Plan — {plan.price}/mo
-          </span>
-          <h2 className="text-xl font-bold" style={{ color: "var(--foreground)" }}>
-            Start your 30-day free trial
-          </h2>
-          <p className="mt-1 text-sm" style={{ color: "var(--text-sub)" }}>
-            No credit card required to start. Cancel anytime.
-          </p>
-        </div>
+        {/* Plan badge */}
+        <span
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold mb-4"
+          style={{ background: "rgba(201,123,58,0.15)", color: "var(--brand)" }}
+        >
+          {plan.icon}
+          {plan.name} Plan — {plan.price}/mo
+        </span>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="businessName"
-              className="text-xs font-semibold uppercase tracking-wider"
-              style={{ color: "var(--text-sub)" }}
-            >
-              Business Name
-            </label>
-            <input
-              id="businessName"
-              name="businessName"
-              type="text"
-              required
-              placeholder="e.g. The Coffee Corner"
-              value={form.businessName}
-              onChange={handleChange}
-              className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid var(--card-border)",
-                color: "var(--foreground)",
-              }}
-              onFocus={(e) =>
-                (e.currentTarget.style.border = "1px solid var(--brand)")
-              }
-              onBlur={(e) =>
-                (e.currentTarget.style.border = "1px solid var(--card-border)")
-              }
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="ownerEmail"
-              className="text-xs font-semibold uppercase tracking-wider"
-              style={{ color: "var(--text-sub)" }}
-            >
-              Email Address
-            </label>
-            <p className="text-xs -mt-0.5" style={{ color: "var(--text-muted)" }}>
-              Use the same email you signed up with on clientIn.
+        {/* ── STEP 1: business details ─────────────────────────────── */}
+        {step === "details" && (
+          <>
+            <h2 className="text-xl font-bold mb-1" style={{ color: "var(--foreground)" }}>
+              Start your 30-day free trial
+            </h2>
+            <p className="text-sm mb-6" style={{ color: "var(--text-sub)" }}>
+              No credit card required. We'll send a one-time code to verify your email.
             </p>
-            <input
-              id="ownerEmail"
-              name="ownerEmail"
-              type="email"
-              required
-              placeholder="you@yourbusiness.com"
-              value={form.ownerEmail}
-              onChange={handleChange}
-              className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid var(--card-border)",
-                color: "var(--foreground)",
-              }}
-              onFocus={(e) =>
-                (e.currentTarget.style.border = "1px solid var(--brand)")
-              }
-              onBlur={(e) =>
-                (e.currentTarget.style.border = "1px solid var(--card-border)")
-              }
-            />
-          </div>
 
-          {error && (
-            <p className="text-sm rounded-lg px-3 py-2" style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}>
-              {error}
-            </p>
-          )}
+            <form onSubmit={handleDetailsSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="businessName"
+                  className="text-xs font-semibold uppercase tracking-wider"
+                  style={{ color: "var(--text-sub)" }}
+                >
+                  Business Name
+                </label>
+                <input
+                  id="businessName"
+                  type="text"
+                  required
+                  placeholder="e.g. The Coffee Corner"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
+                  style={inputBase}
+                  onFocus={focusBrand}
+                  onBlur={blurBorder}
+                />
+              </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold tracking-wide transition-all hover:opacity-90 disabled:opacity-60"
-            style={{ background: "var(--brand)", color: "#fff" }}
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Setting up your trial…
-              </>
-            ) : (
-              "Start Free Trial →"
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="ownerEmail"
+                  className="text-xs font-semibold uppercase tracking-wider"
+                  style={{ color: "var(--text-sub)" }}
+                >
+                  Email Address
+                </label>
+                <input
+                  id="ownerEmail"
+                  type="email"
+                  required
+                  placeholder="you@yourbusiness.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
+                  style={inputBase}
+                  onFocus={focusBrand}
+                  onBlur={blurBorder}
+                />
+              </div>
+
+              {error && <ErrorBanner message={error} />}
+
+              <button
+                type="submit"
+                disabled={sendingOtp}
+                className="mt-2 w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold tracking-wide transition-all hover:opacity-90 disabled:opacity-60"
+                style={{ background: "var(--brand)", color: "#fff" }}
+              >
+                {sendingOtp ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Sending code…</>
+                ) : (
+                  "Continue →"
+                )}
+              </button>
+            </form>
+          </>
+        )}
+
+        {/* ── STEP 2: OTP verification ─────────────────────────────── */}
+        {(step === "otp" || step === "loading") && (
+          <>
+            {/* Back button */}
+            {step === "otp" && (
+              <button
+                type="button"
+                onClick={() => { setStep("details"); setOtp(""); setError(null); }}
+                className="flex items-center gap-1.5 text-xs font-medium mb-4 transition-opacity hover:opacity-70"
+                style={{ color: "var(--text-sub)" }}
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Back
+              </button>
             )}
-          </button>
-        </form>
+
+            <h2 className="text-xl font-bold mb-1" style={{ color: "var(--foreground)" }}>
+              Check your email
+            </h2>
+            <p className="text-sm mb-1" style={{ color: "var(--text-sub)" }}>
+              We sent a 6-digit code to
+            </p>
+            <p className="text-sm font-semibold mb-6" style={{ color: "var(--brand)" }}>
+              {email}
+            </p>
+
+            <form onSubmit={handleVerify} className="flex flex-col gap-4">
+              <OtpInput
+                value={otp}
+                onChange={setOtp}
+                disabled={verifying || step === "loading"}
+              />
+
+              {error && <ErrorBanner message={error} />}
+
+              <button
+                type="submit"
+                disabled={otp.length < OTP_LENGTH || verifying || step === "loading"}
+                className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold tracking-wide transition-all hover:opacity-90 disabled:opacity-50"
+                style={{ background: "var(--brand)", color: "#fff" }}
+              >
+                {step === "loading" || verifying ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" />
+                    {step === "loading" ? "Setting up your trial…" : "Verifying…"}
+                  </>
+                ) : (
+                  "Verify & Continue →"
+                )}
+              </button>
+
+              <div className="flex justify-center">
+                <ResendButton
+                  onResend={() => sendOtp(email)}
+                  disabled={sendingOtp || verifying || step === "loading"}
+                />
+              </div>
+            </form>
+          </>
+        )}
       </div>
     </div>
+  );
+}
+
+// ─── Tiny error banner ───────────────────────────────────────────────
+function ErrorBanner({ message }: { message: string }) {
+  return (
+    <p
+      className="text-sm rounded-lg px-3 py-2"
+      style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}
+    >
+      {message}
+    </p>
   );
 }
 
@@ -268,12 +511,9 @@ function PlanCard({
         border: plan.highlight
           ? "1px solid rgba(201,123,58,0.45)"
           : "1px solid var(--card-border)",
-        boxShadow: plan.highlight
-          ? "0 0 40px rgba(201,123,58,0.1)"
-          : "none",
+        boxShadow: plan.highlight ? "0 0 40px rgba(201,123,58,0.1)" : "none",
       }}
     >
-      {/* Badge */}
       {plan.badge && (
         <span
           className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold tracking-wide whitespace-nowrap"
@@ -283,7 +523,6 @@ function PlanCard({
         </span>
       )}
 
-      {/* Plan icon + name */}
       <div className="flex items-center gap-2 mb-4">
         <span
           className="flex items-center justify-center w-9 h-9 rounded-xl"
@@ -296,44 +535,39 @@ function PlanCard({
         >
           {plan.icon}
         </span>
-        <span
-          className="text-lg font-bold"
-          style={{ color: "var(--foreground)" }}
-        >
+        <span className="text-lg font-bold" style={{ color: "var(--foreground)" }}>
           {plan.name}
         </span>
       </div>
 
-      {/* Price */}
       <div className="mb-1">
-        <span
-          className="text-4xl font-black"
-          style={{ color: "var(--foreground)" }}
-        >
+        <span className="text-4xl font-black" style={{ color: "var(--foreground)" }}>
           {plan.price}
         </span>
-        <span className="text-sm ml-1" style={{ color: "var(--text-sub)" }}>
-          /mo
-        </span>
+        <span className="text-sm ml-1" style={{ color: "var(--text-sub)" }}>/mo</span>
       </div>
       <p className="text-xs mb-6" style={{ color: "var(--text-muted)" }}>
         {plan.branches}
       </p>
 
-      {/* Features */}
       <ul className="flex flex-col gap-2.5 mb-8 flex-1">
         {plan.features.map((f) => (
-          <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--text-sub)" }}>
+          <li
+            key={f}
+            className="flex items-start gap-2.5 text-sm"
+            style={{ color: "var(--text-sub)" }}
+          >
             <Check
               className="w-4 h-4 mt-0.5 shrink-0"
-              style={{ color: plan.highlight ? "var(--brand)" : "rgba(255,255,255,0.4)" }}
+              style={{
+                color: plan.highlight ? "var(--brand)" : "rgba(255,255,255,0.4)",
+              }}
             />
             {f}
           </li>
         ))}
       </ul>
 
-      {/* CTA */}
       <button
         onClick={() => onSelect(plan)}
         className="w-full rounded-xl py-3.5 text-sm font-bold tracking-wide transition-all hover:opacity-90 active:scale-[0.98]"
@@ -363,10 +597,19 @@ export default function SubscribePage() {
       style={{ background: "var(--background)", color: "var(--foreground)" }}
     >
       {/* Nav */}
-      <div className="fixed top-0 inset-x-0 z-40 flex items-center justify-between px-5 sm:px-10 py-4"
-        style={{ background: "var(--nav-bg)", borderBottom: "1px solid var(--nav-border)", backdropFilter: "blur(12px)" }}
+      <div
+        className="fixed top-0 inset-x-0 z-40 flex items-center justify-between px-5 sm:px-10 py-4"
+        style={{
+          background: "var(--nav-bg)",
+          borderBottom: "1px solid var(--nav-border)",
+          backdropFilter: "blur(12px)",
+        }}
       >
-        <a href="/" className="font-black text-sm sm:text-base tracking-[0.15em] uppercase" style={{ color: "var(--foreground)" }}>
+        <a
+          href="/"
+          className="font-black text-sm sm:text-base tracking-[0.15em] uppercase"
+          style={{ color: "var(--foreground)" }}
+        >
           clientIn
         </a>
         <a
@@ -394,13 +637,16 @@ export default function SubscribePage() {
           Cancel anytime, no lock-in.
         </p>
 
-        {/* Trust pills */}
         <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
           {["30-day free trial", "Cancel anytime", "No lock-in"].map((t) => (
             <span
               key={t}
               className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid var(--card-border)", color: "var(--text-sub)" }}
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid var(--card-border)",
+                color: "var(--text-sub)",
+              }}
             >
               <Check className="w-3 h-3" style={{ color: "var(--brand)" }} />
               {t}
@@ -409,7 +655,7 @@ export default function SubscribePage() {
         </div>
       </section>
 
-      {/* Plan cards grid */}
+      {/* Plan cards */}
       <section className="max-w-5xl mx-auto px-5 pb-24">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-start">
           {PLANS.map((plan) => (
@@ -417,7 +663,6 @@ export default function SubscribePage() {
           ))}
         </div>
 
-        {/* FAQ nudge */}
         <p className="text-center mt-12 text-sm" style={{ color: "var(--text-muted)" }}>
           Questions?{" "}
           <a
@@ -437,3 +682,5 @@ export default function SubscribePage() {
     </div>
   );
 }
+
+
