@@ -217,8 +217,8 @@ function SignInModal({ onSuccess, onClose }: { onSuccess: (token: string, email:
 }
 
 // ─── Upgrade modal (plan picker) ─────────────────────────────────────
-function UpgradeModal({ accessToken, currentPlan, onClose }: {
-  accessToken: string; currentPlan: string; onClose: () => void;
+function UpgradeModal({ accessToken, currentPlan, businessName, onClose }: {
+  accessToken: string; currentPlan: string; businessName: string; onClose: () => void;
 }) {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -230,7 +230,7 @@ function UpgradeModal({ accessToken, currentPlan, onClose }: {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({ businessName: "", plan: planKey }),
+        body: JSON.stringify({ businessName, plan: planKey }),
       });
       const json = await res.json();
       if (!res.ok) { setError(json.error ?? "Something went wrong."); setLoading(null); return; }
@@ -501,6 +501,7 @@ export default function AccountPage() {
         <UpgradeModal
           accessToken={accessToken}
           currentPlan={business?.subscription_status ?? ""}
+          businessName={business?.name ?? ""}
           onClose={() => setShowUpgrade(false)}
         />
       )}

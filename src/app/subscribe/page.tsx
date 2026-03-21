@@ -399,12 +399,14 @@ function Dashboard({
   accessToken,
   userEmail,
   data,
+  pendingBusinessName,
   onSignOut,
   onRefresh,
 }: {
   accessToken: string;
   userEmail: string;
   data: SubscriptionData;
+  pendingBusinessName: string | null;
   onSignOut: () => void;
   onRefresh: () => void;
 }) {
@@ -471,7 +473,7 @@ function Dashboard({
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ businessName: data.business?.name ?? "My Business", plan: plan.key }),
+        body: JSON.stringify({ businessName: data.business?.name ?? pendingBusinessName ?? userEmail?.split("@")[0] ?? "My Business", plan: plan.key }),
       });
       const json = await res.json();
       if (!res.ok) { setPlanError(json.error ?? "Something went wrong."); setChangingPlan(null); return; }
@@ -758,9 +760,10 @@ function Dashboard({
 // ─── Auth gate (email → OTP) ──────────────────────────────────────────
 type AuthStep = "email" | "otp" | "loading";
 
-function AuthGate({ onAuth }: { onAuth: (token: string, email: string) => void }) {
+function AuthGate({ onAuth }: { onAuth: (token: string, email: string, businessName: string) => void }) {
   const [step, setStep] = useState<AuthStep>("email");
   const [email, setEmail] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [otp, setOtp] = useState("");
   const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
@@ -795,7 +798,7 @@ function AuthGate({ onAuth }: { onAuth: (token: string, email: string) => void }
       setError(err?.message ?? "Incorrect code. Please try again.");
       return;
     }
-    onAuth(data.session.access_token, email);
+    onAuth(data.session.access_token, email, businessName.trim() || email.split("@")[0]);
   };
 
   return (
@@ -831,6 +834,17 @@ function AuthGate({ onAuth }: { onAuth: (token: string, email: string) => void }
               We'll send a one-time code — no password needed.
             </p>
             <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">
+              <input
+                type="text"
+                required
+                placeholder="Your business name"
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
+                style={inp}
+                onFocus={focusBrand}
+                onBlur={blurBorder}
+              />
               <input
                 type="email"
                 required
@@ -946,6 +960,7 @@ function AuthGate({ onAuth }: { onAuth: (token: string, email: string) => void }
 export default function SubscribePage() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [pendingBusinessName, setPendingBusinessName] = useState<string | null>(null);
   const [subData, setSubData] = useState<SubscriptionData | null>(null);
   const [loadingData, setLoadingData] = useState(false);
   const [dataError, setDataError] = useState<string | null>(null);
@@ -998,9 +1013,10 @@ export default function SubscribePage() {
     if (accessToken) fetchData(accessToken);
   }, [accessToken, fetchData]);
 
-  const handleAuth = (token: string, email: string) => {
+  const handleAuth = (token: string, email: string, businessName: string) => {
     setAccessToken(token);
     setUserEmail(email);
+    setPendingBusinessName(businessName);
   };
 
   const handleSignOut = async () => {
@@ -1070,6 +1086,7 @@ export default function SubscribePage() {
             accessToken={accessToken}
             userEmail={userEmail!}
             data={subData}
+            pendingBusinessName={pendingBusinessName}
             onSignOut={handleSignOut}
             onRefresh={() => fetchData(accessToken)}
           />

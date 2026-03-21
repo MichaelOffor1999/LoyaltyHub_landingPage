@@ -67,11 +67,18 @@ export async function GET(req: NextRequest) {
     let invoices: object[] = [];
     let stripeCustomerId: string | null = business?.stripe_customer_id ?? null;
 
-    // Find stripe customer by email if not cached
+    // Find stripe customer by email if not cached in DB — then save it back
     if (!stripeCustomerId) {
       const customers = await stripe.customers.list({ email: ownerEmail, limit: 1 });
       if (customers.data.length) {
         stripeCustomerId = customers.data[0].id;
+        // Cache it so future requests don't need to hit Stripe's customer list API
+        if (business?.id) {
+          await supabase
+            .from("businesses")
+            .update({ stripe_customer_id: stripeCustomerId })
+            .eq("id", business.id);
+        }
       }
     }
 
