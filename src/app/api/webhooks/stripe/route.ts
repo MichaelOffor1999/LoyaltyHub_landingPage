@@ -62,10 +62,10 @@ export async function POST(req: NextRequest) {
               subscription_status: "active",
               stripe_subscription_id: subscriptionId,
               stripe_customer_id: customerId,
-              // Clear the trial — they've now paid
-              trial_ends_at: null,
-              // Store the plan name if we have it
-              ...(plan ? { plan } : {}),
+              // Set trial_ends_at to now (past) — NOT NULL constraint prevents null
+              trial_ends_at: new Date().toISOString(),
+              // Correct column name is subscription_plan
+              ...(plan ? { subscription_plan: plan } : {}),
             })
             .eq("id", businessId);
 
@@ -144,9 +144,9 @@ export async function POST(req: NextRequest) {
             .from("businesses")
             .update({
               subscription_status: statusMap[status] ?? status,
-              ...(plan ? { plan } : {}),
-              // If now active (trial ended or plan changed), clear trial date
-              ...(status === "active" ? { trial_ends_at: null } : {}),
+              ...(plan ? { subscription_plan: plan } : {}),
+              // If now active (trial ended or plan changed), mark trial as ended
+              ...(status === "active" ? { trial_ends_at: new Date().toISOString() } : {}),
             })
             .eq("stripe_subscription_id", subscriptionId);
 
