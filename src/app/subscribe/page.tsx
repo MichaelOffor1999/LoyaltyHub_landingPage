@@ -85,25 +85,24 @@ function OtpInput({
 }) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Keep individual boxes in sync with the `value` string
-  const digits = value.padEnd(OTP_LENGTH, "").slice(0, OTP_LENGTH).split("");
+  // Build a fixed-length array of digits from the value string
+  const digits = Array.from({ length: OTP_LENGTH }, (_, i) => value[i] ?? "");
 
   const focus = (i: number) => inputRefs.current[i]?.focus();
 
   const handleChange = (i: number, raw: string) => {
-    // Allow paste into any box — take up to 6 digits from the pasted string
+    // Strip non-digits; support paste of up to OTP_LENGTH chars from this box onward
     const cleaned = raw.replace(/\D/g, "").slice(0, OTP_LENGTH - i);
     if (!cleaned) return;
 
-    const next = digits.map((d, idx) => {
-      if (idx >= i && idx < i + cleaned.length) return cleaned[idx - i];
-      return d;
-    });
+    const next = [...digits];
+    for (let j = 0; j < cleaned.length; j++) {
+      next[i + j] = cleaned[j];
+    }
 
-    const newVal = next.join("").trimEnd();
-    onChange(newVal);
+    onChange(next.join(""));
 
-    // Move focus to the next empty box
+    // Advance focus to the next unfilled box (or stay on last)
     const nextFocus = Math.min(i + cleaned.length, OTP_LENGTH - 1);
     focus(nextFocus);
   };
@@ -111,14 +110,11 @@ function OtpInput({
   const handleKeyDown = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace") {
       e.preventDefault();
+      const next = [...digits];
       if (digits[i]) {
-        // Clear current
-        const next = [...digits];
         next[i] = "";
         onChange(next.join(""));
       } else if (i > 0) {
-        // Move back and clear previous
-        const next = [...digits];
         next[i - 1] = "";
         onChange(next.join(""));
         focus(i - 1);
