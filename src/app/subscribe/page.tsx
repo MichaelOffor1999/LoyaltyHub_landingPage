@@ -872,13 +872,22 @@ export default function SubscribePage() {
   const [loadingData, setLoadingData] = useState(false);
   const [dataError, setDataError] = useState<string | null>(null);
 
-  // Restore existing session on mount
+  // Restore existing session on mount — validate it first so a stale/expired
+  // token never shows the error screen; just drop back to the auth gate.
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        setAccessToken(data.session.access_token);
-        setUserEmail(data.session.user.email ?? null);
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!data.session) return;
+      // Double-check the token is still accepted by Supabase
+      const { data: userData, error } = await supabase.auth.getUser(
+        data.session.access_token
+      );
+      if (error || !userData.user) {
+        // Token is stale — sign out silently and show auth gate
+        await supabase.auth.signOut();
+        return;
       }
+      setAccessToken(data.session.access_token);
+      setUserEmail(userData.user.email ?? null);
     });
   }, []);
 
@@ -890,8 +899,17 @@ export default function SubscribePage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const json = await res.json();
-      if (!res.ok) setDataError(json.error ?? "Failed to load subscription data.");
-      else setSubData(json);
+      if (res.status === 401) {
+        // Session expired mid-session — sign out and show auth gate
+        await supabase.auth.signOut();
+        setAccessToken(null);
+        setUserEmail(null);
+        setSubData(null);
+      } else if (!res.ok) {
+        setDataError(json.error ?? "Failed to load subscription data.");
+      } else {
+        setSubData(json);
+      }
     } catch {
       setDataError("Network error. Please try again.");
     }
