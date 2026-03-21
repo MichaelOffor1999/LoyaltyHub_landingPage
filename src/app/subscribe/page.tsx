@@ -223,11 +223,15 @@ function PlanPickerCard({
   plan,
   isCurrentPlan,
   isLoading,
+  isActivePaidSub,
+  currentPlanMonthly,
   onSelect,
 }: {
   plan: Plan;
   isCurrentPlan: boolean;
   isLoading: boolean;
+  isActivePaidSub: boolean;
+  currentPlanMonthly: number;
   onSelect: (p: Plan) => void;
 }) {
   return (
@@ -312,11 +316,14 @@ function PlanPickerCard({
         }
       >
         {isLoading ? (
-          <><Loader2 className="w-4 h-4 animate-spin" />Redirecting…</>
+          <><Loader2 className="w-4 h-4 animate-spin" />
+            {isActivePaidSub ? "Opening billing…" : "Redirecting…"}</>
         ) : isCurrentPlan ? (
           "Current plan"
+        ) : isActivePaidSub ? (
+          plan.monthly > currentPlanMonthly ? `Upgrade to ${plan.name} →` : `Downgrade to ${plan.name} →`
         ) : (
-          `Switch to ${plan.name} →`
+          `Start with ${plan.name} →`
         )}
       </button>
     </div>
@@ -427,10 +434,36 @@ function Dashboard({
     : null;
   const planInfo = PLANS.find((p) => p.key === currentPlan);
 
+  // Is this customer already on a paid Stripe subscription?
+  const isActivePaidSub =
+    data.stripe.customerId &&
+    data.stripe.subscriptionStatus &&
+    ["active", "past_due", "trialing"].includes(data.stripe.subscriptionStatus);
+
   const handleSelectPlan = async (plan: Plan) => {
     if (plan.key === currentPlan) return;
     setChangingPlan(plan.key);
     setPlanError(null);
+
+    // ── Already a paying customer → send to Stripe billing portal ────
+    // Stripe handles upgrade/downgrade safely with proration.
+    if (isActivePaidSub) {
+      try {
+        const res = await fetch("/api/billing-portal", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const json = await res.json();
+        if (!res.ok) { setPlanError(json.error ?? "Could not open billing portal."); setChangingPlan(null); return; }
+        window.location.href = json.url;
+      } catch {
+        setPlanError("Network error. Please try again.");
+        setChangingPlan(null);
+      }
+      return;
+    }
+
+    // ── No paid subscription yet (still on app trial) → Stripe Checkout ──
     try {
       const res = await fetch("/api/subscribe", {
         method: "POST",
@@ -661,12 +694,16 @@ function Dashboard({
                 plan={plan}
                 isCurrentPlan={plan.key === currentPlan}
                 isLoading={changingPlan === plan.key}
+                isActivePaidSub={!!isActivePaidSub}
+                currentPlanMonthly={planInfo?.monthly ?? 0}
                 onSelect={handleSelectPlan}
               />
             ))}
           </div>
           <p className="text-xs text-center mt-5" style={{ color: "var(--text-muted)" }}>
-            You'll be taken to Stripe to complete payment securely. 30-day free trial on all plans.
+            {isActivePaidSub
+              ? "Upgrade and downgrade are handled securely via Stripe — prorated billing applied automatically."
+              : "You'll be taken to Stripe to complete payment securely. Trial days remaining will be honoured."}
           </p>
         </div>
       )}
