@@ -1,0 +1,137 @@
+/**
+ * GET /api/subscription
+ * Returns the authenticated user's current plan, subscription status,
+ * trial info, and last 10 Stripe invoices.
+ * Requires a valid Supabase JWT in the Authorization header.
+ */
+import Stripe from "stripe";
+import { createClient } from "@supabase/supabase-js";
+import { NextRequest, NextResponse } from "next/server";
+
+const SUPABASE_URL =
+  process.env.SUPABASE_URL ||
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  "https://elyonkqglhsrzafbanph.supabase.co";
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2026-02-25.clover",
+});
+
+const PLAN_PRICE_MAP: Record<string, string> = {
+  price_1TClSz1hvxerH6vDEW3YbQuO: "solo",
+  price_1TClT01hvxerH6vDPQQMbI0Q: "growing",
+  price_1TClSz1hvxerH6vDjUPs0fHK: "scale",
+};
+
+function priceIdToPlan(priceId: string): string {
+  // check env vars first
+  if (process.env.STRIPE_PRICE_SOLO && priceId === process.env.STRIPE_PRICE_SOLO) return "solo";
+  if (process.env.STRIPE_PRICE_GROWING && priceId === process.env.STRIPE_PRICE_GROWING) return "growing";
+  if (process.env.STRIPE_PRICE_SCALE && priceId === process.env.STRIPE_PRICE_SCALE) return "scale";
+  return PLAN_PRICE_MAP[priceId] ?? "unknown";
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    // 1. Verify JWT
+    const authHeader = req.headers.get("authorization") ?? "";
+    const accessToken = authHeader.replace(/^Bearer\s+/i, "").trim();
+    if (!accessToken) {
+      return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+    }
+
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const supabaseUser = createClient(SUPABASE_URL, anonKey, {
+      global: { headers: { Authorization: `Bearer ${accessToken}` } },
+    });
+    const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
+    if (userError || !user) {
+      return NextResponse.json({ error: "Invalid session." }, { status: 401 });
+    }
+
+    const ownerEmail = user.email!;
+
+    // 2. Fetch business row from DB
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const { data: business } = await supabase
+      .from("businesses")
+      .select("id, name, subscription_status, trial_ends_at, stripe_customer_id")
+      .eq("owner_id", user.id)
+      .maybeSingle();
+
+    // 3. Fetch Stripe data
+    let activePlan: string | null = null;
+    let subscriptionStatus: string | null = null;
+    let currentPeriodEnd: number | null = null;
+    let invoices: object[] = [];
+    let stripeCustomerId: string | null = business?.stripe_customer_id ?? null;
+
+    // Find stripe customer by email if not cached
+    if (!stripeCustomerId) {
+      const customers = await stripe.customers.list({ email: ownerEmail, limit: 1 });
+      if (customers.data.length) {
+        stripeCustomerId = customers.data[0].id;
+      }
+    }
+
+    if (stripeCustomerId) {
+      // Get active subscriptions
+      const subs = await stripe.subscriptions.list({
+        customer: stripeCustomerId,
+        status: "all",
+        limit: 1,
+        expand: ["data.default_payment_method"],
+      });
+
+      if (subs.data.length) {
+        const sub = subs.data[0];
+        subscriptionStatus = sub.status;
+        // current_period_end lives on the subscription in older API versions;
+        // in newer versions it may be on the phase — use a safe cast
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        currentPeriodEnd = (sub as any).current_period_end ?? null;
+        const priceId = sub.items.data[0]?.price?.id;
+        if (priceId) activePlan = priceIdToPlan(priceId);
+      }
+
+      // Get last 10 invoices
+      const inv = await stripe.invoices.list({
+        customer: stripeCustomerId,
+        limit: 10,
+      });
+
+      invoices = inv.data.map((i) => ({
+        id: i.id,
+        number: i.number,
+        amount: i.amount_paid,
+        currency: i.currency,
+        status: i.status,
+        date: i.created,
+        pdf: i.invoice_pdf,
+        hostedUrl: i.hosted_invoice_url,
+      }));
+    }
+
+    return NextResponse.json({
+      business: business
+        ? {
+            id: business.id,
+            name: business.name,
+            subscriptionStatus: business.subscription_status,
+            trialEndsAt: business.trial_ends_at,
+          }
+        : null,
+      stripe: {
+        customerId: stripeCustomerId,
+        activePlan,
+        subscriptionStatus,
+        currentPeriodEnd,
+      },
+      invoices,
+    });
+  } catch (err) {
+    console.error("[subscription] error:", err);
+    return NextResponse.json({ error: "Internal server error." }, { status: 500 });
+  }
+}

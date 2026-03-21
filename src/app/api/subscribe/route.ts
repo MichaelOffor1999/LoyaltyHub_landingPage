@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     // ── 0. Parse body ────────────────────────────────────────────────
     const { businessName, plan } = await req.json();
 
-    if (!businessName || !plan) {
+    if (!plan) {
       return NextResponse.json(
         { error: "Missing required fields." },
         { status: 400 }
