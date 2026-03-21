@@ -38,16 +38,26 @@ export async function POST(req: NextRequest) {
 
     const ownerEmail = user.email!;
 
-    // 2. Look up Stripe customer by email
-    const customers = await stripe.customers.list({ email: ownerEmail, limit: 1 });
-    if (!customers.data.length) {
-      return NextResponse.json(
-        { error: "No billing account found. Please subscribe first." },
-        { status: 404 }
-      );
-    }
+    // 2. Look up Stripe customer — prefer cached ID from DB, fall back to email search
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const { data: business } = await supabase
+      .from("businesses")
+      .select("stripe_customer_id")
+      .eq("owner_id", user.id)
+      .maybeSingle();
 
-    const customerId = customers.data[0].id;
+    let customerId: string | null = business?.stripe_customer_id ?? null;
+
+    if (!customerId) {
+      const customers = await stripe.customers.list({ email: ownerEmail, limit: 1 });
+      if (!customers.data.length) {
+        return NextResponse.json(
+          { error: "No billing account found. Please subscribe first." },
+          { status: 404 }
+        );
+      }
+      customerId = customers.data[0].id;
+    }
 
     // 3. Create portal session
     const session = await stripe.billingPortal.sessions.create({

@@ -163,7 +163,7 @@ export async function POST(req: NextRequest) {
         metadata: { businessId, plan: plan.toLowerCase() },
       },
       metadata: { businessId, ownerEmail, plan: plan.toLowerCase() },
-      success_url: "https://clientin.co/subscribe/success",
+      success_url: "https://clientin.co/subscribe/success?session_id={CHECKOUT_SESSION_ID}",
       cancel_url: "https://clientin.co/subscribe",
     });
 

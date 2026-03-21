@@ -55,22 +55,31 @@ export async function POST(req: NextRequest) {
         const subscriptionId = dataObject.subscription as string;
         const customerId = dataObject.customer as string;
 
+        const updatePayload = {
+          subscription_status: "active",
+          stripe_subscription_id: subscriptionId,
+          stripe_customer_id: customerId,
+          // trial_ends_at is NOT NULL — set to now (past) to mark trial as ended
+          trial_ends_at: new Date().toISOString(),
+          ...(plan ? { subscription_plan: plan } : {}),
+        };
+
         if (businessId) {
+          // Primary: update by businessId from metadata
           const { error } = await supabase
             .from("businesses")
-            .update({
-              subscription_status: "active",
-              stripe_subscription_id: subscriptionId,
-              stripe_customer_id: customerId,
-              // Set trial_ends_at to now (past) — NOT NULL constraint prevents null
-              trial_ends_at: new Date().toISOString(),
-              // Correct column name is subscription_plan
-              ...(plan ? { subscription_plan: plan } : {}),
-            })
+            .update(updatePayload)
             .eq("id", businessId);
-
-          if (error) console.error("Supabase update error (checkout.session.completed):", error);
+          if (error) console.error("Supabase update error (checkout.session.completed) by id:", error);
           else console.log(`[webhook] business ${businessId} activated on plan: ${plan ?? "unknown"}`);
+        } else if (customerId) {
+          // Fallback: update by stripe_customer_id if businessId missing from metadata
+          const { error } = await supabase
+            .from("businesses")
+            .update(updatePayload)
+            .eq("stripe_customer_id", customerId);
+          if (error) console.error("Supabase update error (checkout.session.completed) by customer:", error);
+          else console.log(`[webhook] business for customer ${customerId} activated on plan: ${plan ?? "unknown"}`);
         }
         break;
       }

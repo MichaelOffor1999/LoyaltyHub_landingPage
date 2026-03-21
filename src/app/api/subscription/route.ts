@@ -94,12 +94,29 @@ export async function GET(req: NextRequest) {
       if (subs.data.length) {
         const sub = subs.data[0];
         subscriptionStatus = sub.status;
-        // current_period_end lives on the subscription in older API versions;
-        // in newer versions it may be on the phase — use a safe cast
+
+        // In Stripe API 2026+, current_period_end lives on items.data[0], not the subscription root
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        currentPeriodEnd = (sub as any).current_period_end ?? null;
-        const priceId = sub.items.data[0]?.price?.id;
+        const item = (sub.items?.data?.[0] as any);
+        currentPeriodEnd = item?.current_period_end ?? null;
+
+        const priceId = item?.price?.id;
         if (priceId) activePlan = priceIdToPlan(priceId);
+
+        // ── Self-heal: if Stripe says active but DB still says trial, fix it ──
+        if (sub.status === "active" && business?.id &&
+          (business.subscription_status === "trial" || business.subscription_status === "past_due")) {
+          await supabase
+            .from("businesses")
+            .update({
+              subscription_status: "active",
+              stripe_subscription_id: sub.id,
+              stripe_customer_id: stripeCustomerId,
+              trial_ends_at: new Date().toISOString(),
+              ...(activePlan ? { subscription_plan: activePlan } : {}),
+            })
+            .eq("id", business.id);
+        }
       }
 
       // Get last 10 invoices
