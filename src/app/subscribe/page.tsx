@@ -405,7 +405,15 @@ function Dashboard({
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
   const [planError, setPlanError] = useState<string | null>(null);
-  const [showPlans, setShowPlans] = useState(false);
+
+  const hasNoSubscription = !data.business && !data.stripe.customerId;
+  const trialExpired =
+    data.business?.subscriptionStatus === "trial" &&
+    data.business?.trialEndsAt !== null &&
+    new Date(data.business.trialEndsAt!) < new Date();
+
+  // Auto-open plan picker if trial is expired or no subscription
+  const [showPlans, setShowPlans] = useState(hasNoSubscription || trialExpired);
 
   const currentPlan = data.stripe.activePlan ?? data.business?.subscriptionStatus ?? null;
   const isOnTrial = data.business?.subscriptionStatus === "trial";
@@ -458,8 +466,6 @@ function Dashboard({
     }
   };
 
-  const hasNoSubscription = !data.business && !data.stripe.customerId;
-
   return (
     <div className="w-full max-w-3xl mx-auto px-4 py-8 flex flex-col gap-6">
       {/* Header */}
@@ -479,6 +485,41 @@ function Dashboard({
           Sign out
         </button>
       </div>
+
+      {/* ── Trial expired banner ─────────────────────────────────────── */}
+      {trialExpired && (
+        <div
+          className="rounded-2xl p-6"
+          style={{
+            background: "linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(239,68,68,0.04) 100%)",
+            border: "1px solid rgba(239,68,68,0.35)",
+          }}
+        >
+          <div className="flex items-start gap-4">
+            <span
+              className="flex items-center justify-center w-10 h-10 rounded-xl shrink-0"
+              style={{ background: "rgba(239,68,68,0.15)", color: "#f87171" }}
+            >
+              <AlertCircle className="w-5 h-5" />
+            </span>
+            <div className="flex-1">
+              <p className="font-bold text-base mb-1" style={{ color: "var(--foreground)" }}>
+                Your free trial has ended
+              </p>
+              <p className="text-sm mb-4" style={{ color: "var(--text-sub)" }}>
+                Your 30-day trial is over. Pick a plan below to keep using ClientIn — it only takes a minute to set up.
+              </p>
+              <button
+                onClick={() => setShowPlans(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold hover:opacity-90 transition-all"
+                style={{ background: "var(--brand)", color: "#fff" }}
+              >
+                Choose a plan →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* No subscription at all */}
       {hasNoSubscription && (

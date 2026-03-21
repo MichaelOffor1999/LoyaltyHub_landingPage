@@ -49,9 +49,11 @@ export async function POST(req: NextRequest) {
 
   try {
     switch (eventType) {
-      // ── Checkout completed → activate subscription ──────────────────
+      // ── Checkout completed → cancel trial, activate paid plan ────────
       case "checkout.session.completed": {
-        const businessId = (dataObject.metadata as Record<string, string>)?.businessId;
+        const meta = (dataObject.metadata as Record<string, string>) ?? {};
+        const businessId = meta.businessId;
+        const plan = meta.plan ?? null;
         const subscriptionId = dataObject.subscription as string;
         const customerId = dataObject.customer as string;
 
@@ -62,10 +64,15 @@ export async function POST(req: NextRequest) {
               subscription_status: "active",
               stripe_subscription_id: subscriptionId,
               stripe_customer_id: customerId,
+              // Clear the trial — they've now paid
+              trial_ends_at: null,
+              // Store the plan name if we have it
+              ...(plan ? { plan } : {}),
             })
             .eq("id", businessId);
 
           if (error) console.error("Supabase update error (checkout.session.completed):", error);
+          else console.log(`[webhook] business ${businessId} activated on plan: ${plan ?? "unknown"}`);
         }
         break;
       }
@@ -116,8 +123,17 @@ export async function POST(req: NextRequest) {
       case "customer.subscription.updated": {
         const subscriptionId = dataObject.id as string;
         const status = dataObject.status as string;
+        const items = (dataObject as Record<string, unknown>).items as { data: { price: { id: string } }[] } | undefined;
+        const priceId = items?.data?.[0]?.price?.id ?? null;
+
+        const PRICE_PLAN_MAP: Record<string, string> = {
+          [process.env.STRIPE_PRICE_SOLO    ?? "price_1TClSz1hvxerH6vDEW3YbQuO"]: "solo",
+          [process.env.STRIPE_PRICE_GROWING ?? "price_1TClT01hvxerH6vDPQQMbI0Q"]: "growing",
+          [process.env.STRIPE_PRICE_SCALE   ?? "price_1TClSz1hvxerH6vDjUPs0fHK"]: "scale",
+        };
+        const plan = priceId ? (PRICE_PLAN_MAP[priceId] ?? null) : null;
+
         if (subscriptionId && status) {
-          // Map Stripe statuses to our own
           const statusMap: Record<string, string> = {
             active: "active",
             trialing: "trial",
@@ -128,10 +144,16 @@ export async function POST(req: NextRequest) {
           };
           const { error } = await supabase
             .from("businesses")
-            .update({ subscription_status: statusMap[status] ?? status })
+            .update({
+              subscription_status: statusMap[status] ?? status,
+              ...(plan ? { plan } : {}),
+              // If now active (trial ended or plan changed), clear trial date
+              ...(status === "active" ? { trial_ends_at: null } : {}),
+            })
             .eq("stripe_subscription_id", subscriptionId);
 
           if (error) console.error("Supabase update error (customer.subscription.updated):", error);
+          else console.log(`[webhook] subscription ${subscriptionId} → status: ${status}, plan: ${plan}`);
         }
         break;
       }
