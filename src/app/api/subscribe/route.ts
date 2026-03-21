@@ -24,11 +24,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-02-25.clover",
 });
 
-// Map plan keys to Stripe price IDs — set these in your env or replace with your actual price IDs
+// Map plan keys to Stripe price IDs
 const PRICE_IDS: Record<string, string> = {
-  solo:    process.env.STRIPE_PRICE_SOLO    ?? "",
-  growing: process.env.STRIPE_PRICE_GROWING ?? "",
-  scale:   process.env.STRIPE_PRICE_SCALE   ?? "",
+  solo:    process.env.STRIPE_PRICE_SOLO    || "price_1TClSz1hvxerH6vDEW3YbQuO",
+  growing: process.env.STRIPE_PRICE_GROWING || "price_1TClT01hvxerH6vDPQQMbI0Q",
+  scale:   process.env.STRIPE_PRICE_SCALE   || "price_1TClSz1hvxerH6vDjUPs0fHK",
 };
 
 export async function POST(req: NextRequest) {
