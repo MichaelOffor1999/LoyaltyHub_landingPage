@@ -134,13 +134,32 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Look up the existing business to check how many trial days remain
+    const { data: bizData } = await supabase
+      .from("businesses")
+      .select("trial_ends_at")
+      .eq("id", businessId)
+      .maybeSingle();
+
+    // Calculate remaining trial days (already tracked in the app, don't double-count)
+    let trialDaysRemaining = 0;
+    if (bizData?.trial_ends_at) {
+      const msLeft = new Date(bizData.trial_ends_at).getTime() - Date.now();
+      trialDaysRemaining = Math.max(0, Math.ceil(msLeft / 86400000));
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
       customer_email: ownerEmail,
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
-        trial_period_days: 30,
+        // Only pass a trial if there are days genuinely left in the app trial,
+        // so Stripe lines up with what the customer already has.
+        // If trial already ended (or they're paying fresh), charge immediately.
+        ...(trialDaysRemaining > 0
+          ? { trial_period_days: trialDaysRemaining }
+          : {}),
         metadata: { businessId, plan: plan.toLowerCase() },
       },
       metadata: { businessId, ownerEmail, plan: plan.toLowerCase() },
