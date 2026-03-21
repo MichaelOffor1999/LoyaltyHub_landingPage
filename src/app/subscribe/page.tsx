@@ -207,6 +207,7 @@ interface SubscriptionData {
     id: string;
     name: string;
     subscriptionStatus: string;
+    subscriptionPlan: string | null;
     trialEndsAt: string | null;
   } | null;
   stripe: {
@@ -424,7 +425,8 @@ function Dashboard({
   // Auto-open plan picker if trial is expired or no subscription
   const [showPlans, setShowPlans] = useState(hasNoSubscription || trialExpired);
 
-  const currentPlan = data.stripe.activePlan ?? data.business?.subscriptionStatus ?? null;
+  // Prefer Stripe's active plan → then DB's stored plan → then null
+  const currentPlan = data.stripe.activePlan ?? data.business?.subscriptionPlan ?? null;
   const isOnTrial = data.business?.subscriptionStatus === "trial";
   const trialDaysLeft = data.business?.trialEndsAt
     ? Math.max(0, Math.ceil((new Date(data.business.trialEndsAt).getTime() - Date.now()) / 86400000))
@@ -601,7 +603,11 @@ function Dashboard({
               )}
               <div>
                 <p className="text-xl font-black" style={{ color: "var(--foreground)" }}>
-                  {planInfo ? `${planInfo.name} — ${planInfo.price}/mo` : "Free Trial"}
+                  {planInfo
+                    ? `${planInfo.name} — ${planInfo.price}/mo`
+                    : data.business?.subscriptionStatus === "active"
+                      ? "Active Plan"
+                      : "Free Trial"}
                 </p>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
                   {isOnTrial && trialDaysLeft !== null && (

@@ -26,19 +26,19 @@ export default function SubscribeSuccessPage() {
         You&apos;re all set! 🎉
       </h1>
       <p className="max-w-md text-base mb-8" style={{ color: "var(--text-sub)" }}>
-        Your 30-day free trial has started. Check your inbox for a welcome email
-        with everything you need to get going.
+        Your subscription is now active. Manage your plan, view invoices, and
+        access your dashboard from your account page.
       </p>
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-3">
-        <a
-          href="https://app.clientin.co"
+        <Link
+          href="/account"
           className="px-6 py-3.5 rounded-xl text-sm font-bold tracking-wide transition-all hover:opacity-90"
           style={{ background: "var(--brand)", color: "#fff" }}
         >
-          Go to Dashboard →
-        </a>
+          Go to My Account →
+        </Link>
         <Link
           href="/"
           className="px-6 py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all hover:opacity-80"

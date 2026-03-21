@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const { data: business } = await supabase
       .from("businesses")
-      .select("id, name, subscription_status, trial_ends_at, stripe_customer_id")
+      .select("id, name, subscription_status, subscription_plan, trial_ends_at, stripe_customer_id")
       .eq("owner_id", user.id)
       .maybeSingle();
 
@@ -78,6 +78,24 @@ export async function GET(req: NextRequest) {
             .from("businesses")
             .update({ stripe_customer_id: stripeCustomerId })
             .eq("id", business.id);
+        }
+      }
+    }
+
+    if (stripeCustomerId) {
+      // Validate the customer ID belongs to the current Stripe mode (live vs test).
+      // If not, clear it so the page loads cleanly instead of crashing.
+      try {
+        await stripe.customers.retrieve(stripeCustomerId);
+      } catch (customerErr: unknown) {
+        const stripeErr = customerErr as { code?: string };
+        if (stripeErr?.code === "resource_missing") {
+          console.warn(`[subscription] customer ${stripeCustomerId} not found in this Stripe mode — clearing it`);
+          stripeCustomerId = null;
+          // Clear the stale customer ID from DB so it doesn't keep crashing
+          if (business?.id) {
+            await supabase.from("businesses").update({ stripe_customer_id: null }).eq("id", business.id);
+          }
         }
       }
     }
@@ -135,7 +153,7 @@ export async function GET(req: NextRequest) {
         pdf: i.invoice_pdf,
         hostedUrl: i.hosted_invoice_url,
       }));
-    }
+    } // end stripeCustomerId block
 
     return NextResponse.json({
       business: business
@@ -143,6 +161,7 @@ export async function GET(req: NextRequest) {
             id: business.id,
             name: business.name,
             subscriptionStatus: business.subscription_status,
+            subscriptionPlan: business.subscription_plan ?? null,
             trialEndsAt: business.trial_ends_at,
           }
         : null,
