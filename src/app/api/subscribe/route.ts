@@ -7,9 +7,10 @@
  *
  * 1. Validates the JWT → gets the authenticated user's id + email.
  * 2. Finds or creates a businesses row for that user.
- * 3. Calls the Stripe backend to create a checkout session.
+ * 3. Creates a Stripe checkout session directly (no external backend).
  * 4. Returns { url } to redirect the client.
  */
+import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,8 +19,17 @@ const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ||
   "https://elyonkqglhsrzafbanph.supabase.co";
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const STRIPE_BACKEND_URL =
-  "https://clienty-backend-10k6.onrender.com/api/stripe/create-checkout";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2026-02-25.clover",
+});
+
+// Map plan keys to Stripe price IDs — set these in your env or replace with your actual price IDs
+const PRICE_IDS: Record<string, string> = {
+  solo:    process.env.STRIPE_PRICE_SOLO    ?? "",
+  growing: process.env.STRIPE_PRICE_GROWING ?? "",
+  scale:   process.env.STRIPE_PRICE_SCALE   ?? "",
+};
 
 export async function POST(req: NextRequest) {
   try {
@@ -114,30 +124,39 @@ export async function POST(req: NextRequest) {
       console.log(`[subscribe] created business ${businessId}`);
     }
 
-    // ── 4. Create Stripe checkout session ────────────────────────────
-    const stripeRes = await fetch(STRIPE_BACKEND_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        businessId,
-        ownerEmail,
-        plan: plan.toLowerCase(),
-        successUrl: "https://clientin.co/subscribe/success",
-        cancelUrl: "https://clientin.co/subscribe",
-      }),
-    });
-
-    if (!stripeRes.ok) {
-      const errBody = await stripeRes.text();
-      console.error("[subscribe] Stripe backend error:", errBody);
+    // ── 4. Create Stripe checkout session directly ───────────────────
+    const priceId = PRICE_IDS[plan.toLowerCase()];
+    if (!priceId) {
+      console.error(`[subscribe] No Stripe price ID configured for plan: ${plan}`);
       return NextResponse.json(
-        { error: "Failed to create checkout session." },
-        { status: 502 }
+        { error: "Invalid plan selected." },
+        { status: 400 }
       );
     }
 
-    const { url } = await stripeRes.json();
-    return NextResponse.json({ url });
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      payment_method_types: ["card"],
+      customer_email: ownerEmail,
+      line_items: [{ price: priceId, quantity: 1 }],
+      subscription_data: {
+        trial_period_days: 30,
+        metadata: { businessId, plan: plan.toLowerCase() },
+      },
+      metadata: { businessId, ownerEmail, plan: plan.toLowerCase() },
+      success_url: "https://clientin.co/subscribe/success",
+      cancel_url: "https://clientin.co/subscribe",
+    });
+
+    if (!session.url) {
+      console.error("[subscribe] Stripe session created but no URL returned");
+      return NextResponse.json(
+        { error: "Failed to create checkout session." },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ url: session.url, sessionId: session.id });
   } catch (err) {
     console.error("[subscribe] unexpected error:", err);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
