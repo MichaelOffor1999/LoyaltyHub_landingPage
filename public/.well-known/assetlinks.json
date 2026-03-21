@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.loyaltyhubapp.android",
+      "sha256_cert_fingerprints": [
+        "31:D1:27:F7:24:FF:8D:FD:DF:5B:41:ED:E8:24:99:8E:E5:EF:0A:FC:BB:84:D3:FF:9E:A4:8B:22:AB:25:9B:99"
+      ]
+    }
+  }
+]

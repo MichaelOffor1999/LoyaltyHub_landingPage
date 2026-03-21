@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "9VVZPF69G8.com.loyaltyhubapp.ios",
+        "paths": ["/nfc-checkin/*"]
+      }
+    ]
+  }
+}
