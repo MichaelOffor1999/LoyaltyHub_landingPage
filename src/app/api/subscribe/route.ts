@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid"; // used for temp password generation
 
 const SUPABASE_URL =
   process.env.SUPABASE_URL ||
@@ -32,30 +32,59 @@ export async function POST(req: NextRequest) {
     // 1. Create Supabase client with service role (bypasses RLS)
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // 2. Check if a business already exists for this email — avoid duplicates
-    const { data: existing } = await supabase
+    // 2. Check if an auth user already exists for this email
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    const existingUser = existingUsers?.users?.find((u) => u.email === ownerEmail);
+
+    let ownerId: string;
+
+    if (existingUser) {
+      ownerId = existingUser.id;
+      console.log(`[subscribe] found existing auth user ${ownerId} for ${ownerEmail}`);
+    } else {
+      // Create a new auth user with a random password — they'll set it later via magic link
+      const tempPassword = uuidv4(); // random secure password
+      const { data: newUser, error: authError } = await supabase.auth.admin.createUser({
+        email: ownerEmail,
+        password: tempPassword,
+        email_confirm: true, // mark as confirmed so they can log in
+      });
+
+      if (authError || !newUser?.user) {
+        console.error("Supabase auth create error:", authError);
+        return NextResponse.json(
+          { error: "Failed to create user account." },
+          { status: 500 }
+        );
+      }
+
+      ownerId = newUser.user.id;
+      console.log(`[subscribe] created auth user ${ownerId} for ${ownerEmail}`);
+    }
+
+    // 3. Check if a business already exists for this owner — avoid duplicates
+    const { data: existingBusiness } = await supabase
       .from("businesses")
-      .select("id, subscription_status")
-      .eq("business_email", ownerEmail)
+      .select("id")
+      .eq("owner_id", ownerId)
       .maybeSingle();
 
     let businessId: string;
 
-    if (existing) {
-      // Reuse existing business row — don't create a duplicate
-      console.log(`[subscribe] reusing existing business ${existing.id} for ${ownerEmail}`);
-      businessId = existing.id;
+    if (existingBusiness) {
+      businessId = existingBusiness.id;
+      console.log(`[subscribe] reusing existing business ${businessId} for owner ${ownerId}`);
     } else {
-      // 3. Insert a new business row using only columns that actually exist
+      // 4. Insert a new business row with the real owner_id
       const trialEndsAt = new Date();
       trialEndsAt.setDate(trialEndsAt.getDate() + 30);
 
       const { data: business, error: dbError } = await supabase
         .from("businesses")
         .insert({
-          id: uuidv4(),
+          owner_id: ownerId,
           name: businessName,
-          business_email: ownerEmail,   // maps to the real column
+          business_email: ownerEmail,
           subscription_status: "trial",
           trial_ends_at: trialEndsAt.toISOString(),
           is_public: false,
@@ -73,7 +102,7 @@ export async function POST(req: NextRequest) {
       }
 
       businessId = business.id;
-      console.log(`[subscribe] created new business ${businessId} for ${ownerEmail}`);
+      console.log(`[subscribe] created business ${businessId} for owner ${ownerId}`);
     }
 
     // 4. Call the Stripe backend with the real Supabase UUID
