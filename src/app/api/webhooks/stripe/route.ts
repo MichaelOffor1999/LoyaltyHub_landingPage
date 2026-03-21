@@ -9,9 +9,7 @@ const SUPABASE_URL =
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
 
-// Raw body is required for Stripe signature verification
-export const config = { api: { bodyParser: false } };
-
+// App Router uses the native Web Streams API — no bodyParser config needed.
 async function getRawBody(req: NextRequest): Promise<Buffer> {
   const chunks: Uint8Array[] = [];
   const reader = req.body?.getReader();

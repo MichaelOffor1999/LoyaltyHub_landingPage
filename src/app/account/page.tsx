@@ -126,9 +126,20 @@ function SignInModal({ onSuccess, onClose }: { onSuccess: (token: string, email:
 
   const sendOtp = useCallback(async (target: string) => {
     setSending(true); setError(null);
-    const { error } = await supabase.auth.signInWithOtp({ email: target, options: { shouldCreateUser: false } });
+    const { error } = await supabase.auth.signInWithOtp({
+      email: target,
+      options: { shouldCreateUser: false },
+    });
     setSending(false);
-    if (error) { setError(error.message); return false; }
+    if (error) {
+      // Supabase returns "Signups not allowed" when the user doesn't exist yet
+      if (error.message.toLowerCase().includes("not allowed") || error.message.toLowerCase().includes("not found")) {
+        setError("No account found for this email. Please go to /subscribe to start your free trial.");
+      } else {
+        setError(error.message);
+      }
+      return false;
+    }
     return true;
   }, []);
 
@@ -309,20 +320,28 @@ export default function AccountPage() {
     });
   }, []);
 
-  // Load business data once we have a token
+  // Load business data via the secure /api/subscription route (respects RLS correctly)
   useEffect(() => {
     if (!accessToken) return;
     setLoadingData(true);
-    supabase.auth.getUser(accessToken).then(async ({ data }) => {
-      if (!data.user) return;
-      const { data: biz } = await supabase
-        .from("businesses")
-        .select("id, name, subscription_status, trial_ends_at")
-        .eq("owner_id", data.user.id)
-        .maybeSingle();
-      setBusiness(biz ?? null);
-      setLoadingData(false);
-    });
+    fetch("/api/subscription", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.business) {
+          setBusiness({
+            id: json.business.id,
+            name: json.business.name,
+            subscription_status: json.business.subscriptionStatus,
+            trial_ends_at: json.business.trialEndsAt,
+          });
+        } else {
+          setBusiness(null);
+        }
+      })
+      .catch(() => setBusiness(null))
+      .finally(() => setLoadingData(false));
   }, [accessToken]);
 
   const handleSignInSuccess = (token: string, email: string) => {
