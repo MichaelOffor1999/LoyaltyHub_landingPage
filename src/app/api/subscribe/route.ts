@@ -12,9 +12,9 @@ const STRIPE_BACKEND_URL =
 
 export async function POST(req: NextRequest) {
   try {
-    const { businessName, ownerEmail, ownerName, plan } = await req.json();
+    const { businessName, ownerEmail, plan } = await req.json();
 
-    if (!businessName || !ownerEmail || !ownerName || !plan) {
+    if (!businessName || !ownerEmail || !plan) {
       return NextResponse.json(
         { error: "Missing required fields." },
         { status: 400 }
@@ -83,7 +83,6 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         businessId,
         ownerEmail,
-        ownerName,
         plan: plan.toLowerCase(),
         successUrl: "https://clientin.co/subscribe/success",
         cancelUrl:  "https://clientin.co/subscribe",

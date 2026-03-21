@@ -68,7 +68,6 @@ const PLANS: Plan[] = [
 interface FormState {
   businessName: string;
   ownerEmail: string;
-  ownerName: string;
 }
 
 function TrialForm({
@@ -81,7 +80,6 @@ function TrialForm({
   const [form, setForm] = useState<FormState>({
     businessName: "",
     ownerEmail: "",
-    ownerName: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -209,37 +207,6 @@ function TrialForm({
               required
               placeholder="you@yourbusiness.com"
               value={form.ownerEmail}
-              onChange={handleChange}
-              className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid var(--card-border)",
-                color: "var(--foreground)",
-              }}
-              onFocus={(e) =>
-                (e.currentTarget.style.border = "1px solid var(--brand)")
-              }
-              onBlur={(e) =>
-                (e.currentTarget.style.border = "1px solid var(--card-border)")
-              }
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="ownerName"
-              className="text-xs font-semibold uppercase tracking-wider"
-              style={{ color: "var(--text-sub)" }}
-            >
-              Owner Full Name
-            </label>
-            <input
-              id="ownerName"
-              name="ownerName"
-              type="text"
-              required
-              placeholder="Jane Smith"
-              value={form.ownerName}
               onChange={handleChange}
               className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
               style={{
