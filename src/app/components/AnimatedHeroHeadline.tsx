@@ -29,8 +29,8 @@ export default function AnimatedHeroHeadline() {
       variants={container}
       initial="hidden"
       animate="show"
-      className="font-extrabold leading-none tracking-tight mb-0 text-center uppercase whitespace-nowrap"
-      style={{ perspective: 1000, letterSpacing: "-0.03em", margin: "0 auto" }}
+      className="font-extrabold leading-none tracking-tight mb-0 text-center uppercase"
+      style={{ perspective: 1000, letterSpacing: "-0.03em", margin: "0 auto", overflowWrap: "break-word", wordBreak: "break-word", maxWidth: "100%" }}
     >
       {lines.map((parts, li) => (
         <motion.span key={li} variants={word} className="block">

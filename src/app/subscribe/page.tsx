@@ -118,7 +118,7 @@ function OtpInput({
   };
 
   return (
-    <div className="flex gap-2.5 justify-center my-2">
+    <div className="flex gap-1.5 justify-center my-2">
       {Array.from({ length: OTP_LENGTH }).map((_, i) => (
         <input
           key={i}
@@ -133,8 +133,10 @@ function OtpInput({
           onChange={(e) => handleChange(i, e.target.value)}
           onKeyDown={(e) => handleKeyDown(i, e)}
           onFocus={(e) => e.target.select()}
-          className="w-12 h-14 rounded-xl text-center text-xl font-bold outline-none transition-all disabled:opacity-50"
+          className="h-12 rounded-xl text-center text-lg font-bold outline-none transition-all disabled:opacity-50"
           style={{
+            width: "calc((100% - 5 * 6px) / 6)",
+            minWidth: 0,
             background: "rgba(255,255,255,0.06)",
             border: digits[i] ? "2px solid var(--brand)" : "1px solid var(--card-border)",
             color: "var(--foreground)",
@@ -1026,7 +1028,7 @@ function AuthGate({ onAuth }: { onAuth: (token: string, email: string, businessN
   };
 
   return (
-    <div className="w-full max-w-md mx-auto px-4 py-8">
+    <div className="w-full max-w-md mx-auto px-4 py-8" style={{ overflowX: "hidden" }}>
       {/* Heading */}
       <div className="text-center mb-10">
         <span
@@ -1046,7 +1048,7 @@ function AuthGate({ onAuth }: { onAuth: (token: string, email: string, businessN
 
       {/* Auth card */}
       <div
-        className="rounded-2xl p-7 shadow-lg"
+        className="rounded-2xl p-5 sm:p-7 shadow-lg"
         style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}
       >
         {step === "email" && (
@@ -1143,27 +1145,28 @@ function AuthGate({ onAuth }: { onAuth: (token: string, email: string, businessN
         >
           Available plans
         </p>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-3" style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
           {PLANS.map((plan) => (
             <div
               key={plan.key}
-              className="rounded-xl p-4 text-center"
+              className="rounded-xl p-3 text-center"
               style={{
                 background: plan.highlight ? "rgba(201,123,58,0.08)" : "var(--card-bg)",
                 border: plan.highlight
                   ? "1px solid rgba(201,123,58,0.35)"
                   : "1px solid var(--card-border)",
+                minWidth: 0,
               }}
             >
               <span
-                className="flex justify-center mb-2"
+                className="flex justify-center mb-1.5"
                 style={{ color: plan.highlight ? "var(--brand)" : "var(--text-muted)" }}
               >
                 {plan.icon}
               </span>
-              <p className="text-xs font-bold mb-0.5" style={{ color: "var(--foreground)" }}>{plan.name}</p>
+              <p className="text-xs font-bold mb-0.5 truncate" style={{ color: "var(--foreground)" }}>{plan.name}</p>
               <p
-                className="text-base font-black"
+                className="text-sm font-black"
                 style={{ color: plan.highlight ? "var(--brand)" : "var(--foreground)" }}
               >
                 {plan.price}
@@ -1275,7 +1278,7 @@ export default function SubscribePage() {
   return (
     <div
       className="min-h-screen font-sans"
-      style={{ background: "var(--background)", color: "var(--foreground)" }}
+      style={{ background: "var(--background)", color: "var(--foreground)", overflowX: "hidden", maxWidth: "100vw" }}
     >
       {/* Nav */}
       <div
@@ -1303,12 +1306,12 @@ export default function SubscribePage() {
       </div>
 
       {/* Content */}
-      <div className="pt-24 pb-20">
+      <div className="pt-24 pb-20" style={{ overflowX: "hidden" }}>
         {!accessToken && (
-          <div className="max-w-md mx-auto px-4">
+          <div className="max-w-md mx-auto">
             {dataError && (
               <div
-                className="mb-6 rounded-2xl px-4 py-3 text-sm"
+                className="mb-6 mx-4 rounded-2xl px-4 py-3 text-sm"
                 style={{
                   background: "rgba(239,68,68,0.1)",
                   border: "1px solid rgba(239,68,68,0.25)",

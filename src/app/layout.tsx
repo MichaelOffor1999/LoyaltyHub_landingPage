@@ -90,7 +90,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={`${inter.variable} antialiased overflow-x-hidden`} style={{ maxWidth: "100vw" }}>
+      <body className={`${inter.variable} antialiased`} style={{ overflowX: "hidden", maxWidth: "100%" }}>
             {children}
       </body>
     </html>

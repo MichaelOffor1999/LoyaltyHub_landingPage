@@ -12,7 +12,7 @@ import AnimatedHeroHeadline from "./components/AnimatedHeroHeadline";
 
 export default function Home() {
   return (
-    <div className="min-h-screen font-sans overflow-x-hidden" style={{ background: "var(--background)", maxWidth: "100vw" }}>
+    <div className="min-h-screen font-sans" style={{ background: "var(--background)" }}>
 
       {/* Skip to content — accessibility */}
       <a
@@ -56,7 +56,7 @@ export default function Home() {
         {/* Dark gradient overlay — keeps text crisp, darkens bottom for panel transition */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.4) 45%, rgba(0,0,0,0.78) 100%)", zIndex: 1 }} />
         {/* Hero — full width, nav-inset padding */}
-        <div className="w-full px-8 sm:px-14 relative flex flex-col pt-[72px]" style={{ zIndex: 3 }}>
+        <div className="w-full px-5 sm:px-14 relative flex flex-col pt-[72px]" style={{ zIndex: 3 }}>
 
           {/* ── First viewport: Starlink-style — headline upper-centre, form anchored near bottom ── */}
           <section id="top" className="w-full flex flex-col items-center" style={{ minHeight: "calc(100dvh - 72px)" }}>
@@ -105,44 +105,7 @@ export default function Home() {
 
           </section>
 
-          {/* ── Below the fold: card ── */}
-          <div className="w-full flex flex-col items-center pb-16">
-            {/* Interactive 3D loyalty card */}
-            <div className="w-full max-w-[460px]">
-              <HeroSplineCard />
-            </div>
-          </div>
 
-          {/* Trusted-by strip */}
-          <div className="pb-16 flex flex-col items-center gap-3 w-full">
-            <p className="text-xs font-medium uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>Trusted by</p>
-            <div className="overflow-hidden w-full max-w-lg">
-              <div style={{ display: "flex", flexWrap: "nowrap", width: "max-content", animation: "marquee-scroll 20s linear infinite" }}>
-                {[0, 1, 2, 3].map((copy) => (
-                  <div key={copy} style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", flexShrink: 0, gap: "3.5rem", padding: "0 1.75rem" }} aria-hidden={copy > 0}>
-                    <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
-                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: 8, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)", flexShrink: 0 }}>
-                        <Image src="/logo-mtb.jpg" alt="MTB Barbershop" width={36} height={36} style={{ objectFit: "contain", padding: 2 }} />
-                      </div>
-                      <span className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.45)" }}>MTB Barbershop</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
-                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(255,255,255,0.15)", flexShrink: 0 }}>
-                        <Image src="/logo-relief.jpg" alt="Relief" width={36} height={36} style={{ objectFit: "cover", objectPosition: "center" }} />
-                      </div>
-                      <span className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.45)" }}>Relief</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1.5 whitespace-nowrap" style={{ flexShrink: 0 }}>
-                      <div style={{ width: 36, height: 36, overflow: "hidden", borderRadius: "50%", border: "1px solid rgba(255,255,255,0.15)", flexShrink: 0 }}>
-                        <Image src="/logo-10cuts.jpg" alt="10 Cuts" width={72} height={72} style={{ objectFit: "cover", objectPosition: "center" }} />
-                      </div>
-                      <span className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.45)" }}>10 Cuts</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>{/* end hero constrained */}
       </div>{/* end dark hero */}
 
