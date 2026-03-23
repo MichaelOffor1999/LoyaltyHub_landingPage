@@ -12,7 +12,7 @@ import AnimatedHeroHeadline from "./components/AnimatedHeroHeadline";
 
 export default function Home() {
   return (
-    <div className="min-h-screen font-sans" style={{ background: "var(--background)" }}>
+    <div className="min-h-screen font-sans overflow-x-hidden" style={{ background: "var(--background)", maxWidth: "100vw" }}>
 
       {/* Skip to content — accessibility */}
       <a
