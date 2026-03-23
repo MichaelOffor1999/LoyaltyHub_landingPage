@@ -1,13 +1,22 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
+import {
+  getStripeClient,
+  getStripeColumns,
+  isStripeTestMode,
+  getSupabaseUrl,
+  priceIdToPlan,
+  requireEnv,
+} from "@/lib/billing/config";
 
-const SUPABASE_URL =
-  process.env.SUPABASE_URL ||
-  process.env.NEXT_PUBLIC_SUPABASE_URL ||
-  "https://elyonkqglhsrzafbanph.supabase.co";
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
+const SUPABASE_URL = getSupabaseUrl();
+const SUPABASE_SERVICE_ROLE_KEY = requireEnv("SUPABASE_SERVICE_ROLE_KEY");
+const STRIPE_WEBHOOK_SECRET = requireEnv("STRIPE_WEBHOOK_SECRET");
+
+const { COL_CUSTOMER, COL_SUB } = getStripeColumns();
+
+// Use separate DB columns for test vs live so they never overwrite each other
+const IS_TEST_MODE = isStripeTestMode();
 
 // App Router uses the native Web Streams API — no bodyParser config needed.
 async function getRawBody(req: NextRequest): Promise<Buffer> {
@@ -29,11 +38,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing signature or webhook secret." }, { status: 400 });
   }
 
+  // Create a single Stripe client for the entire request lifetime.
+  const stripe = getStripeClient();
+
   let event: Record<string, unknown>;
 
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
     const rawBody = await getRawBody(req);
     event = stripe.webhooks.constructEvent(rawBody, sig, STRIPE_WEBHOOK_SECRET) as unknown as Record<string, unknown>;
   } catch (err) {
@@ -47,7 +57,7 @@ export async function POST(req: NextRequest) {
 
   try {
     switch (eventType) {
-      // ── Checkout completed → cancel trial, activate paid plan ────────
+      // ── Checkout completed → activate paid plan (or start Stripe trial) ──
       case "checkout.session.completed": {
         const meta = (dataObject.metadata as Record<string, string>) ?? {};
         const businessId = meta.businessId;
@@ -55,12 +65,29 @@ export async function POST(req: NextRequest) {
         const subscriptionId = dataObject.subscription as string;
         const customerId = dataObject.customer as string;
 
+        // Determine if this is a trial start or an immediate payment.
+        // "paid"                → customer was charged immediately → mark active, stamp trial_ends_at as past.
+        // "no_payment_required" → Stripe trial started → keep trialing status, sync real trial_end from Stripe.
+        const paymentStatus = dataObject.payment_status as string | null;
+        let resolvedStatus = "active";
+        let trialEndsAtValue: string = new Date().toISOString();
+
+        if (paymentStatus === "no_payment_required" && subscriptionId) {
+          resolvedStatus = "trialing";
+          try {
+            const sub = await stripe.subscriptions.retrieve(subscriptionId);
+            const trialEnd = sub.trial_end;
+            if (trialEnd) trialEndsAtValue = new Date(trialEnd * 1000).toISOString();
+          } catch (e) {
+            console.error("[webhook] checkout.session.completed: failed to fetch trial_end:", e);
+          }
+        }
+
         const updatePayload = {
-          subscription_status: "active",
-          stripe_subscription_id: subscriptionId,
-          stripe_customer_id: customerId,
-          // trial_ends_at is NOT NULL — set to now (past) to mark trial as ended
-          trial_ends_at: new Date().toISOString(),
+          subscription_status: resolvedStatus,
+          [COL_SUB]: subscriptionId,
+          [COL_CUSTOMER]: customerId,
+          trial_ends_at: trialEndsAtValue,
           ...(plan ? { subscription_plan: plan } : {}),
         };
 
@@ -71,13 +98,13 @@ export async function POST(req: NextRequest) {
             .update(updatePayload)
             .eq("id", businessId);
           if (error) console.error("Supabase update error (checkout.session.completed) by id:", error);
-          else console.log(`[webhook] business ${businessId} activated on plan: ${plan ?? "unknown"}`);
+          else console.log(`[webhook] business ${businessId} activated on plan: ${plan ?? "unknown"} (${IS_TEST_MODE ? "test" : "live"} mode)`);
         } else if (customerId) {
-          // Fallback: update by stripe_customer_id if businessId missing from metadata
+          // Fallback: update by the mode-aware customer column if businessId missing from metadata
           const { error } = await supabase
             .from("businesses")
             .update(updatePayload)
-            .eq("stripe_customer_id", customerId);
+            .eq(COL_CUSTOMER, customerId);
           if (error) console.error("Supabase update error (checkout.session.completed) by customer:", error);
           else console.log(`[webhook] business for customer ${customerId} activated on plan: ${plan ?? "unknown"}`);
         }
@@ -88,12 +115,32 @@ export async function POST(req: NextRequest) {
       case "invoice.paid": {
         const subscriptionId = dataObject.subscription as string;
         if (subscriptionId) {
-          const { error } = await supabase
-            .from("businesses")
-            .update({ subscription_status: "active" })
-            .eq("stripe_subscription_id", subscriptionId);
+          // Fetch the live subscription so we can also sync the plan in case
+          // customer.subscription.updated fires out-of-order or is missed.
+          try {
+            const sub = await stripe.subscriptions.retrieve(subscriptionId);
+            const priceId = sub.items?.data?.[0]?.price?.id ?? null;
+            const plan = priceId ? priceIdToPlan(priceId) : null;
 
-          if (error) console.error("Supabase update error (invoice.paid):", error);
+            const { error } = await supabase
+              .from("businesses")
+              .update({
+                subscription_status: "active",
+                ...(plan && plan !== "unknown" ? { subscription_plan: plan } : {}),
+              })
+              .eq(COL_SUB, subscriptionId);
+
+            if (error) console.error("Supabase update error (invoice.paid):", error);
+            else console.log(`[webhook] invoice.paid → sub ${subscriptionId} renewed, plan: ${plan}`);
+          } catch (fetchErr) {
+            // Stripe fetch failed — still try to mark as active
+            console.error("[webhook] invoice.paid: failed to fetch subscription from Stripe:", fetchErr);
+            const { error } = await supabase
+              .from("businesses")
+              .update({ subscription_status: "active" })
+              .eq(COL_SUB, subscriptionId);
+            if (error) console.error("Supabase update error (invoice.paid fallback):", error);
+          }
         }
         break;
       }
@@ -105,7 +152,7 @@ export async function POST(req: NextRequest) {
           const { error } = await supabase
             .from("businesses")
             .update({ subscription_status: "past_due" })
-            .eq("stripe_subscription_id", subscriptionId);
+            .eq(COL_SUB, subscriptionId);
 
           if (error) console.error("Supabase update error (invoice.payment_failed):", error);
         }
@@ -118,8 +165,14 @@ export async function POST(req: NextRequest) {
         if (subscriptionId) {
           const { error } = await supabase
             .from("businesses")
-            .update({ subscription_status: "cancelled" })
-            .eq("stripe_subscription_id", subscriptionId);
+            .update({
+              subscription_status: "cancelled",
+              subscription_plan: null,   // clear stale plan so UI shows "No active plan"
+              [COL_SUB]: null,           // clear stale sub ID so it won't be re-fetched
+              pending_plan: null,        // clear any pending downgrade
+              pending_plan_date: null,
+            })
+            .eq(COL_SUB, subscriptionId);
 
           if (error) console.error("Supabase update error (customer.subscription.deleted):", error);
         }
@@ -130,37 +183,61 @@ export async function POST(req: NextRequest) {
       case "customer.subscription.updated": {
         const subscriptionId = dataObject.id as string;
         const status = dataObject.status as string;
+        const customerId = dataObject.customer as string;
         const items = (dataObject as Record<string, unknown>).items as { data: { price: { id: string } }[] } | undefined;
         const priceId = items?.data?.[0]?.price?.id ?? null;
-
-        const PRICE_PLAN_MAP: Record<string, string> = {
-          [process.env.STRIPE_PRICE_SOLO    ?? "price_1TClSz1hvxerH6vDEW3YbQuO"]: "solo",
-          [process.env.STRIPE_PRICE_GROWING ?? "price_1TClT01hvxerH6vDPQQMbI0Q"]: "growing",
-          [process.env.STRIPE_PRICE_SCALE   ?? "price_1TClSz1hvxerH6vDjUPs0fHK"]: "scale",
-        };
-        const plan = priceId ? (PRICE_PLAN_MAP[priceId] ?? null) : null;
+        const plan = priceId ? priceIdToPlan(priceId) : "unknown";
 
         if (subscriptionId && status) {
           const statusMap: Record<string, string> = {
             active: "active",
-            trialing: "trial",
+            trialing: "trialing",
             past_due: "past_due",
             canceled: "cancelled",
             unpaid: "past_due",
             paused: "paused",
           };
-          const { error } = await supabase
-            .from("businesses")
-            .update({
-              subscription_status: statusMap[status] ?? status,
-              ...(plan ? { subscription_plan: plan } : {}),
-              // If now active (trial ended or plan changed), mark trial as ended
-              ...(status === "active" ? { trial_ends_at: new Date().toISOString() } : {}),
-            })
-            .eq("stripe_subscription_id", subscriptionId);
 
-          if (error) console.error("Supabase update error (customer.subscription.updated):", error);
-          else console.log(`[webhook] subscription ${subscriptionId} → status: ${status}, plan: ${plan}`);
+          // Sync trial_end from Stripe when trialing, stamp past when active/paid.
+          const trialEnd = (dataObject as Record<string, unknown>).trial_end as number | null | undefined;
+          const trialEndsAtUpdate: { trial_ends_at?: string } =
+            status === "active"
+              ? { trial_ends_at: new Date().toISOString() }
+              : status === "trialing" && trialEnd
+              ? { trial_ends_at: new Date(trialEnd * 1000).toISOString() }
+              : {};
+
+          const updatePayload = {
+            subscription_status: statusMap[status] ?? status,
+            [COL_SUB]: subscriptionId,
+            [COL_CUSTOMER]: customerId,
+            ...(plan !== "unknown" ? { subscription_plan: plan } : {}),
+            ...trialEndsAtUpdate,
+          };
+
+          // Try matching by subscription ID first (normal path)
+          const { data: matched, error } = await supabase
+            .from("businesses")
+            .update(updatePayload)
+            .eq(COL_SUB, subscriptionId)
+            .select("id");
+
+          if (error) {
+            console.error("Supabase update error (customer.subscription.updated):", error);
+          } else if (!matched || matched.length === 0) {
+            // Subscription ID not in DB yet (e.g. webhook arrived before checkout.session.completed)
+            // Fall back to matching by customer ID
+            if (customerId) {
+              const { error: err2 } = await supabase
+                .from("businesses")
+                .update(updatePayload)
+                .eq(COL_CUSTOMER, customerId);
+              if (err2) console.error("Supabase fallback update error (customer.subscription.updated):", err2);
+              else console.log(`[webhook] subscription.updated fallback match by customer ${customerId} → status: ${status}, plan: ${plan}`);
+            }
+          } else {
+            console.log(`[webhook] subscription ${subscriptionId} → status: ${status}, plan: ${plan} (${IS_TEST_MODE ? "test" : "live"} mode)`);
+          }
         }
         break;
       }

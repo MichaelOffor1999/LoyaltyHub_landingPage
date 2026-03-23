@@ -9,13 +9,11 @@ const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
-
-  // Persist across reloads
-  useEffect(() => {
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "dark";
     const stored = localStorage.getItem("clienty-theme") as Theme | null;
-    if (stored) setTheme(stored);
-  }, []);
+    return stored ?? "dark";
+  });
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);

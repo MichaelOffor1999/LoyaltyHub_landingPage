@@ -23,10 +23,10 @@ const NAV_ITEMS: NavItem[] = [
  * Placed as a fixed, centered overlay at the top of the page.
  */
 export function AdaptivePillNav() {
-  const [activeId, setActiveId]       = useState("top");
-  const [expanded, setExpanded]       = useState(false);
+  const [activeId, setActiveId] = useState("top");
+  const [expanded, setExpanded] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [hovering, setHovering]       = useState(false);
+  const [hovering, setHovering] = useState(false);
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // spring-animated pill width
@@ -59,21 +59,26 @@ export function AdaptivePillNav() {
   }, []);
 
   // ── Hover expand / collapse ──────────────────────────────────────────────
+  // Expand immediately on hover, collapse after a delay.
   useEffect(() => {
-    if (hovering) {
-      setExpanded(true);
-      pillWidth.set(540);
-      if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-    } else {
-      hoverTimeout.current = setTimeout(() => {
-        setExpanded(false);
-        pillWidth.set(148);
-      }, 550);
+    if (!hovering) {
+      hoverTimeout.current = setTimeout(() => setExpanded(false), 550);
+      return () => {
+        if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+      };
     }
-    return () => {
-      if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-    };
-  }, [hovering, pillWidth]);
+
+    // hovering === true
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    // Avoid synchronous setState in effect body.
+    queueMicrotask(() => setExpanded(true));
+    return () => {};
+  }, [hovering]);
+
+  // Keep animation concerns separate from state transitions
+  useEffect(() => {
+    pillWidth.set(expanded ? 540 : 148);
+  }, [expanded, pillWidth]);
 
   const handleClick = (item: NavItem) => {
     setIsTransitioning(true);

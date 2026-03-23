@@ -1,5 +1,23 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment setup (required)
+
+This app uses **Supabase for auth + storing Stripe IDs** and **Stripe as the source of truth** for billing.
+
+Create a `.env.local` (do not commit) and set:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_PRICE_SOLO`
+- `STRIPE_PRICE_GROWING`
+- `STRIPE_PRICE_SCALE`
+
+See `STRIPE_ENV_REFERENCE.md` for the full list and explanations (placeholders only; never store secrets in git).
+
 ## Getting Started
 
 First, run the development server:

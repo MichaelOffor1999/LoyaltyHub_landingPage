@@ -49,11 +49,9 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
 }) => {
   const [star, setStar] = useState<ShootingStar | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  // Generate gradient ID client-side only to avoid SSR hydration mismatch
-  const [gradientId, setGradientId] = useState<string>("sg-placeholder");
-  useEffect(() => {
-    setGradientId(`sg-${Math.random().toString(36).slice(2, 8)}`);
-  }, []);
+
+  // Generate once per component instance.
+  const [gradientId] = useState<string>(() => `sg-${crypto.randomUUID().slice(0, 8)}`);
 
   useEffect(() => {
     const createStar = () => {

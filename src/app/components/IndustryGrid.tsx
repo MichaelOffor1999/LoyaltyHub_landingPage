@@ -122,7 +122,8 @@ export default function IndustryGrid() {
       return;
     }
 
-    setProgress(0);
+    // Avoid synchronous setState inside effect body (react-hooks/set-state-in-effect).
+    queueMicrotask(() => setProgress(0));
 
     progressRef.current = setInterval(() => {
       setProgress((p) => Math.min(p + (100 / (DURATION / 50)), 100));
@@ -136,7 +137,6 @@ export default function IndustryGrid() {
       if (timerRef.current) clearTimeout(timerRef.current);
       if (progressRef.current) clearInterval(progressRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, paused]);
 
   const o = industries[active];

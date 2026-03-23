@@ -33,6 +33,7 @@ export default function RadialOrbitalTimeline({
   const autoRotateRef = useRef<boolean>(true);
   const rafRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number | null>(null);
+  const tickRef = useRef<(ts: number) => void>(() => {});
 
   // One ref per node so we can update their transforms directly
   const nodeRefs = useRef<Record<number, HTMLDivElement | null>>({});
@@ -40,37 +41,46 @@ export default function RadialOrbitalTimeline({
   const orbitRef = useRef<HTMLDivElement>(null);
 
   // ── rAF loop ──────────────────────────────────────────────────────────────
-  const tick = useCallback((ts: number) => {
-    if (autoRotateRef.current) {
-      const delta = lastTimeRef.current == null ? 0 : ts - lastTimeRef.current;
-      lastTimeRef.current = ts;
-      angleRef.current = (angleRef.current + SPEED * delta) % 360;
-    } else {
-      lastTimeRef.current = null;
-    }
+  const tick = useCallback(
+    (ts: number) => {
+      if (autoRotateRef.current) {
+        const delta = lastTimeRef.current == null ? 0 : ts - lastTimeRef.current;
+        lastTimeRef.current = ts;
+        angleRef.current = (angleRef.current + SPEED * delta) % 360;
+      } else {
+        lastTimeRef.current = null;
+      }
 
-    // Write positions directly to DOM — no setState, no re-render
-    const total = timelineData.length;
-    timelineData.forEach((item, index) => {
-      const el = nodeRefs.current[item.id];
-      if (!el) return;
-      const angle = ((index / total) * 360 + angleRef.current) % 360;
-      const radian = (angle * Math.PI) / 180;
-      const x = RADIUS * Math.cos(radian);
-      const y = RADIUS * Math.sin(radian);
-      // Keep all nodes clearly visible — only a subtle depth fade (0.75 → 1)
-      const opacity = Math.max(0.75, Math.min(1, 0.75 + 0.25 * ((1 + Math.sin(radian)) / 2)));
-      el.style.transform = `translate(${x}px, ${y}px)`;
-      el.style.opacity = String(opacity);
-    });
+      // Write positions directly to DOM — no setState, no re-render
+      const total = timelineData.length;
+      timelineData.forEach((item, index) => {
+        const el = nodeRefs.current[item.id];
+        if (!el) return;
+        const angle = ((index / total) * 360 + angleRef.current) % 360;
+        const radian = (angle * Math.PI) / 180;
+        const x = RADIUS * Math.cos(radian);
+        const y = RADIUS * Math.sin(radian);
+        // Keep all nodes clearly visible — only a subtle depth fade (0.75 → 1)
+        const opacity = Math.max(0.75, Math.min(1, 0.75 + 0.25 * ((1 + Math.sin(radian)) / 2)));
+        el.style.transform = `translate(${x}px, ${y}px)`;
+        el.style.opacity = String(opacity);
+      });
 
-    rafRef.current = requestAnimationFrame(tick);
-  }, [timelineData]);
+      rafRef.current = requestAnimationFrame(tickRef.current);
+    },
+    [timelineData]
+  );
 
   useEffect(() => {
-    rafRef.current = requestAnimationFrame(tick);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    tickRef.current = tick;
   }, [tick]);
+
+  useEffect(() => {
+    rafRef.current = requestAnimationFrame(tickRef.current);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [timelineData]);
 
   // ── helpers ───────────────────────────────────────────────────────────────
   const getRelatedItems = (itemId: number): number[] =>

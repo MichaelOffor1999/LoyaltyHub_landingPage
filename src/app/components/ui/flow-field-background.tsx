@@ -32,7 +32,7 @@ const BRAND_HUE       = 28;    // orange brand colour (hsl hue)
 // ─── Simplex-ish noise (value noise, fast & dependency-free) ─────────────────
 
 function hash(n: number) {
-  let x = Math.sin(n) * 43758.5453123;
+  const x = Math.sin(n) * 43758.5453123;
   return x - Math.floor(x);
 }
 
@@ -71,10 +71,10 @@ export function FlowFieldBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let width  = 0;
+    let width = 0;
     let height = 0;
-    let rafId  = 0;
-    let tick   = 0;
+    let rafId = 0;
+    let tick = 0;
 
     const particles: Particle[] = [];
     const connections: Connection[] = [];

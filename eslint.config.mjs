@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+
+    // Local editor history (VS Code extension) – should never be linted.
+    ".history/**",
   ]),
 ]);
 

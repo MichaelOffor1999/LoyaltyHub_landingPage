@@ -10,25 +10,19 @@
  * 3. Creates a Stripe checkout session directly (no external backend).
  * 4. Returns { url } to redirect the client.
  */
-import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { getStripeClient, getSupabaseUrl, getSupabaseAnonKey, requireEnv } from "@/lib/billing/config";
 
-const SUPABASE_URL =
-  process.env.SUPABASE_URL ||
-  process.env.NEXT_PUBLIC_SUPABASE_URL ||
-  "https://elyonkqglhsrzafbanph.supabase.co";
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const SUPABASE_URL = getSupabaseUrl();
+const SUPABASE_SERVICE_ROLE_KEY = requireEnv("SUPABASE_SERVICE_ROLE_KEY");
+const stripe = getStripeClient();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-02-25.clover",
-});
-
-// Map plan keys to Stripe price IDs
-const PRICE_IDS: Record<string, string> = {
-  solo:    process.env.STRIPE_PRICE_SOLO    || "price_1TClSz1hvxerH6vDEW3YbQuO",
-  growing: process.env.STRIPE_PRICE_GROWING || "price_1TClT01hvxerH6vDPQQMbI0Q",
-  scale:   process.env.STRIPE_PRICE_SCALE   || "price_1TClSz1hvxerH6vDjUPs0fHK",
+// Map plan keys to Stripe price IDs (env-only; no hard-coded fallbacks)
+const PRICE_IDS: Record<string, string | undefined> = {
+  solo: process.env.STRIPE_PRICE_SOLO,
+  growing: process.env.STRIPE_PRICE_GROWING,
+  scale: process.env.STRIPE_PRICE_SCALE,
 };
 
 export async function POST(req: NextRequest) {
@@ -60,7 +54,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Build a user-scoped client to validate the token
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const anonKey = getSupabaseAnonKey();
     const supabaseUser = createClient(SUPABASE_URL, anonKey, {
       global: { headers: { Authorization: `Bearer ${accessToken}` } },
     });
@@ -83,11 +77,27 @@ export async function POST(req: NextRequest) {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     // ── 3. Find or create business ───────────────────────────────────
-    const { data: existingBusiness } = await supabase
+    // Always match by owner_id first (exact). Only fall back to email if the
+    // user somehow has no row yet — the old .or() query was creating duplicate
+    // rows when the same user signed up twice with different business names.
+    let { data: existingBusiness } = await supabase
       .from("businesses")
       .select("id")
-      .or(`owner_id.eq.${ownerId},business_email.ilike.${ownerEmail}`)
+      .eq("owner_id", ownerId)
+      .order("created_at", { ascending: false }) // prefer most recent if somehow duped
+      .limit(1)
       .maybeSingle();
+
+    // Only fall back to email if truly no row exists for this owner_id
+    if (!existingBusiness) {
+      const { data: byEmail } = await supabase
+        .from("businesses")
+        .select("id")
+        .ilike("business_email", ownerEmail)
+        .limit(1)
+        .maybeSingle();
+      existingBusiness = byEmail ?? null;
+    }
 
     let businessId: string;
 
@@ -98,6 +108,8 @@ export async function POST(req: NextRequest) {
       const trialEndsAt = new Date();
       trialEndsAt.setDate(trialEndsAt.getDate() + 30);
 
+      // NOTE: the `businesses` table has some NOT NULL columns (e.g. `address`).
+      // Provide safe defaults so trial signup never 500s.
       const { data: business, error: dbError } = await supabase
         .from("businesses")
         .insert({
@@ -108,16 +120,14 @@ export async function POST(req: NextRequest) {
           trial_ends_at: trialEndsAt.toISOString(),
           is_public: false,
           verification_status: "pending",
+          address: "", // required by DB constraint
         })
         .select("id")
         .single();
 
       if (dbError || !business) {
         console.error("[subscribe] Supabase insert error:", dbError);
-        return NextResponse.json(
-          { error: "Failed to create business record." },
-          { status: 500 }
-        );
+        return NextResponse.json({ error: "Failed to create business record." }, { status: 500 });
       }
 
       businessId = business.id;
@@ -135,23 +145,46 @@ export async function POST(req: NextRequest) {
     }
 
     // Look up the existing business to check how many trial days remain
-    const { data: bizData } = await supabase
+    // AND whether they already have a Stripe customer ID (reuse it to avoid duplicate customers)
+    const { COL_CUSTOMER } = (await import("@/lib/billing/config")).getStripeColumns();
+    const { data: bizDataRaw } = await supabase
       .from("businesses")
-      .select("trial_ends_at")
+      .select("trial_ends_at, stripe_customer_id, stripe_customer_id_test")
       .eq("id", businessId)
       .maybeSingle();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const bizData = bizDataRaw as Record<string, unknown> | null;
+
+    // Reuse existing Stripe customer if one exists — avoids creating duplicate customers.
+    const existingCustomerId: string | null =
+      (typeof bizData?.[COL_CUSTOMER] === "string" ? bizData[COL_CUSTOMER] as string : null) ??
+      (typeof bizData?.stripe_customer_id === "string" ? bizData.stripe_customer_id as string : null) ??
+      null;
+
     // Calculate remaining trial days (already tracked in the app, don't double-count)
     let trialDaysRemaining = 0;
-    if (bizData?.trial_ends_at) {
-      const msLeft = new Date(bizData.trial_ends_at).getTime() - Date.now();
+    const trialEndsAtRaw = bizData?.trial_ends_at;
+    if (typeof trialEndsAtRaw === "string") {
+      const msLeft = new Date(trialEndsAtRaw).getTime() - Date.now();
       trialDaysRemaining = Math.max(0, Math.ceil(msLeft / 86400000));
     }
+
+    // Build base URL dynamically: prefer NEXT_PUBLIC_SITE_URL env var, then
+    // the request's own origin, then fall back to production.
+    const rawOrigin =
+      process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+      req.headers.get("origin") ||
+      req.headers.get("referer")?.split("/").slice(0, 3).join("/") ||
+      "https://clientin.co";
+    const baseUrl = new URL(rawOrigin).origin;
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
-      customer_email: ownerEmail,
+      // Reuse the existing Stripe customer if available — prevents duplicate customers.
+      // Fall back to customer_email so Stripe creates one automatically.
+      ...(existingCustomerId ? { customer: existingCustomerId } : { customer_email: ownerEmail }),
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
         // Only pass a trial if there are days genuinely left in the app trial,
@@ -163,8 +196,8 @@ export async function POST(req: NextRequest) {
         metadata: { businessId, plan: plan.toLowerCase() },
       },
       metadata: { businessId, ownerEmail, plan: plan.toLowerCase() },
-      success_url: "https://clientin.co/subscribe/success?session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: "https://clientin.co/subscribe",
+      success_url: `${baseUrl}/subscribe/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/subscribe`,
     });
 
     if (!session.url) {

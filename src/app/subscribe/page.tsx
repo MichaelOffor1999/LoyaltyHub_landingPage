@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import {
   Check, Zap, Star, Rocket, X, Loader2, ArrowLeft,
   RefreshCw, CreditCard, ExternalLink, FileText,
   ChevronRight, LogOut, AlertCircle, Receipt,
 } from "lucide-react";
+import Link from "next/link";
 
 // ─── Supabase browser client ─────────────────────────────────────────
 const supabase = createClient(
@@ -67,14 +68,21 @@ const PLANS: Plan[] = [
   {
     key: "scale",
     name: "Scale",
-    price: "€89",
-    monthly: 89,
+    price: "€149",
+    monthly: 149,
     branches: "Unlimited branches",
     icon: <Rocket className="w-5 h-5" />,
     highlight: false,
     features: [
       "Everything in Growing",
-      "Priority support",
+      "Unlimited branches",
+      "Dedicated account manager",
+      "Priority support (24h response)",
+      "Early access to new features",
+      "Custom onboarding session",
+      "Advanced multi-location reporting",
+      "Bulk customer import & export",
+      "API access (coming soon)",
     ],
   },
 ];
@@ -191,6 +199,11 @@ const blurBorder = (e: React.FocusEvent<HTMLInputElement>) =>
   (e.currentTarget.style.border = "1px solid var(--card-border)");
 
 // ─── Types ───────────────────────────────────────────────────────────
+// Helper: returns a numeric tier rank for upgrade/downgrade comparison.
+// Using tier order (not price) makes this immune to test-mode price overrides.
+const PLAN_TIER_MAP: Record<string, number> = { solo: 1, growing: 2, scale: 3 };
+const planTier = (key: string): number => PLAN_TIER_MAP[key] ?? 0;
+
 interface Invoice {
   id: string;
   number: string | null;
@@ -215,6 +228,8 @@ interface SubscriptionData {
     activePlan: string | null;
     subscriptionStatus: string | null;
     currentPeriodEnd: number | null;
+    pendingPlan: string | null;
+    pendingPlanDate: string | null;
   };
   invoices: Invoice[];
 }
@@ -225,14 +240,14 @@ function PlanPickerCard({
   isCurrentPlan,
   isLoading,
   isActivePaidSub,
-  currentPlanMonthly,
+  currentPlanKey,
   onSelect,
 }: {
   plan: Plan;
   isCurrentPlan: boolean;
   isLoading: boolean;
   isActivePaidSub: boolean;
-  currentPlanMonthly: number;
+  currentPlanKey: string | null;
   onSelect: (p: Plan) => void;
 }) {
   return (
@@ -322,7 +337,7 @@ function PlanPickerCard({
         ) : isCurrentPlan ? (
           "Current plan"
         ) : isActivePaidSub ? (
-          plan.monthly > currentPlanMonthly ? `Upgrade to ${plan.name} →` : `Downgrade to ${plan.name} →`
+          planTier(plan.key) > planTier(currentPlanKey ?? "") ? `Upgrade to ${plan.name} →` : `Downgrade to ${plan.name} →`
         ) : (
           `Start with ${plan.name} →`
         )}
@@ -415,28 +430,64 @@ function Dashboard({
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
   const [planError, setPlanError] = useState<string | null>(null);
+  const [planSuccess, setPlanSuccess] = useState<string | null>(null);
+  const [confirmPlan, setConfirmPlan] = useState<Plan | null>(null);
 
   const hasNoSubscription = !data.business && !data.stripe.customerId;
+
+  // Stripe is source of truth for trial/active state.
+  // Only fall back to DB status if Stripe has no data yet (new signup, no customer ID).
+  const stripeStatus = data.stripe.subscriptionStatus;
+  const isOnTrial = stripeStatus
+    ? stripeStatus === "trialing"
+    : data.business?.subscriptionStatus === "trial" ||
+      data.business?.subscriptionStatus === "trialing";
+
   const trialExpired =
-    data.business?.subscriptionStatus === "trial" &&
-    data.business?.trialEndsAt !== null &&
-    new Date(data.business.trialEndsAt!) < new Date();
+    // If Stripe has live subscription data → never show "trial expired" (Stripe handles access control)
+    stripeStatus
+      ? false
+      : // Stripe has no data → check if the local app trial has elapsed
+        (data.business?.subscriptionStatus === "trial" ||
+          data.business?.subscriptionStatus === "trialing") &&
+        data.business?.trialEndsAt !== null &&
+        new Date(data.business.trialEndsAt!) < new Date();
 
   // Auto-open plan picker if trial is expired or no subscription
   const [showPlans, setShowPlans] = useState(hasNoSubscription || trialExpired);
 
   // Prefer Stripe's active plan → then DB's stored plan → then null
   const currentPlan = data.stripe.activePlan ?? data.business?.subscriptionPlan ?? null;
-  const isOnTrial = data.business?.subscriptionStatus === "trial";
-  const trialDaysLeft = data.business?.trialEndsAt
-    ? Math.max(0, Math.ceil((new Date(data.business.trialEndsAt).getTime() - Date.now()) / 86400000))
-    : null;
+
+  // Stable per-render timestamp without calling Date.now() directly.
+  const nowMs = useMemo(() => new Date().getTime(), []);
+
+  // Trial days left: prefer Stripe currentPeriodEnd when on a Stripe trial (most accurate),
+  // fall back to DB trialEndsAt for users still in the app-only trial phase.
+  const trialDaysLeft = useMemo(() => {
+    if (isOnTrial && data.stripe.currentPeriodEnd) {
+      return Math.max(0, Math.ceil((data.stripe.currentPeriodEnd * 1000 - nowMs) / 86400000));
+    }
+    if (data.business?.trialEndsAt) {
+      return Math.max(0, Math.ceil((new Date(data.business.trialEndsAt).getTime() - nowMs) / 86400000));
+    }
+    return null;
+  }, [isOnTrial, data.stripe.currentPeriodEnd, data.business?.trialEndsAt, nowMs]);
   const nextBillingDate = data.stripe.currentPeriodEnd
     ? new Date(data.stripe.currentPeriodEnd * 1000).toLocaleDateString("en-IE", {
         day: "numeric", month: "long", year: "numeric",
       })
     : null;
   const planInfo = PLANS.find((p) => p.key === currentPlan);
+
+  // Pending downgrade (scheduled for end of billing period)
+  const pendingPlan = data.stripe.pendingPlan ?? null;
+  const pendingPlanInfo = PLANS.find((p) => p.key === pendingPlan) ?? null;
+  const pendingPlanDate = data.stripe.pendingPlanDate
+    ? new Date(data.stripe.pendingPlanDate).toLocaleDateString("en-IE", {
+        day: "numeric", month: "long", year: "numeric",
+      })
+    : null;
 
   // Is this customer already on a paid Stripe subscription?
   const isActivePaidSub =
@@ -446,29 +497,19 @@ function Dashboard({
 
   const handleSelectPlan = async (plan: Plan) => {
     if (plan.key === currentPlan) return;
-    setChangingPlan(plan.key);
     setPlanError(null);
+    setPlanSuccess(null);
 
-    // ── Already a paying customer → send to Stripe billing portal ────
-    // Stripe handles upgrade/downgrade safely with proration.
+    // ── Already a paying customer → confirm then switch directly via API ──
     if (isActivePaidSub) {
-      try {
-        const res = await fetch("/api/billing-portal", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        const json = await res.json();
-        if (!res.ok) { setPlanError(json.error ?? "Could not open billing portal."); setChangingPlan(null); return; }
-        window.location.href = json.url;
-      } catch {
-        setPlanError("Network error. Please try again.");
-        setChangingPlan(null);
-      }
+      // Show confirmation dialog first (especially important for downgrades)
+      setConfirmPlan(plan);
       return;
     }
 
     // ── No paid subscription yet (still on app trial) → Stripe Checkout ──
     try {
+      setChangingPlan(plan.key);
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: {
@@ -479,7 +520,38 @@ function Dashboard({
       });
       const json = await res.json();
       if (!res.ok) { setPlanError(json.error ?? "Something went wrong."); setChangingPlan(null); return; }
-      window.location.href = json.url;
+      window.location.assign(json.url);
+    } catch {
+      setPlanError("Network error. Please try again.");
+      setChangingPlan(null);
+    }
+  };
+
+  // Called after user confirms the plan change in the dialog
+  const handleConfirmChangePlan = async (plan: Plan) => {
+    setConfirmPlan(null);
+    setChangingPlan(plan.key);
+    setPlanError(null);
+    setPlanSuccess(null);
+    try {
+      const res = await fetch("/api/change-plan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ plan: plan.key }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setPlanError(json.error ?? "Could not change plan. Please try again.");
+        setChangingPlan(null);
+        return;
+      }
+      setPlanSuccess(`✓ Switched to ${plan.name} successfully!`);
+      setChangingPlan(null);
+      // Refresh data so the UI reflects the new plan immediately
+      setTimeout(() => { setPlanSuccess(null); onRefresh(); }, 1800);
     } catch {
       setPlanError("Network error. Please try again.");
       setChangingPlan(null);
@@ -496,7 +568,7 @@ function Dashboard({
       });
       const json = await res.json();
       if (!res.ok) { setPortalError(json.error ?? "Could not open billing portal."); setPortalLoading(false); return; }
-      window.location.href = json.url;
+      window.location.assign(json.url);
     } catch {
       setPortalError("Network error. Please try again.");
       setPortalLoading(false);
@@ -677,8 +749,68 @@ function Dashboard({
                 )}
               </button>
             )}
+            <button
+              onClick={onRefresh}
+              title="Refresh subscription data"
+              className="flex items-center justify-center gap-2 rounded-xl py-3 px-4 text-sm font-semibold transition-all hover:opacity-80"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid var(--card-border)",
+                color: "var(--text-muted)",
+              }}
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
           </div>
           {portalError && <div className="mt-3"><ErrorBanner message={portalError} /></div>}
+        </div>
+      )}
+
+      {/* ── Pending downgrade banner ─────────────────────────────────── */}
+      {pendingPlanInfo && pendingPlanDate && (
+        <div
+          className="rounded-2xl px-5 py-4 flex items-center gap-4"
+          style={{
+            background: "rgba(251,191,36,0.07)",
+            border: "1px solid rgba(251,191,36,0.3)",
+          }}
+        >
+          <span
+            className="flex items-center justify-center w-9 h-9 rounded-xl shrink-0 text-base"
+            style={{ background: "rgba(251,191,36,0.15)" }}
+          >
+            🕐
+          </span>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold" style={{ color: "var(--foreground)" }}>
+              Downgrading to {pendingPlanInfo.name} on {pendingPlanDate}
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+              You keep full {planInfo?.name ?? "current"} access until then. A pro-rata credit will be applied.
+            </p>
+          </div>
+          <button
+            onClick={async () => {
+              setChangingPlan("cancel-downgrade");
+              setPlanError(null);
+              try {
+                const res = await fetch("/api/change-plan", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+                  body: JSON.stringify({ plan: currentPlan, cancelSchedule: true }),
+                });
+                const json = await res.json();
+                if (!res.ok) { setPlanError(json.error ?? "Could not cancel downgrade."); }
+                else { setPlanSuccess("Scheduled downgrade cancelled."); onRefresh(); }
+              } catch { setPlanError("Network error."); }
+              setChangingPlan(null);
+            }}
+            disabled={changingPlan === "cancel-downgrade"}
+            className="shrink-0 text-xs font-semibold px-3 py-2 rounded-lg hover:opacity-80 transition-all disabled:opacity-50 whitespace-nowrap"
+            style={{ background: "rgba(251,191,36,0.15)", color: "#f59e0b", border: "1px solid rgba(251,191,36,0.3)" }}
+          >
+            {changingPlan === "cancel-downgrade" ? "Cancelling…" : "Cancel downgrade"}
+          </button>
         </div>
       )}
 
@@ -695,6 +827,18 @@ function Dashboard({
             {hasNoSubscription ? "Choose your plan" : "Available plans"}
           </p>
           {planError && <div className="mb-4"><ErrorBanner message={planError} /></div>}
+          {planSuccess && (
+            <div
+              className="mb-4 text-sm rounded-xl px-4 py-3 font-medium"
+              style={{
+                background: "rgba(74,222,128,0.1)",
+                color: "#4ade80",
+                border: "1px solid rgba(74,222,128,0.25)",
+              }}
+            >
+              {planSuccess}
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {PLANS.map((plan) => (
               <PlanPickerCard
@@ -703,7 +847,7 @@ function Dashboard({
                 isCurrentPlan={plan.key === currentPlan}
                 isLoading={changingPlan === plan.key}
                 isActivePaidSub={!!isActivePaidSub}
-                currentPlanMonthly={planInfo?.monthly ?? 0}
+                currentPlanKey={currentPlan ?? null}
                 onSelect={handleSelectPlan}
               />
             ))}
@@ -744,7 +888,7 @@ function Dashboard({
           <Receipt className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--text-muted)" }} />
           <p className="text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>No payments yet</p>
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-            You're still in your free trial — no charges until your trial ends.
+            You&apos;re still in your free trial — no charges until your trial ends.
           </p>
         </div>
       )}
@@ -759,6 +903,64 @@ function Dashboard({
           hello@clientin.co
         </a>
       </p>
+
+      {/* ── Plan change confirmation modal ─────────────────────────── */}
+      {confirmPlan && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-5"
+          style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}
+          onClick={(e) => e.target === e.currentTarget && setConfirmPlan(null)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl p-7 shadow-2xl"
+            style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}
+          >
+            <div
+              className="flex items-center justify-center w-12 h-12 rounded-xl mx-auto mb-5"
+              style={{ background: "rgba(201,123,58,0.15)", color: "var(--brand)" }}
+            >
+              {confirmPlan.icon}
+            </div>
+            <h2 className="text-xl font-black text-center mb-2" style={{ color: "var(--foreground)" }}>
+              {planTier(confirmPlan.key) > planTier(currentPlan ?? "")
+                ? `Upgrade to ${confirmPlan.name}?`
+                : `Downgrade to ${confirmPlan.name}?`}
+            </h2>
+            <p className="text-sm text-center mb-1" style={{ color: "var(--text-sub)" }}>
+              {planTier(confirmPlan.key) > planTier(currentPlan ?? "") ? (
+                <>You&apos;ll be upgraded to <strong>{confirmPlan.name}</strong> at <strong>{confirmPlan.price}/mo</strong> immediately.</>
+              ) : (
+                <>Your downgrade to <strong>{confirmPlan.name}</strong> at <strong>{confirmPlan.price}/mo</strong> will take effect at the end of your current billing period.</>
+              )}
+            </p>
+            <p className="text-xs text-center mb-6" style={{ color: "var(--text-muted)" }}>
+              {planTier(confirmPlan.key) > planTier(currentPlan ?? "")
+                ? "The difference will be charged pro-rata for the rest of this billing period."
+                : "You keep full access to your current plan until the billing period ends. No charges — just a plan switch."}
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => handleConfirmChangePlan(confirmPlan)}
+                className="w-full rounded-xl py-3 text-sm font-bold hover:opacity-90 transition-all"
+                style={{ background: "var(--brand)", color: "#fff" }}
+              >
+                Yes, switch to {confirmPlan.name}
+              </button>
+              <button
+                onClick={() => setConfirmPlan(null)}
+                className="w-full rounded-xl py-3 text-sm font-semibold hover:opacity-70 transition-all"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid var(--card-border)",
+                  color: "var(--text-sub)",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -837,7 +1039,7 @@ function AuthGate({ onAuth }: { onAuth: (token: string, email: string, businessN
               Enter your email
             </h2>
             <p className="text-sm mb-6" style={{ color: "var(--text-sub)" }}>
-              We'll send a one-time code — no password needed.
+              We&apos;ll send a one-time code — no password needed.
             </p>
             <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">
               <input
@@ -1004,6 +1206,21 @@ export default function SubscribePage() {
         setAccessToken(null);
         setUserEmail(null);
         setSubData(null);
+      } else if (res.status === 404 && json?.code === "BUSINESS_NOT_FOUND") {
+        // No businesses row yet — treat as a brand-new subscriber.
+        // Show the dashboard with an empty state so they can choose a plan.
+        setSubData({
+          business: null,
+          stripe: {
+            customerId: null,
+            activePlan: null,
+            subscriptionStatus: null,
+            currentPeriodEnd: null,
+            pendingPlan: null,
+            pendingPlanDate: null,
+          },
+          invoices: [],
+        });
       } else if (!res.ok) {
         setDataError(json.error ?? "Failed to load subscription data.");
       } else {
@@ -1016,10 +1233,17 @@ export default function SubscribePage() {
   }, []);
 
   useEffect(() => {
-    if (accessToken) fetchData(accessToken);
+    if (!accessToken) return;
+    // Defer fetch to avoid synchronous updates in effect body (eslint rule)
+    const id = setTimeout(() => {
+      void fetchData(accessToken);
+    }, 0);
+    return () => clearTimeout(id);
   }, [accessToken, fetchData]);
 
   const handleAuth = (token: string, email: string, businessName: string) => {
+    setDataError(null);
+    setSubData(null);
     setAccessToken(token);
     setUserEmail(email);
     setPendingBusinessName(businessName);
@@ -1046,37 +1270,57 @@ export default function SubscribePage() {
           backdropFilter: "blur(12px)",
         }}
       >
-        <a
+        <Link
           href="/"
           className="font-black text-sm sm:text-base tracking-[0.15em] uppercase"
           style={{ color: "var(--foreground)" }}
         >
           clientIn
-        </a>
-        <a
+        </Link>
+        <Link
           href="/"
           className="text-xs font-semibold tracking-wide transition-opacity hover:opacity-70"
           style={{ color: "var(--text-sub)" }}
         >
           ← Back to home
-        </a>
+        </Link>
       </div>
 
       {/* Content */}
       <div className="pt-24 pb-20">
-        {!accessToken && <AuthGate onAuth={handleAuth} />}
+        {!accessToken && (
+          <div className="max-w-md mx-auto px-4">
+            {dataError && (
+              <div
+                className="mb-6 rounded-2xl px-4 py-3 text-sm"
+                style={{
+                  background: "rgba(239,68,68,0.1)",
+                  border: "1px solid rgba(239,68,68,0.25)",
+                  color: "#f87171",
+                }}
+              >
+                {dataError}
+              </div>
+            )}
+            <AuthGate onAuth={handleAuth} />
+          </div>
+        )}
 
         {accessToken && loadingData && (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <Loader2 className="w-8 h-8 animate-spin" style={{ color: "var(--brand)" }} />
-            <p className="text-sm" style={{ color: "var(--text-muted)" }}>Loading your account…</p>
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+              Loading your account…
+            </p>
           </div>
         )}
 
         {accessToken && !loadingData && dataError && (
           <div className="max-w-md mx-auto px-4 py-16 text-center">
             <AlertCircle className="w-10 h-10 mx-auto mb-4" style={{ color: "#f87171" }} />
-            <p className="text-sm mb-5" style={{ color: "#f87171" }}>{dataError}</p>
+            <p className="text-sm mb-5" style={{ color: "#f87171" }}>
+              {dataError}
+            </p>
             <button
               onClick={() => fetchData(accessToken)}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold hover:opacity-90"

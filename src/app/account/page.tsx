@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import {
   Check, Zap, Star, Rocket, X, Loader2, ArrowLeft,
   RefreshCw, CreditCard, LogOut, ChevronRight, AlertCircle,
 } from "lucide-react";
+import Link from "next/link";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,6 +19,7 @@ const PLANS = [
     key: "solo",
     name: "Solo",
     price: "€29",
+    monthly: 29,
     branches: "1 branch",
     icon: <Zap className="w-4 h-4" />,
     highlight: false,
@@ -27,6 +29,7 @@ const PLANS = [
     key: "growing",
     name: "Growing",
     price: "€59",
+    monthly: 59,
     branches: "Up to 4 branches",
     icon: <Star className="w-4 h-4" />,
     highlight: true,
@@ -36,11 +39,22 @@ const PLANS = [
   {
     key: "scale",
     name: "Scale",
-    price: "€89",
+    price: "€149",
+    monthly: 149,
     branches: "Unlimited branches",
     icon: <Rocket className="w-4 h-4" />,
     highlight: false,
-    features: ["Everything in Growing", "Priority support"],
+    features: [
+      "Everything in Growing",
+      "Unlimited branches",
+      "Dedicated account manager",
+      "Priority support (24h response)",
+      "Early access to new features",
+      "Custom onboarding session",
+      "Advanced multi-location reporting",
+      "Bulk customer import & export",
+      "API access (coming soon)",
+    ],
   },
 ];
 
@@ -171,7 +185,7 @@ function SignInModal({ onSuccess, onClose }: { onSuccess: (token: string, email:
         {step === "email" ? (
           <>
             <h2 className="text-xl font-bold mb-1" style={{ color: "var(--foreground)" }}>Sign in to your account</h2>
-            <p className="text-sm mb-6" style={{ color: "var(--text-sub)" }}>Enter your email and we'll send a code.</p>
+            <p className="text-sm mb-6" style={{ color: "var(--text-sub)" }}>Enter your email and we&apos;ll send a code.</p>
             <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">
               <input type="email" required placeholder="you@yourbusiness.com" value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -217,14 +231,32 @@ function SignInModal({ onSuccess, onClose }: { onSuccess: (token: string, email:
 }
 
 // ─── Upgrade modal (plan picker) ─────────────────────────────────────
-function UpgradeModal({ accessToken, currentPlan, businessName, onClose }: {
-  accessToken: string; currentPlan: string; businessName: string; onClose: () => void;
+function UpgradeModal({ accessToken, currentPlan, isActivePaidSub, businessName, onClose, onPlanChanged }: {
+  accessToken: string;
+  currentPlan: string | null;
+  isActivePaidSub: boolean;
+  businessName: string;
+  onClose: () => void;
+  onPlanChanged: (newPlan: string) => void;
 }) {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [confirmKey, setConfirmKey] = useState<string | null>(null);
 
-  const handleSelect = async (planKey: string) => {
+  const currentPlanInfo = PLANS.find((p) => p.key === currentPlan);
+
+  const handleSelect = (planKey: string) => {
     if (planKey === currentPlan) return;
+    setError(null);
+    if (isActivePaidSub) {
+      setConfirmKey(planKey); // show confirm step
+    } else {
+      doCheckout(planKey);
+    }
+  };
+
+  const doCheckout = async (planKey: string) => {
     setLoading(planKey); setError(null);
     try {
       const res = await fetch("/api/subscribe", {
@@ -234,9 +266,78 @@ function UpgradeModal({ accessToken, currentPlan, businessName, onClose }: {
       });
       const json = await res.json();
       if (!res.ok) { setError(json.error ?? "Something went wrong."); setLoading(null); return; }
-      window.location.href = json.url;
+      // Use location.assign (method call) to satisfy immutability lint
+      window.location.assign(json.url);
     } catch { setError("Network error. Please try again."); setLoading(null); }
   };
+
+  const doChangePlan = async (planKey: string) => {
+    setConfirmKey(null);
+    setLoading(planKey); setError(null); setSuccess(null);
+    try {
+      const res = await fetch("/api/change-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ plan: planKey }),
+      });
+      const json = await res.json();
+      if (!res.ok) { setError(json.error ?? "Could not change plan."); setLoading(null); return; }
+      const planName = PLANS.find((p) => p.key === planKey)?.name ?? planKey;
+      if (json.isUpgrade) {
+        setSuccess(`✓ Upgraded to ${planName} successfully!`);
+      } else {
+        setSuccess(`✓ Downgrade to ${planName} scheduled for your next billing date.`);
+      }
+      setLoading(null);
+      setTimeout(() => { onPlanChanged(planKey); onClose(); }, 2200);
+    } catch { setError("Network error. Please try again."); setLoading(null); }
+  };
+
+  // ── Confirm step ────────────────────────────────────────────────────
+  if (confirmKey) {
+    const confirmPlan = PLANS.find((p) => p.key === confirmKey)!;
+    // Use tier index — not price — so test-mode price overrides don't flip upgrade/downgrade labels
+    const TIER: Record<string, number> = { solo: 1, growing: 2, scale: 3 };
+    const isUpgrade = (TIER[confirmPlan.key] ?? 0) > (TIER[currentPlan ?? ""] ?? 0);
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}
+        onClick={(e) => e.target === e.currentTarget && setConfirmKey(null)}>
+        <div className="relative w-full max-w-sm rounded-2xl p-7 shadow-2xl"
+          style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}>
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl mx-auto mb-5"
+            style={{ background: "rgba(201,123,58,0.15)", color: "var(--brand)" }}>
+            {confirmPlan.icon}
+          </div>
+          <h2 className="text-xl font-black text-center mb-2" style={{ color: "var(--foreground)" }}>
+            {isUpgrade ? `Upgrade to ${confirmPlan.name}?` : `Downgrade to ${confirmPlan.name}?`}
+          </h2>
+          <p className="text-sm text-center mb-1" style={{ color: "var(--text-sub)" }}>
+            You&apos;ll be switched to <strong>{confirmPlan.name}</strong> at <strong>{confirmPlan.price}/mo</strong>
+            {isUpgrade ? " immediately" : " at the end of your current billing period"}.
+          </p>
+          <p className="text-xs text-center mb-6" style={{ color: "var(--text-muted)" }}>
+            {isUpgrade
+              ? "The difference will be charged pro-rata for the rest of this billing period."
+              : "You keep full access to your current plan until the billing period ends. No charges — just a plan switch."}
+          </p>
+          {error && <p className="text-sm rounded-lg px-3 py-2 mb-4" style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}>{error}</p>}
+          <div className="flex flex-col gap-3">
+            <button onClick={() => doChangePlan(confirmKey)} disabled={!!loading}
+              className="w-full rounded-xl py-3 text-sm font-bold hover:opacity-90 disabled:opacity-60 flex items-center justify-center gap-2 transition-all"
+              style={{ background: "var(--brand)", color: "#fff" }}>
+              {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Switching…</> : isUpgrade ? `Yes, upgrade to ${confirmPlan.name}` : `Yes, schedule downgrade to ${confirmPlan.name}`}
+            </button>
+            <button onClick={() => setConfirmKey(null)}
+              className="w-full rounded-xl py-3 text-sm font-semibold hover:opacity-70 transition-all"
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid var(--card-border)", color: "var(--text-sub)" }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
@@ -248,14 +349,28 @@ function UpgradeModal({ accessToken, currentPlan, businessName, onClose }: {
           <X className="w-4 h-4" style={{ color: "var(--muted)" }} />
         </button>
         <h2 className="text-xl font-bold mb-1" style={{ color: "var(--foreground)" }}>Change your plan</h2>
-        <p className="text-sm mb-6" style={{ color: "var(--text-sub)" }}>Select a new plan to switch to.</p>
+        <p className="text-sm mb-6" style={{ color: "var(--text-sub)" }}>
+          {isActivePaidSub
+            ? "Switch takes effect immediately — prorated billing applied automatically."
+            : "Select a plan to start your subscription."}
+        </p>
 
         {error && <p className="text-sm rounded-lg px-3 py-2 mb-4" style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}>{error}</p>}
+        {success && <p className="text-sm rounded-lg px-3 py-2 mb-4 font-medium" style={{ background: "rgba(74,222,128,0.1)", color: "#4ade80", border: "1px solid rgba(74,222,128,0.2)" }}>{success}</p>}
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {PLANS.map((plan) => {
             const isCurrent = plan.key === currentPlan;
             const isLoading = loading === plan.key;
+            // Use tier index (not price) for upgrade/downgrade label — immune to test-mode price overrides
+            const TIER: Record<string, number> = { solo: 1, growing: 2, scale: 3 };
+            const planTier = TIER[plan.key] ?? 0;
+            const currentTier = TIER[currentPlan ?? ""] ?? 0;
+            const label = isCurrent
+              ? "Current plan"
+              : isActivePaidSub
+                ? planTier > currentTier ? `Upgrade to ${plan.name}` : `Downgrade to ${plan.name}`
+                : `Start with ${plan.name}`;
             return (
               <div key={plan.key} className="rounded-xl p-5 flex flex-col"
                 style={{
@@ -281,7 +396,7 @@ function UpgradeModal({ accessToken, currentPlan, businessName, onClose }: {
                   style={isCurrent
                     ? { background: "rgba(201,123,58,0.15)", color: "var(--brand)" }
                     : { background: plan.highlight ? "var(--brand)" : "rgba(255,255,255,0.07)", color: plan.highlight ? "#fff" : "var(--foreground)", border: plan.highlight ? "none" : "1px solid var(--card-border)" }}>
-                  {isLoading ? <><Loader2 className="w-3 h-3 animate-spin" />Redirecting…</> : isCurrent ? "Current plan" : `Switch to ${plan.name}`}
+                  {isLoading ? <><Loader2 className="w-3 h-3 animate-spin" />Switching…</> : label}
                 </button>
               </div>
             );
@@ -297,18 +412,33 @@ interface Business {
   id: string;
   name: string;
   subscription_status: string;
+  subscription_plan: string | null;
   trial_ends_at: string | null;
+  stripe_customer_id: string | null;
+}
+
+interface StripeData {
+  customerId: string | null;
+  activePlan: string | null;
+  subscriptionStatus: string | null;
+  currentPeriodEnd: number | null;
+  pendingPlan: string | null;
+  pendingPlanDate: string | null;
 }
 
 export default function AccountPage() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [business, setBusiness] = useState<Business | null>(null);
+  const [stripeData, setStripeData] = useState<StripeData | null>(null);
   const [loadingData, setLoadingData] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
   const [showSignIn, setShowSignIn] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [cancelingSchedule, setCancelingSchedule] = useState(false);
+  const [cancelScheduleError, setCancelScheduleError] = useState<string | null>(null);
 
   // Restore session from Supabase on mount
   useEffect(() => {
@@ -320,31 +450,57 @@ export default function AccountPage() {
     });
   }, []);
 
-  // Load business data via the secure /api/subscription route (respects RLS correctly)
+  // Load business data via the secure /api/subscription route
   useEffect(() => {
     if (!accessToken) return;
-    setLoadingData(true);
+    setFetchError(null);
+    queueMicrotask(() => setLoadingData(true));
     fetch("/api/subscription", {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
-      .then((r) => r.json())
-      .then((json) => {
+      .then(async (r) => {
+        const json = await r.json();
+        if (r.status === 401) {
+          await supabase.auth.signOut();
+          setAccessToken(null);
+          setUserEmail(null);
+          setBusiness(null);
+          setStripeData(null);
+          return;
+        }
+        if (!r.ok) {
+          setFetchError(json.error ?? "Could not load account data.");
+          setBusiness(null);
+          setStripeData(null);
+          return;
+        }
         if (json.business) {
           setBusiness({
             id: json.business.id,
             name: json.business.name,
             subscription_status: json.business.subscriptionStatus,
+            subscription_plan: json.business.subscriptionPlan ?? null,
             trial_ends_at: json.business.trialEndsAt,
+            stripe_customer_id: json.stripe?.customerId ?? null,
           });
         } else {
           setBusiness(null);
         }
+        setStripeData(json.stripe ?? null);
       })
-      .catch(() => setBusiness(null))
+      .catch(() => setFetchError("Network error. Please try again."))
       .finally(() => setLoadingData(false));
   }, [accessToken]);
 
+  // Stripe-first derived state
+  const stripeStatus = stripeData?.subscriptionStatus ?? null;
+  const stripePlan = stripeData?.activePlan ?? null;
+  const hasActivePaidSub = !!stripeData?.customerId && ["active", "trialing", "past_due"].includes(stripeStatus ?? "");
+
   const handleSignInSuccess = (token: string, email: string) => {
+    setFetchError(null);
+    setBusiness(null);
+    setStripeData(null);
     setAccessToken(token);
     setUserEmail(email);
     setShowSignIn(false);
@@ -367,8 +523,25 @@ export default function AccountPage() {
       });
       const json = await res.json();
       if (!res.ok) { setPortalError(json.error ?? "Could not open billing portal."); setPortalLoading(false); return; }
-      window.location.href = json.url;
+      window.location.assign(json.url);
     } catch { setPortalError("Network error. Please try again."); setPortalLoading(false); }
+  };
+
+  const handleCancelSchedule = async () => {
+    if (!accessToken) return;
+    setCancelingSchedule(true); setCancelScheduleError(null);
+    try {
+      const res = await fetch("/api/change-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ cancelSchedule: true }),
+      });
+      const json = await res.json();
+      if (!res.ok) { setCancelScheduleError(json.error ?? "Could not cancel downgrade."); setCancelingSchedule(false); return; }
+      // Refresh — clear pending state
+      setStripeData((s) => s ? { ...s, pendingPlan: null, pendingPlanDate: null } : s);
+    } catch { setCancelScheduleError("Network error. Please try again."); }
+    setCancelingSchedule(false);
   };
 
   const planLabel = (status: string) => {
@@ -376,18 +549,21 @@ export default function AccountPage() {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
-  const trialDaysLeft = (endsAt: string | null) => {
+  const trialDaysLeft = (endsAt: string | null, nowMs: number) => {
     if (!endsAt) return null;
-    const diff = Math.ceil((new Date(endsAt).getTime() - Date.now()) / 86400000);
+    const diff = Math.ceil((new Date(endsAt).getTime() - nowMs) / 86400000);
     return diff > 0 ? diff : 0;
   };
+
+  // Avoid calling Date.now() during render (react-hooks/purity) and avoid setState in effects.
+  const nowMs = useMemo(() => new Date().getTime(), []);
 
   return (
     <div className="min-h-screen font-sans" style={{ background: "var(--background)", color: "var(--foreground)" }}>
       {/* Nav */}
       <div className="fixed top-0 inset-x-0 z-40 flex items-center justify-between px-5 sm:px-10 py-4"
         style={{ background: "var(--nav-bg)", borderBottom: "1px solid var(--nav-border)", backdropFilter: "blur(12px)" }}>
-        <a href="/" className="font-black text-sm tracking-[0.15em] uppercase" style={{ color: "var(--foreground)" }}>clientIn</a>
+        <Link href="/" className="font-black text-sm tracking-[0.15em] uppercase" style={{ color: "var(--foreground)" }}>clientIn</Link>
         {accessToken ? (
           <button onClick={handleSignOut} className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-70 transition-opacity" style={{ color: "var(--text-sub)" }}>
             <LogOut className="w-3.5 h-3.5" /> Sign out
@@ -409,7 +585,7 @@ export default function AccountPage() {
         {!accessToken && (
           <div className="rounded-2xl p-8 text-center" style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}>
             <AlertCircle className="w-10 h-10 mx-auto mb-4" style={{ color: "var(--brand)" }} />
-            <h2 className="text-lg font-bold mb-2">You're not signed in</h2>
+            <h2 className="text-lg font-bold mb-2">You&apos;re not signed in</h2>
             <p className="text-sm mb-6" style={{ color: "var(--text-sub)" }}>Sign in with your email to view your plan and billing.</p>
             <button onClick={() => setShowSignIn(true)}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all"
@@ -430,6 +606,20 @@ export default function AccountPage() {
         {accessToken && !loadingData && (
           <div className="flex flex-col gap-5">
 
+            {/* API error banner — only shown when signed in */}
+            {fetchError && (
+              <div className="rounded-xl px-4 py-3 flex items-start gap-3"
+                style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)" }}>
+                <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#f87171" }} />
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: "#f87171" }}>{fetchError}</p>
+                  <p className="text-xs mt-0.5" style={{ color: "rgba(248,113,113,0.7)" }}>
+                    Signed in as: <strong>{userEmail}</strong>
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Subscription card */}
             <div className="rounded-2xl p-6" style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}>
               <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "var(--text-muted)" }}>Subscription</p>
@@ -440,12 +630,15 @@ export default function AccountPage() {
                       <p className="text-lg font-bold" style={{ color: "var(--foreground)" }}>{business.name}</p>
                       <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
                         style={{ background: "rgba(201,123,58,0.15)", color: "var(--brand)" }}>
-                        {planLabel(business.subscription_status)}
+                        {(stripePlan ?? business.subscription_plan)
+                          ? `${(stripePlan ?? business.subscription_plan)!.charAt(0).toUpperCase() + (stripePlan ?? business.subscription_plan)!.slice(1)} plan`
+                          : planLabel(stripeStatus ?? business.subscription_status)}
                       </span>
                     </div>
-                    {business.trial_ends_at && (
+                  {/* Show trial countdown: use Stripe status as truth; fall back to DB status for legacy rows */}
+                  {(stripeStatus === "trialing" || (!stripeStatus && (business.subscription_status === "trial" || business.subscription_status === "trialing"))) && business.trial_ends_at && (
                       <div className="text-right shrink-0">
-                        <p className="text-2xl font-black" style={{ color: "var(--foreground)" }}>{trialDaysLeft(business.trial_ends_at)}</p>
+                        <p className="text-2xl font-black" style={{ color: "var(--foreground)" }}>{trialDaysLeft(business.trial_ends_at, nowMs)}</p>
                         <p className="text-xs" style={{ color: "var(--text-muted)" }}>days left in trial</p>
                       </div>
                     )}
@@ -467,15 +660,44 @@ export default function AccountPage() {
                   {portalError && (
                     <p className="mt-3 text-xs rounded-lg px-3 py-2" style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}>{portalError}</p>
                   )}
+
+                  {/* Pending downgrade banner */}
+                  {stripeData?.pendingPlan && (
+                    <div className="mt-4 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2"
+                      style={{ background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.25)" }}>
+                      <div className="flex-1">
+                        <p className="text-xs font-semibold" style={{ color: "#facc15" }}>
+                          Scheduled downgrade to{" "}
+                          <span className="capitalize">{stripeData.pendingPlan}</span>
+                          {stripeData.pendingPlanDate && (
+                            <> on {new Date(stripeData.pendingPlanDate).toLocaleDateString("en-IE", { day: "numeric", month: "short", year: "numeric" })}</>
+                          )}
+                        </p>
+                        <p className="text-xs mt-0.5" style={{ color: "rgba(250,204,21,0.7)" }}>
+                          Your current plan stays active until then. Cancel to keep it.
+                        </p>
+                      </div>
+                      <button
+                        onClick={handleCancelSchedule}
+                        disabled={cancelingSchedule}
+                        className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-60 transition-all hover:opacity-90"
+                        style={{ background: "rgba(234,179,8,0.15)", border: "1px solid rgba(234,179,8,0.3)", color: "#facc15" }}>
+                        {cancelingSchedule ? <><Loader2 className="w-3 h-3 animate-spin" />Canceling…</> : "Cancel downgrade"}
+                      </button>
+                      {cancelScheduleError && (
+                        <p className="text-xs mt-1 w-full" style={{ color: "#f87171" }}>{cancelScheduleError}</p>
+                      )}
+                    </div>
+                  )}
                 </>
               ) : (
                 <div>
-                  <p className="text-sm mb-5" style={{ color: "var(--text-sub)" }}>You don't have an active subscription yet.</p>
-                  <a href="/subscribe"
+                  <p className="text-sm mb-5" style={{ color: "var(--text-sub)" }}>You don&apos;t have an active subscription yet.</p>
+                  <Link href="/subscribe"
                     className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all"
                     style={{ background: "var(--brand)", color: "#fff" }}>
                     View plans →
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
@@ -498,11 +720,13 @@ export default function AccountPage() {
       {/* Modals */}
       {showSignIn && <SignInModal onSuccess={handleSignInSuccess} onClose={() => setShowSignIn(false)} />}
       {showUpgrade && accessToken && (
-        <UpgradeModal
+      <UpgradeModal
           accessToken={accessToken}
-          currentPlan={business?.subscription_status ?? ""}
+          currentPlan={stripePlan}
+          isActivePaidSub={hasActivePaidSub}
           businessName={business?.name ?? ""}
           onClose={() => setShowUpgrade(false)}
+          onPlanChanged={(newPlan) => setStripeData((s) => (s ? { ...s, activePlan: newPlan, pendingPlan: null, pendingPlanDate: null } : s))}
         />
       )}
     </div>

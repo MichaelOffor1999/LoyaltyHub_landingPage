@@ -76,6 +76,7 @@ export function StarsBackground({
   const rafRef = useRef<number>(0);
   const mouseRef = useRef({ x: 0, y: 0 });
   const timeRef = useRef(0);
+  const animateRef = useRef<(ts: number) => void>(() => {});
 
   // ── Build / rebuild the star array whenever dimensions or count change ──
   const initStars = useCallback(
@@ -109,7 +110,7 @@ export function StarsBackground({
 
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
-      const normX = (mx / width - 0.5) * 2;  // -1 … +1
+      const normX = (mx / width - 0.5) * 2; // -1 … +1
       const normY = (my / height - 0.5) * 2; // -1 … +1
 
       for (const star of starsRef.current) {
@@ -120,7 +121,7 @@ export function StarsBackground({
         // Twinkle opacity
         let alpha = star.opacity;
         if (twinkle) {
-          const t = (timestamp * 0.001 * twinkleSpeed * star.speed) + star.phase;
+          const t = timestamp * 0.001 * twinkleSpeed * star.speed + star.phase;
           alpha = 0.3 + 0.7 * ((Math.sin(t) + 1) / 2);
         }
 
@@ -143,10 +144,14 @@ export function StarsBackground({
       }
 
       ctx.globalAlpha = 1;
-      rafRef.current = requestAnimationFrame(animate);
+      rafRef.current = requestAnimationFrame(animateRef.current);
     },
     [parallax, parallaxStrength, twinkle, twinkleSpeed, starColor]
   );
+
+  useEffect(() => {
+    animateRef.current = animate;
+  }, [animate]);
 
   // ── Setup: resize observer + RAF ────────────────────────────────────────
   useEffect(() => {
@@ -166,13 +171,13 @@ export function StarsBackground({
     ro.observe(canvas.parentElement ?? canvas);
 
     // Kick off animation
-    rafRef.current = requestAnimationFrame(animate);
+    rafRef.current = requestAnimationFrame(animateRef.current);
 
     return () => {
       ro.disconnect();
       cancelAnimationFrame(rafRef.current);
     };
-  }, [initStars, animate]);
+  }, [initStars]);
 
   // ── Mouse tracking for parallax ─────────────────────────────────────────
   useEffect(() => {
