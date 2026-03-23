@@ -47,13 +47,8 @@ const PLANS = [
     features: [
       "Everything in Growing",
       "Unlimited branches",
-      "Dedicated account manager",
-      "Priority support (24h response)",
-      "Early access to new features",
-      "Custom onboarding session",
       "Advanced multi-location reporting",
       "Bulk customer import & export",
-      "API access (coming soon)",
     ],
   },
 ];
