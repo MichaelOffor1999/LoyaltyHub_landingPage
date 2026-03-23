@@ -306,9 +306,6 @@ export default function Home() {
                 View Pricing & Start Trial
               </a>
             </div>
-            <p className="text-xs mt-4" style={{ color: "rgba(240,236,230,0.4)" }}>
-              Solo from €29/mo · Growing from €59/mo · Scale from €89/mo
-            </p>
           </ScrollReveal>
 
           {/* Footer */}

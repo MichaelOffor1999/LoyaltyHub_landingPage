@@ -852,11 +852,6 @@ function Dashboard({
               />
             ))}
           </div>
-          <p className="text-xs text-center mt-5" style={{ color: "var(--text-muted)" }}>
-            {isActivePaidSub
-              ? "Upgrade and downgrade are handled securely via Stripe — prorated billing applied automatically."
-              : "You'll be taken to Stripe to complete payment securely. Trial days remaining will be honoured."}
-          </p>
         </div>
       )}
 
