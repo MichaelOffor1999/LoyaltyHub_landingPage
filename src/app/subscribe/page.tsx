@@ -427,6 +427,7 @@ function Dashboard({
   const [planError, setPlanError] = useState<string | null>(null);
   const [planSuccess, setPlanSuccess] = useState<string | null>(null);
   const [confirmPlan, setConfirmPlan] = useState<Plan | null>(null);
+  const [showTransactions, setShowTransactions] = useState(false);
 
   const hasNoSubscription = !data.business && !data.stripe.customerId;
 
@@ -850,36 +851,61 @@ function Dashboard({
         </div>
       )}
 
-      {/* Payment history */}
-      {data.invoices.length > 0 && (
+      {/* Transactions button + collapsible list */}
+      {data.stripe.customerId && (
         <div
-          className="rounded-2xl p-6"
+          className="rounded-2xl overflow-hidden"
           style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}
         >
-          <p
-            className="text-xs font-semibold uppercase tracking-widest mb-4"
-            style={{ color: "var(--text-muted)" }}
+          <button
+            onClick={() => setShowTransactions((v) => !v)}
+            className="w-full flex items-center justify-between px-6 py-4 transition-all hover:opacity-80"
           >
-            Payment history
-          </p>
-          <div className="flex flex-col gap-2.5">
-            {data.invoices.map((inv) => (
-              <InvoiceRow key={inv.id} inv={inv} />
-            ))}
-          </div>
-        </div>
-      )}
+            <div className="flex items-center gap-3">
+              <span
+                className="flex items-center justify-center w-8 h-8 rounded-lg"
+                style={{ background: "rgba(255,255,255,0.06)", color: "var(--text-muted)" }}
+              >
+                <Receipt className="w-4 h-4" />
+              </span>
+              <span className="text-sm font-bold" style={{ color: "var(--foreground)" }}>
+                Transactions
+              </span>
+              {data.invoices.length > 0 && (
+                <span
+                  className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                  style={{ background: "rgba(201,123,58,0.15)", color: "var(--brand)" }}
+                >
+                  {data.invoices.length}
+                </span>
+              )}
+            </div>
+            <ChevronRight
+              className={`w-4 h-4 transition-transform duration-200 ${showTransactions ? "rotate-90" : ""}`}
+              style={{ color: "var(--text-muted)" }}
+            />
+          </button>
 
-      {data.invoices.length === 0 && data.stripe.customerId && (
-        <div
-          className="rounded-2xl p-6 text-center"
-          style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}
-        >
-          <Receipt className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--text-muted)" }} />
-          <p className="text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>No payments yet</p>
-          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-            You&apos;re still in your free trial — no charges until your trial ends.
-          </p>
+          {showTransactions && (
+            <div className="px-6 pb-5 flex flex-col gap-2.5 border-t" style={{ borderColor: "var(--card-border)" }}>
+              {data.invoices.length > 0 ? (
+                <>
+                  <div className="pt-4 flex flex-col gap-2.5">
+                    {data.invoices.map((inv) => (
+                      <InvoiceRow key={inv.id} inv={inv} />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="py-8 text-center">
+                  <p className="text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>No payments yet</p>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                    You&apos;re still in your free trial — no charges until your trial ends.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
