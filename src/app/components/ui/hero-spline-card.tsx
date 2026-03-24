@@ -90,7 +90,7 @@ export function HeroSplineCard() {
                 🎁
               </div>
               <div>
-                <p className="text-[11px] font-black text-white uppercase tracking-wider leading-tight">Free Coffee Unlocked! 🎉</p>
+                <p className="text-[11px] font-black text-white uppercase tracking-wider leading-tight">Free Coffee Unlocked!</p>
                 <p className="text-[10px] font-medium mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>Sarah K. earned her reward</p>
               </div>
             </div>

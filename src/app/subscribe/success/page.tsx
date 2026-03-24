@@ -105,7 +105,7 @@ function SuccessContent() {
 
           {/* Heading */}
           <h1 className="text-4xl sm:text-5xl font-black mb-4">
-            You&apos;re all set! 🎉
+            You&apos;re all set!
           </h1>
           <p className="max-w-md text-base mb-2" style={{ color: "var(--text-sub)" }}>
             Your subscription is now active. Manage your plan, view invoices, and
