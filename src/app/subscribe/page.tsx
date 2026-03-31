@@ -432,6 +432,7 @@ function Dashboard({
   const [showTransactions, setShowTransactions] = useState(false);
 
   const hasNoSubscription = !data.business && !data.stripe.customerId;
+  const hasNoBusiness = hasNoSubscription;
 
   // Stripe is source of truth for trial/active state.
   // Only fall back to DB status if Stripe has no data yet (new signup, no customer ID).
@@ -572,6 +573,91 @@ function Dashboard({
       setPortalLoading(false);
     }
   };
+
+  // ── No business record: user never used the app ──────────────────────────
+  if (hasNoBusiness) {
+    return (
+      <div className="w-full max-w-md mx-auto px-4 py-8 flex flex-col gap-6">
+        {/* Header row */}
+        <div className="flex items-center justify-between">
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>{userEmail}</p>
+          <button
+            onClick={onSignOut}
+            className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-70 transition-opacity"
+            style={{ color: "var(--text-sub)" }}
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            Sign out
+          </button>
+        </div>
+
+        {/* Message card */}
+        <div
+          className="rounded-2xl p-8 text-center flex flex-col items-center gap-5"
+          style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}
+        >
+          {/* Icon */}
+          <div
+            className="flex items-center justify-center w-16 h-16 rounded-2xl"
+            style={{ background: "rgba(201,123,58,0.12)" }}
+          >
+            <AlertCircle className="w-8 h-8" style={{ color: "var(--brand)" }} />
+          </div>
+
+          <div>
+            <h2 className="text-xl font-black mb-2" style={{ color: "var(--foreground)" }}>
+              No business found
+            </h2>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--text-sub)" }}>
+              We couldn&apos;t find a business account linked to this email.
+            </p>
+            <p className="text-sm leading-relaxed mt-2" style={{ color: "var(--text-sub)" }}>
+              To subscribe, you need to{" "}
+              <strong style={{ color: "var(--foreground)" }}>
+                sign in to the ClientIn app first
+              </strong>{" "}
+              and set up your business. Once your account is created in the app, come back here to manage your subscription.
+            </p>
+          </div>
+
+          <div
+            className="w-full rounded-xl px-4 py-4 text-left"
+            style={{ background: "rgba(201,123,58,0.07)", border: "1px solid rgba(201,123,58,0.2)" }}
+          >
+            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "var(--brand)" }}>
+              How to get started
+            </p>
+            {[
+              "Download the ClientIn app",
+              "Sign in and create your business",
+              "Return here to choose a plan",
+            ].map((step, i) => (
+              <div key={i} className="flex items-start gap-3 mb-2 last:mb-0">
+                <span
+                  className="flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold shrink-0 mt-0.5"
+                  style={{ background: "rgba(201,123,58,0.2)", color: "var(--brand)" }}
+                >
+                  {i + 1}
+                </span>
+                <p className="text-sm" style={{ color: "var(--text-sub)" }}>{step}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+            Need help?{" "}
+            <a
+              href="mailto:hello@clientin.co"
+              className="underline underline-offset-2 hover:opacity-80"
+              style={{ color: "var(--brand)" }}
+            >
+              hello@clientin.co
+            </a>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4 py-8 flex flex-col gap-6">
@@ -1137,48 +1223,6 @@ function AuthGate({ onAuth }: { onAuth: (token: string, email: string, businessN
         )}
       </div>
 
-      {/* Plan preview tiles */}
-      <div className="mt-10">
-        <p
-          className="text-xs text-center mb-5 font-semibold uppercase tracking-widest"
-          style={{ color: "var(--text-muted)" }}
-        >
-          Available plans
-        </p>
-        <div className="grid grid-cols-3 gap-3" style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
-          {PLANS.map((plan) => (
-            <div
-              key={plan.key}
-              className="rounded-xl p-3 text-center"
-              style={{
-                background: plan.highlight ? "rgba(201,123,58,0.08)" : "var(--card-bg)",
-                border: plan.highlight
-                  ? "1px solid rgba(201,123,58,0.35)"
-                  : "1px solid var(--card-border)",
-                minWidth: 0,
-              }}
-            >
-              <span
-                className="flex justify-center mb-1.5"
-                style={{ color: plan.highlight ? "var(--brand)" : "var(--text-muted)" }}
-              >
-                {plan.icon}
-              </span>
-              <p className="text-xs font-bold mb-0.5 truncate" style={{ color: "var(--foreground)" }}>{plan.name}</p>
-              <p
-                className="text-sm font-black"
-                style={{ color: plan.highlight ? "var(--brand)" : "var(--foreground)" }}
-              >
-                {plan.price}
-              </p>
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>/mo</p>
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-center mt-4" style={{ color: "var(--text-muted)" }}>
-          30-day free trial · No credit card required · Cancel anytime
-        </p>
-      </div>
     </div>
   );
 }

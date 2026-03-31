@@ -35,7 +35,7 @@ export default function Home() {
           className="pointer-events-auto px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold tracking-wider uppercase transition-all hover:opacity-90"
           style={{ border: "1px solid rgba(255,255,255,0.3)", color: "#ffffff", backdropFilter: "blur(8px)", background: "rgba(255,255,255,0.08)" }}
         >
-          Start Free Trial
+          Manage Plan
         </a>
       </div>
 
@@ -81,11 +81,11 @@ export default function Home() {
             <ScrollReveal variant="fade-up" delay={900} className="flex flex-col items-center w-full text-center mt-8">
               <div className="flex flex-col sm:flex-row items-center gap-3" id="waitlist">
                 <a
-                  href="/subscribe"
+                  href="#how-it-works"
                   className="px-8 py-4 rounded-xl text-sm font-black tracking-widest uppercase transition-all hover:opacity-90 whitespace-nowrap"
                   style={{ background: "#ffffff", color: "#0a0a0a", letterSpacing: "0.1em" }}
                 >
-                  Start Free Trial
+                  Download App
                 </a>
                 <a
                   href="#how-it-works"
@@ -96,7 +96,7 @@ export default function Home() {
                 </a>
               </div>
               <p className="text-xs mt-4" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.02em" }}>
-                30-day free trial · No credit card required · Cancel anytime
+                30-day free trial · Download the app to get started · Cancel anytime
               </p>
             </ScrollReveal>
 
@@ -248,13 +248,13 @@ export default function Home() {
               className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-5"
               style={{ background: "rgba(201,123,58,0.12)", color: "#e8944a", border: "1px solid rgba(201,123,58,0.3)" }}
             >
-              Get started
+              Existing customers
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "#f0ece6" }}>
-              Ready to grow your business?
+              Already a customer?
             </h2>
             <p className="text-base mb-8 max-w-lg" style={{ color: "rgba(240,236,230,0.65)" }}>
-              Join hundreds of business owners already using clientIn. Start your <span style={{ fontWeight: 700, color: "#e8944a" }}>30-day free trial</span> today — no credit card required, cancel anytime.
+              Manage your subscription, view invoices, and change your plan — all in one place.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-3">
               <a
@@ -266,7 +266,7 @@ export default function Home() {
                   boxShadow: "0 0 30px 2px rgba(201,123,58,0.35)",
                 }}
               >
-                View Pricing & Start Trial
+                Manage My Plan →
               </a>
             </div>
           </ScrollReveal>

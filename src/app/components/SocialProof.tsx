@@ -1,19 +1,8 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
-
-// Brand mark components using real logos with CSS cropping
-function MTBMark({ size = "md" }: { size?: "sm" | "md" }) {
-  const h = size === "sm" ? 32 : 48;
-  return (
-    <div style={{ width: h, height: h, overflow: "hidden", borderRadius: 8, flexShrink: 0, background: "#f5f0ea" }}>
-      <Image src="/logo-mtb.jpg" alt="MTB Barbershop" width={h} height={h} style={{ objectFit: "contain", padding: 3 }} />
-    </div>
-  );
-}
 
 function ReliefMark({ size = "md" }: { size?: "sm" | "md" }) {
   const h = size === "sm" ? 32 : 48;
@@ -24,91 +13,18 @@ function ReliefMark({ size = "md" }: { size?: "sm" | "md" }) {
   );
 }
 
-export { MTBMark, ReliefMark };
-
-function TenCutsMark({ size = "md" }: { size?: "sm" | "md" }) {
-  const h = size === "sm" ? 32 : 48;
-  return (
-    <div style={{ width: h, height: h, overflow: "hidden", borderRadius: "50%", flexShrink: 0, border: "1px solid rgba(255,255,255,0.08)" }}>
-      <Image src="/logo-10cuts.jpg" alt="10 Cuts" width={h * 2} height={h * 2} style={{ objectFit: "cover", objectPosition: "center" }} />
-    </div>
-  );
-}
-
-export { TenCutsMark };
-
-const testimonials = [
-  {
-    id: 1,
-    quote: "Our regulars actually come back more now. We had customers we hadn't seen in months show up after we sent a tailored offer through clientIn. That was the moment I knew it worked.",
-    mark: <MTBMark />,
-    markSm: <MTBMark size="sm" />,
-    business: "MTB Barbershop",
-    stars: 5,
-    imageSrc: "/mtb-testimonial.jpg",
-  },
-  {
-    id: 2,
-    quote: "I used to have no idea who my best clients were beyond memory. Now I can see exactly who's been in, how often, and who I'm at risk of losing. It's changed how I run the shop.",
-    mark: <ReliefMark />,
-    markSm: <ReliefMark size="sm" />,
-    business: "Relief",
-    stars: 5,
-    imageSrc: "/relief-testimonial.jpg",
-  },
-  {
-    id: 3,
-    quote: "Before clientIn we were handing out paper stamp cards that people kept losing. Now everything's digital, customers love it, and we've seen a real jump in repeat bookings.",
-    mark: <TenCutsMark />,
-    markSm: <TenCutsMark size="sm" />,
-    business: "10 Cuts",
-    stars: 5,
-    imageSrc: "/10cuts-testimonial.jpg",
-  },
-];
-
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const } },
+const testimonial = {
+  quote: "I used to have no idea who my best clients were beyond memory. Now I can see exactly who's been in, how often, and who I'm at risk of losing. It's changed how I run the shop.",
+  business: "Relief",
+  stars: 5,
+  imageSrc: "/relief-testimonial.jpg",
 };
 
 export default function SocialProof() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeIdx, setActiveIdx] = useState(0);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = cardRefs.current.indexOf(entry.target as HTMLDivElement);
-            if (idx !== -1) setActiveIdx(idx);
-          }
-        });
-      },
-      { root: el, threshold: 0.6 }
-    );
-    cardRefs.current.forEach((card) => { if (card) observer.observe(card); });
-    return () => observer.disconnect();
-  }, []);
-
-  const scrollTo = (idx: number) => {
-    const card = cardRefs.current[idx];
-    if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-  };
-
   return (
     <section className="w-full mt-8 mb-8">
       <ScrollReveal staggerChildren variant="fade-right" staggerBase={120} className="flex flex-col gap-5">
-        <div className="text-center mb-5">
+        <div className="text-center mb-6">
           <div
             className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
             style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
@@ -122,85 +38,61 @@ export default function SocialProof() {
             These are real business owners using clientIn today.
           </p>
         </div>
-
-
       </ScrollReveal>
 
-      {/* Testimonial cards — image background with gradient overlay */}
+      {/* Single centered testimonial card */}
       <motion.div
-        ref={scrollRef}
-        className="mt-2 flex gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory pb-2 -mx-2 px-2 scrollbar-hide"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
+        className="flex justify-center"
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
       >
-        {testimonials.map((t, i) => (
-          <motion.div
-            key={t.id}
-            ref={(el) => { cardRefs.current[i] = el; }}
-            variants={itemVariants}
-            className="relative overflow-hidden rounded-2xl shadow-md min-w-[72%] sm:min-w-[300px] max-w-[360px] snap-center shrink-0"
-            style={{ height: 380 }}
-          >
-            {/* Background image */}
-            <img
-              src={t.imageSrc}
-              alt={t.business}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
+        <div
+          className="relative overflow-hidden rounded-3xl shadow-2xl w-full"
+          style={{ maxWidth: 560, height: 420 }}
+        >
+          {/* Background image */}
+          <img
+            src={testimonial.imageSrc}
+            alt={testimonial.business}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
 
-            {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          {/* Gradient overlay — stronger at bottom */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
 
-            {/* Stars top-left */}
-            <div className="absolute top-4 left-4 flex gap-0.5">
-              {Array.from({ length: t.stars }).map((_, s) => (
-                <svg key={s} width="14" height="14" viewBox="0 0 14 14" fill="#e8944a">
-                  <path d="M7 1l1.55 3.14L12 4.63l-2.5 2.44.59 3.43L7 8.77l-3.09 1.63.59-3.43L2 4.63l3.45-.49L7 1z"/>
-                </svg>
-              ))}
-            </div>
+          {/* Subtle border */}
+          <div className="absolute inset-0 rounded-3xl" style={{ border: "1px solid rgba(255,255,255,0.08)" }} />
 
-            {/* Content overlay at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 p-5 text-left text-white">
-              <Quote className="mb-3 h-7 w-7 text-white/40" aria-hidden="true" />
-              <blockquote className="text-sm font-medium leading-relaxed">
-                &ldquo;{t.quote}&rdquo;
-              </blockquote>
-              <figcaption className="mt-4 flex items-center gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.15)", paddingTop: "0.75rem" }}>
-                {t.markSm}
-                <span className="text-sm font-semibold text-white">{t.business}</span>
-              </figcaption>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+          {/* Stars — top left */}
+          <div className="absolute top-5 left-5 flex gap-1">
+            {[1, 2, 3, 4, 5].map((s) => (
+              <svg key={s} width="15" height="15" viewBox="0 0 14 14" fill="#e8944a">
+                <polygon points="7,1 8.55,4.14 12,4.63 9.5,7.07 10.09,10.5 7,8.77 3.91,10.5 4.5,7.07 2,4.63 5.45,4.14" />
+              </svg>
+            ))}
+          </div>
 
-      {/* Scroll dots + swipe hint */}
-      <div className="flex flex-col items-center gap-2 mt-3">
-        <div className="flex gap-2">
-          {testimonials.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => scrollTo(i)}
-              aria-label={`Go to review ${i + 1}`}
-              style={{
-                width: activeIdx === i ? 20 : 8,
-                height: 8,
-                borderRadius: 99,
-                background: activeIdx === i ? "#c97b3a" : "rgba(255,255,255,0.1)",
-                border: "none",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-            />
-          ))}
+          {/* Content overlay */}
+          <div className="absolute bottom-0 left-0 right-0 p-7 text-white">
+            <Quote className="mb-4 h-8 w-8" style={{ color: "#c97b3a", opacity: 0.8 }} aria-hidden="true" />
+            <blockquote className="text-base sm:text-lg font-medium leading-relaxed" style={{ letterSpacing: "-0.01em" }}>
+              &ldquo;{testimonial.quote}&rdquo;
+            </blockquote>
+            <figcaption
+              className="mt-5 flex items-center gap-3"
+              style={{ borderTop: "1px solid rgba(255,255,255,0.15)", paddingTop: "1rem" }}
+            >
+              <ReliefMark size="sm" />
+              <div className="flex flex-col">
+                <span className="text-sm font-bold text-white">{testimonial.business}</span>
+                <span className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>Verified customer</span>
+              </div>
+            </figcaption>
+          </div>
         </div>
-        <span className="text-[11px] font-medium" style={{ color: "rgba(240,236,230,0.4)" }}>
-          Swipe for more &rarr;
-        </span>
-      </div>
+      </motion.div>
     </section>
   );
 }
