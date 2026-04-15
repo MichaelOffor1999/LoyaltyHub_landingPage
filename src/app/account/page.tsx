@@ -410,6 +410,7 @@ interface Business {
   subscription_plan: string | null;
   trial_ends_at: string | null;
   stripe_customer_id: string | null;
+  verification_status: string;
 }
 
 interface StripeData {
@@ -477,6 +478,7 @@ export default function AccountPage() {
             subscription_plan: json.business.subscriptionPlan ?? null,
             trial_ends_at: json.business.trialEndsAt,
             stripe_customer_id: json.stripe?.customerId ?? null,
+            verification_status: json.business.verificationStatus ?? "pending",
           });
         } else {
           setBusiness(null);
@@ -597,8 +599,36 @@ export default function AccountPage() {
           </div>
         )}
 
-        {/* Signed in */}
-        {accessToken && !loadingData && (
+        {/* Pending approval */}
+        {accessToken && !loadingData && business && business.verification_status !== "approved" && (
+          <div className="rounded-2xl p-8 text-center" style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}>
+            <div className="flex items-center justify-center w-14 h-14 rounded-full mx-auto mb-5"
+              style={{ background: "rgba(234,179,8,0.12)" }}>
+              <AlertCircle className="w-7 h-7" style={{ color: "#facc15" }} />
+            </div>
+            <h2 className="text-xl font-bold mb-2" style={{ color: "var(--foreground)" }}>Account Pending Approval</h2>
+            <p className="text-sm mb-2" style={{ color: "var(--text-sub)" }}>
+              Your business <strong>{business.name}</strong> is currently being reviewed.
+            </p>
+            <p className="text-sm mb-6" style={{ color: "var(--text-sub)" }}>
+              You&apos;ll be able to manage your account once your business has been approved. This usually takes less than 24 hours.
+            </p>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold"
+              style={{ background: "rgba(234,179,8,0.1)", color: "#facc15", border: "1px solid rgba(234,179,8,0.25)" }}>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#facc15" }} />
+                <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: "#facc15" }} />
+              </span>
+              Pending review
+            </div>
+            <p className="text-xs mt-6" style={{ color: "var(--text-muted)" }}>
+              Signed in as: <strong>{userEmail}</strong>
+            </p>
+          </div>
+        )}
+
+        {/* Signed in + approved */}
+        {accessToken && !loadingData && (!business || business.verification_status === "approved") && (
           <div className="flex flex-col gap-5">
 
             {/* API error banner — only shown when signed in */}

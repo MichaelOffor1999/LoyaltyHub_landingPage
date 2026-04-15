@@ -31,6 +31,7 @@ type BusinessRow = {
   subscription_status?: string | null;
   subscription_plan?: string | null;
   trial_ends_at?: string | null;
+  verification_status?: string | null;
   [key: string]: unknown;
 };
 
@@ -78,7 +79,7 @@ export async function GET(req: NextRequest) {
     const { data: businesses } = await supabase
       .from("businesses")
       .select(
-        `id, name, ${COL_CUSTOMER}, ${COL_SUB}, stripe_customer_id, stripe_subscription_id, subscription_status, subscription_plan, trial_ends_at`
+        `id, name, ${COL_CUSTOMER}, ${COL_SUB}, stripe_customer_id, stripe_subscription_id, subscription_status, subscription_plan, trial_ends_at, verification_status`
       )
       .eq("owner_id", user.id)
       .order("created_at", { ascending: false })
@@ -205,6 +206,7 @@ export async function GET(req: NextRequest) {
             subscriptionStatus: business.subscription_status,
             subscriptionPlan: business.subscription_plan ?? null,
             trialEndsAt: business.trial_ends_at,
+            verificationStatus: business.verification_status ?? "pending",
           }
         : null,
       stripe: {
