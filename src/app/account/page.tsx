@@ -456,6 +456,7 @@ export default function AccountPage() {
     })
       .then(async (r) => {
         const json = await r.json();
+        console.log('DEBUG: /api/subscription response', json); // <--- Added debug log
         if (r.status === 401) {
           await supabase.auth.signOut();
           setAccessToken(null);
@@ -628,7 +629,7 @@ export default function AccountPage() {
         )}
 
         {/* Signed in + approved */}
-        {accessToken && !loadingData && (!business || business.verification_status === "approved") && (
+        {accessToken && !loadingData && business && business.verification_status === "approved" && (
           <div className="flex flex-col gap-5">
 
             {/* API error banner — only shown when signed in */}
@@ -648,81 +649,68 @@ export default function AccountPage() {
             {/* Subscription card */}
             <div className="rounded-2xl p-6" style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}>
               <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "var(--text-muted)" }}>Subscription</p>
-              {business ? (
-                <>
-                  <div className="flex items-start justify-between gap-4 mb-4">
-                    <div>
-                      <p className="text-lg font-bold" style={{ color: "var(--foreground)" }}>{business.name}</p>
-                      <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                        style={{ background: "rgba(201,123,58,0.15)", color: "var(--brand)" }}>
-                        {(stripePlan ?? business.subscription_plan)
-                          ? `${(stripePlan ?? business.subscription_plan)!.charAt(0).toUpperCase() + (stripePlan ?? business.subscription_plan)!.slice(1)} plan`
-                          : planLabel(stripeStatus ?? business.subscription_status)}
-                      </span>
-                    </div>
-                  {/* Show trial countdown: use Stripe status as truth; fall back to DB status for legacy rows */}
-                  {(stripeStatus === "trialing" || (!stripeStatus && (business.subscription_status === "trial" || business.subscription_status === "trialing"))) && business.trial_ends_at && (
-                      <div className="text-right shrink-0">
-                        <p className="text-2xl font-black" style={{ color: "var(--foreground)" }}>{trialDaysLeft(business.trial_ends_at, nowMs)}</p>
-                        <p className="text-xs" style={{ color: "var(--text-muted)" }}>days left in trial</p>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <button onClick={() => setShowUpgrade(true)}
-                      className="flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold hover:opacity-90 transition-all"
-                      style={{ background: "var(--brand)", color: "#fff" }}>
-                      Change plan <ChevronRight className="w-4 h-4" />
-                    </button>
-                    <button onClick={handleBillingPortal} disabled={portalLoading}
-                      className="flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold hover:opacity-80 transition-all disabled:opacity-60"
-                      style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--card-border)", color: "var(--text-sub)" }}>
-                      {portalLoading ? <><Loader2 className="w-4 h-4 animate-spin" />Loading…</> : <><CreditCard className="w-4 h-4" />Manage billing</>}
-                    </button>
-                  </div>
-
-                  {portalError && (
-                    <p className="mt-3 text-xs rounded-lg px-3 py-2" style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}>{portalError}</p>
-                  )}
-
-                  {/* Pending downgrade banner */}
-                  {stripeData?.pendingPlan && (
-                    <div className="mt-4 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2"
-                      style={{ background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.25)" }}>
-                      <div className="flex-1">
-                        <p className="text-xs font-semibold" style={{ color: "#facc15" }}>
-                          Scheduled downgrade to{" "}
-                          <span className="capitalize">{stripeData.pendingPlan}</span>
-                          {stripeData.pendingPlanDate && (
-                            <> on {new Date(stripeData.pendingPlanDate).toLocaleDateString("en-IE", { day: "numeric", month: "short", year: "numeric" })}</>
-                          )}
-                        </p>
-                        <p className="text-xs mt-0.5" style={{ color: "rgba(250,204,21,0.7)" }}>
-                          Your current plan stays active until then. Cancel to keep it.
-                        </p>
-                      </div>
-                      <button
-                        onClick={handleCancelSchedule}
-                        disabled={cancelingSchedule}
-                        className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-60 transition-all hover:opacity-90"
-                        style={{ background: "rgba(234,179,8,0.15)", border: "1px solid rgba(234,179,8,0.3)", color: "#facc15" }}>
-                        {cancelingSchedule ? <><Loader2 className="w-3 h-3 animate-spin" />Canceling…</> : "Cancel downgrade"}
-                      </button>
-                      {cancelScheduleError && (
-                        <p className="text-xs mt-1 w-full" style={{ color: "#f87171" }}>{cancelScheduleError}</p>
-                      )}
-                    </div>
-                  )}
-                </>
-              ) : (
+              <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
-                  <p className="text-sm mb-5" style={{ color: "var(--text-sub)" }}>You don&apos;t have an active subscription yet.</p>
-                  <Link href="/subscribe"
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all"
-                    style={{ background: "var(--brand)", color: "#fff" }}>
-                    View plans →
-                  </Link>
+                  <p className="text-lg font-bold" style={{ color: "var(--foreground)" }}>{business.name}</p>
+                  <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                    style={{ background: "rgba(201,123,58,0.15)", color: "var(--brand)" }}>
+                    {(stripePlan ?? business.subscription_plan)
+                      ? `${(stripePlan ?? business.subscription_plan)!.charAt(0).toUpperCase() + (stripePlan ?? business.subscription_plan)!.slice(1)} plan`
+                      : planLabel(stripeStatus ?? business.subscription_status)}
+                  </span>
+                </div>
+                {/* Show trial countdown: use Stripe status as truth; fall back to DB status for legacy rows */}
+                {(stripeStatus === "trialing" || (!stripeStatus && (business.subscription_status === "trial" || business.subscription_status === "trialing"))) && business.trial_ends_at && (
+                  <div className="text-right shrink-0">
+                    <p className="text-2xl font-black" style={{ color: "var(--foreground)" }}>{trialDaysLeft(business.trial_ends_at, nowMs)}</p>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>days left in trial</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button onClick={() => setShowUpgrade(true)}
+                  className="flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold hover:opacity-90 transition-all"
+                  style={{ background: "var(--brand)", color: "#fff" }}>
+                  Change plan <ChevronRight className="w-4 h-4" />
+                </button>
+                <button onClick={handleBillingPortal} disabled={portalLoading}
+                  className="flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold hover:opacity-80 transition-all disabled:opacity-60"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--card-border)", color: "var(--text-sub)" }}>
+                  {portalLoading ? <><Loader2 className="w-4 h-4 animate-spin" />Loading…</> : <><CreditCard className="w-4 h-4" />Manage billing</>}
+                </button>
+              </div>
+
+              {portalError && (
+                <p className="mt-3 text-xs rounded-lg px-3 py-2" style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}>{portalError}</p>
+              )}
+
+              {/* Pending downgrade banner */}
+              {stripeData?.pendingPlan && (
+                <div className="mt-4 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2"
+                  style={{ background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.25)" }}>
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold" style={{ color: "#facc15" }}>
+                      Scheduled downgrade to{" "}
+                      <span className="capitalize">{stripeData.pendingPlan}</span>
+                      {stripeData.pendingPlanDate && (
+                        <> on {new Date(stripeData.pendingPlanDate).toLocaleDateString("en-IE", { day: "numeric", month: "short", year: "numeric" })}</>
+                      )}
+                    </p>
+                    <p className="text-xs mt-0.5" style={{ color: "rgba(250,204,21,0.7)" }}>
+                      Your current plan stays active until then. Cancel to keep it.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleCancelSchedule}
+                    disabled={cancelingSchedule}
+                    className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-60 transition-all hover:opacity-90"
+                    style={{ background: "rgba(234,179,8,0.15)", border: "1px solid rgba(234,179,8,0.3)", color: "#facc15" }}>
+                    {cancelingSchedule ? <><Loader2 className="w-3 h-3 animate-spin" />Canceling…</> : "Cancel downgrade"}
+                  </button>
+                  {cancelScheduleError && (
+                    <p className="text-xs mt-1 w-full" style={{ color: "#f87171" }}>{cancelScheduleError}</p>
+                  )}
                 </div>
               )}
             </div>
