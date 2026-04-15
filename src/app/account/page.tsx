@@ -456,7 +456,6 @@ export default function AccountPage() {
     })
       .then(async (r) => {
         const json = await r.json();
-        console.log('DEBUG: /api/subscription response', json); // <--- Added debug log
         if (r.status === 401) {
           await supabase.auth.signOut();
           setAccessToken(null);
