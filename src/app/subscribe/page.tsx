@@ -219,6 +219,7 @@ interface SubscriptionData {
     subscriptionStatus: string;
     subscriptionPlan: string | null;
     trialEndsAt: string | null;
+    verificationStatus: string;
   } | null;
   stripe: {
     customerId: string | null;
@@ -1394,7 +1395,44 @@ export default function SubscribePage() {
           </div>
         )}
 
-        {accessToken && !loadingData && !dataError && subData && (
+        {/* Pending approval gate */}
+        {accessToken && !loadingData && !dataError && subData && subData.business && subData.business.verificationStatus !== "approved" && (
+          <div className="max-w-md mx-auto px-4 py-16 text-center">
+            <div className="rounded-2xl p-8" style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)" }}>
+              <div className="flex items-center justify-center w-14 h-14 rounded-full mx-auto mb-5"
+                style={{ background: "rgba(234,179,8,0.12)" }}>
+                <AlertCircle className="w-7 h-7" style={{ color: "#facc15" }} />
+              </div>
+              <h2 className="text-xl font-bold mb-2" style={{ color: "var(--foreground)" }}>Account Pending Approval</h2>
+              <p className="text-sm mb-2" style={{ color: "var(--text-muted)" }}>
+                Your business <strong>{subData.business.name}</strong> is currently being reviewed.
+              </p>
+              <p className="text-sm mb-6" style={{ color: "var(--text-muted)" }}>
+                You&apos;ll be able to manage your subscription once approved. This usually takes less than 24 hours.
+              </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-6"
+                style={{ background: "rgba(234,179,8,0.1)", color: "#facc15", border: "1px solid rgba(234,179,8,0.25)" }}>
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#facc15" }} />
+                  <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: "#facc15" }} />
+                </span>
+                Pending review
+              </div>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                Signed in as: <strong>{userEmail}</strong>
+              </p>
+              <button
+                onClick={handleSignOut}
+                className="mt-5 flex items-center justify-center gap-2 mx-auto text-xs font-semibold hover:opacity-70 transition-opacity"
+                style={{ color: "var(--text-muted)" }}
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        )}
+
+        {accessToken && !loadingData && !dataError && subData && (!subData.business || subData.business.verificationStatus === "approved") && (
           <Dashboard
             accessToken={accessToken}
             userEmail={userEmail!}
