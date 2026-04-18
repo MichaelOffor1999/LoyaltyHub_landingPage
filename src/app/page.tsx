@@ -220,9 +220,167 @@ export default function Home() {
             <FeatureList />
           </section>
 
+          {/* Collab Loyalty Programs */}
+          <ScrollReveal className="w-full mt-16" variant="fade-up" threshold={0.08}>
+            <section
+              className="w-full rounded-3xl py-14 sm:py-16 px-6 sm:px-10 relative overflow-hidden"
+              style={{ background: "var(--surface)", border: "1px solid var(--surface-border)", boxShadow: "0 0 60px rgba(201,123,58,0.08)" }}
+            >
+              <div style={{ position: "absolute", top: "-20%", left: "30%", width: "500px", height: "350px", background: "radial-gradient(ellipse, rgba(201,123,58,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+              <div className="relative flex flex-col lg:flex-row gap-12 items-center">
+
+                {/* Left — copy */}
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
+                    New customers.<br />No ad spend.
+                  </h2>
+                  <p className="text-base mb-3 max-w-md" style={{ color: "var(--text-sub)" }}>
+                    Flyers cost money. Instagram ads cost more. A referral from a trusted local business? Free — and it converts at 5x the rate.
+                  </p>
+                  <p className="text-base mb-8 max-w-md font-semibold" style={{ color: "var(--foreground)" }}>
+                    ClientIn Collabs lets you team up with a nearby business and instantly tap into their loyal customer base.
+                  </p>
+                  <ul className="flex flex-col gap-3 mb-8">
+                    {[
+                      "Partner with a complementary business — a gym & a smoothie bar, a salon & a nail studio",
+                      "Their customers earn stamps with you. Your customers earn stamps with them",
+                      "One shared reward keeps both customer bases engaged",
+                      "Your data, your branding — the collab is opt-in, not a merger",
+                    ].map((point, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
+                        <span className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black" style={{ background: "rgba(201,123,58,0.15)", color: "#e8944a" }}>✓</span>
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="#how-it-works"
+                    className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-black tracking-widest uppercase transition-all hover:opacity-90 whitespace-nowrap"
+                    style={{ background: "#ffffff", color: "#0a0a0a", letterSpacing: "0.1em" }}
+                  >
+                    Download App
+                  </a>
+                </div>
+
+                {/* Right — stat callout */}
+                <div className="w-full lg:w-[300px] shrink-0 flex flex-col gap-4">
+                  {[
+                    { stat: "5×", label: "higher conversion than paid ads", sub: "Word-of-mouth from a trusted neighbour just hits different." },
+                    { stat: "£0", label: "customer acquisition cost", sub: "No budget needed. Your partner's loyalty does the heavy lifting." },
+                    { stat: "2×", label: "loyalty card engagement", sub: "A shared reward gives customers twice the reason to keep coming back." },
+                  ].map((item, i) => (
+                    <div key={i} className="p-5 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                      <p className="text-3xl font-black mb-1" style={{ color: "#e8944a" }}>{item.stat}</p>
+                      <p className="text-sm font-bold mb-1" style={{ color: "var(--foreground)" }}>{item.label}</p>
+                      <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>{item.sub}</p>
+                    </div>
+                  ))}
+                </div>
+
+              </div>
+            </section>
+          </ScrollReveal>
+
           {/* Analytics Spotlight */}
           <ScrollReveal className="w-full" variant="flip-up" threshold={0.08}>
             <AnalyticsSpotlight />
+          </ScrollReveal>
+
+          {/* WhatsApp AI Agent */}
+          <ScrollReveal className="w-full mt-16" variant="fade-up" threshold={0.08}>
+            <section
+              className="w-full rounded-3xl py-14 sm:py-16 px-6 sm:px-10 relative overflow-hidden"
+              style={{ background: "var(--surface)", border: "1px solid var(--surface-border)", boxShadow: "0 0 60px rgba(37,211,102,0.06)" }}
+            >
+              <div style={{ position: "absolute", top: "-10%", right: "10%", width: "500px", height: "400px", background: "radial-gradient(ellipse, rgba(37,211,102,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+              <div className="relative flex flex-col lg:flex-row gap-12 items-center">
+
+                {/* Left — copy */}
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
+                    Tomorrow looks quiet.<br />Let&apos;s fix that.
+                  </h2>
+                  <p className="text-base mb-6 max-w-md" style={{ color: "var(--text-sub)" }}>
+                    ClientIn&apos;s WhatsApp agent watches your business while you&apos;re on the floor — then tells you exactly what to do about it. No dashboards. No apps. Just a message.
+                  </p>
+                  <ul className="flex flex-col gap-3 mb-8">
+                    {[
+                      "Proactively warns you before a slow day hits",
+                      "Suggests and sends campaigns — with your approval",
+                      "Answers questions like a business partner who knows your data",
+                      "Works 24/7. Zero learning curve.",
+                    ].map((point, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
+                        <span className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black" style={{ background: "rgba(37,211,102,0.15)", color: "#25d366" }}>✓</span>
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="#how-it-works"
+                    className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-black tracking-widest uppercase transition-all hover:opacity-90 whitespace-nowrap"
+                    style={{ background: "#ffffff", color: "#0a0a0a", letterSpacing: "0.1em" }}
+                  >
+                    Download App
+                  </a>
+                </div>
+
+                {/* Right — WhatsApp chat mock */}
+                <div className="w-full lg:w-[340px] shrink-0">
+                  {/* Phone chrome */}
+                  <div className="rounded-[28px] overflow-hidden shadow-2xl" style={{ background: "#111b21", border: "1px solid rgba(255,255,255,0.08)" }}>
+                    {/* WhatsApp header */}
+                    <div className="flex items-center gap-3 px-4 py-3" style={{ background: "#1f2c34" }}>
+                      <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: "linear-gradient(135deg, #c97b3a, #e8944a)", color: "#fff" }}>CI</div>
+                      <div>
+                        <p className="text-sm font-semibold leading-none" style={{ color: "#e9edef" }}>ClientIn AI</p>
+                        <p className="text-xs mt-0.5" style={{ color: "#8696a0" }}>Your business manager</p>
+                      </div>
+                    </div>
+                    {/* Chat area */}
+                    <div className="flex flex-col gap-2 px-3 py-4" style={{ background: "#0b141a", minHeight: "340px" }}>
+                      {/* Incoming */}
+                      <div className="flex flex-col items-start gap-2">
+                        <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-tl-sm text-sm leading-relaxed" style={{ background: "#1f2c34", color: "#e9edef" }}>
+                          Hey, heads up — Mondays tend to be your quietest day. You also have 11 customers who haven&apos;t visited in over 3 weeks.
+                          <span className="block text-right text-[10px] mt-1" style={{ color: "#8696a0" }}>Sun 8:14 am</span>
+                        </div>
+                        <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-tl-sm text-sm leading-relaxed" style={{ background: "#1f2c34", color: "#e9edef" }}>
+                          Want me to send them a &ldquo;Come in today — 20% off, today only&rdquo; message? I&apos;ll wait for your go-ahead before sending anything.
+                          <span className="block text-right text-[10px] mt-1" style={{ color: "#8696a0" }}>Sun 8:14 am</span>
+                        </div>
+                      </div>
+                      {/* Outgoing */}
+                      <div className="flex justify-end">
+                        <div className="max-w-[75%] px-3 py-2 rounded-2xl rounded-tr-sm text-sm" style={{ background: "#005c4b", color: "#e9edef" }}>
+                          Yeah go for it
+                          <span className="block text-right text-[10px] mt-1" style={{ color: "rgba(233,237,239,0.6)" }}>8:16 am ✓✓</span>
+                        </div>
+                      </div>
+                      {/* Incoming */}
+                      <div className="flex flex-col items-start">
+                        <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-tl-sm text-sm leading-relaxed" style={{ background: "#1f2c34", color: "#e9edef" }}>
+                          Done. Sent to 11 customers. Offer expires tonight at midnight.
+                          <span className="block text-right text-[10px] mt-1" style={{ color: "#8696a0" }}>Sun 8:16 am</span>
+                        </div>
+                      </div>
+                      {/* Date divider */}
+                      <div className="flex justify-center my-1">
+                        <span className="text-[10px] px-3 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.06)", color: "#8696a0" }}>Monday</span>
+                      </div>
+                      {/* Incoming next morning */}
+                      <div className="flex flex-col items-start">
+                        <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-tl-sm text-sm leading-relaxed" style={{ background: "#1f2c34", color: "#e9edef" }}>
+                          Morning! 6 of those 11 came in yesterday. Looks like a good Monday after all.
+                          <span className="block text-right text-[10px] mt-1" style={{ color: "#8696a0" }}>9:05 am</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
           </ScrollReveal>
 
           {/* Social Proof */}
