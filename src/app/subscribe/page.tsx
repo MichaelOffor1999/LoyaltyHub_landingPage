@@ -34,8 +34,8 @@ const PLANS: Plan[] = [
   {
     key: "solo",
     name: "Solo",
-    price: "€29",
-    monthly: 29,
+    price: "€15",
+    monthly: 15,
     branches: "1 branch",
     icon: <Zap className="w-5 h-5" />,
     highlight: false,
@@ -50,8 +50,8 @@ const PLANS: Plan[] = [
   {
     key: "growing",
     name: "Growing",
-    price: "€59",
-    monthly: 59,
+    price: "€30",
+    monthly: 30,
     branches: "Up to 4 branches",
     icon: <Star className="w-5 h-5" />,
     highlight: true,
@@ -68,8 +68,8 @@ const PLANS: Plan[] = [
   {
     key: "scale",
     name: "Scale",
-    price: "€149",
-    monthly: 149,
+    price: "€60",
+    monthly: 60,
     branches: "Unlimited branches",
     icon: <Rocket className="w-5 h-5" />,
     highlight: false,
