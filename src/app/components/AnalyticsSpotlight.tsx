@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function AnalyticsSpotlight() {
   return (
     <section className="w-full mt-8 mb-8">
-      <div className="w-full rounded-3xl p-6 sm:p-8" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 2px 16px rgba(0,0,0,0.3)" }}>
+      <div className="w-full rounded-3xl p-6 sm:p-8" style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.08)", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}>
       {/* Header */}
       <div className="text-center mb-8 sm:mb-10">
         <div
@@ -15,7 +15,7 @@ export default function AnalyticsSpotlight() {
         <h2 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
           Know your customers<br />better than ever before
         </h2>
-        <p className="text-sm sm:text-base max-w-xl mx-auto font-semibold" style={{ color: "rgba(240,236,230,0.75)" }}>
+        <p className="text-sm sm:text-base max-w-xl mx-auto font-semibold" style={{ color: "rgba(26,20,16,0.65)" }}>
           Most businesses are flying blind. clientIn gives you real data on exactly who walks through your door, what keeps them coming back, and who&apos;s about to leave.
         </p>
       </div>
@@ -68,7 +68,7 @@ export default function AnalyticsSpotlight() {
                 label: "Visit trends, day by day",
               },
             ].map((item, i) => (
-              <div key={i} className={`flex items-center gap-3 py-2.5 ${i < 3 ? "border-b" : ""}`} style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <div key={i} className={`flex items-center gap-3 py-2.5 ${i < 3 ? "border-b" : ""}`} style={{ borderColor: "rgba(0,0,0,0.08)" }}>
                 <div className="shrink-0">{item.icon}</div>
                 <span className="text-sm font-semibold" style={{ color: "var(--foreground)" }}>{item.label}</span>
               </div>
@@ -125,7 +125,7 @@ export default function AnalyticsSpotlight() {
               <div className="mt-0.5 shrink-0">{item.icon}</div>
               <div>
                 <div className="text-sm font-bold mb-0 sm:mb-1" style={{ color: "var(--foreground)" }}>{item.label}</div>
-                <div className="text-sm leading-relaxed" style={{ color: "rgba(240,236,230,0.55)" }}>{item.desc}</div>
+                <div className="text-sm leading-relaxed" style={{ color: "rgba(26,20,16,0.55)" }}>{item.desc}</div>
               </div>
             </div>
           ))}

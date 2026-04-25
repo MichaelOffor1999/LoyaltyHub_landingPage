@@ -111,8 +111,8 @@ export default function FeatureList() {
                   onClick={() => goTo(i)}
                   className="text-left rounded-2xl px-5 py-4 relative overflow-hidden"
                   style={{
-                    background: isActive ? "rgba(201,123,58,0.07)" : "rgba(255,255,255,0.04)",
-                    border: isActive ? "1px solid rgba(201,123,58,0.3)" : "1px solid rgba(255,255,255,0.08)",
+                    background: isActive ? "rgba(201,123,58,0.07)" : "rgba(0,0,0,0.04)",
+                    border: isActive ? "1px solid rgba(201,123,58,0.3)" : "1px solid rgba(0,0,0,0.07)",
                     cursor: "pointer",
                     transition: "background 0.25s ease, border-color 0.25s ease",
                   }}
@@ -133,7 +133,7 @@ export default function FeatureList() {
                   )}
                   <p
                     className="text-sm font-semibold leading-snug"
-                    style={{ color: isActive ? "var(--foreground)" : "rgba(240,236,230,0.4)", transition: "color 0.25s ease" }}
+                    style={{ color: isActive ? "var(--foreground)" : "rgba(26,20,16,0.4)", transition: "color 0.25s ease" }}
                   >
                     &ldquo;{item.pain}&rdquo;
                   </p>
@@ -165,7 +165,7 @@ export default function FeatureList() {
                 {o.outcome}
               </div>
 
-              <p className="text-base leading-relaxed font-medium" style={{ color: "rgba(240,236,230,0.75)" }}>
+              <p className="text-base leading-relaxed font-medium" style={{ color: "rgba(26,20,16,0.65)" }}>
                 {o.solution}
               </p>
 
@@ -175,7 +175,7 @@ export default function FeatureList() {
                     key={j}
                     className="flex items-start gap-2.5 text-sm"
                     style={{
-                      color: "rgba(240,236,230,0.75)",
+                      color: "rgba(26,20,16,0.65)",
                       opacity: contentVisible ? 1 : 0,
                       transform: contentVisible ? "translateY(0)" : "translateY(6px)",
                       transition: `opacity 0.3s ease ${j * 80 + 120}ms, transform 0.3s ease ${j * 80 + 120}ms`,

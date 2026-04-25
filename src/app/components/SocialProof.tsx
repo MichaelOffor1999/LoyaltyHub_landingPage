@@ -7,7 +7,7 @@ import ScrollReveal from "./ScrollReveal";
 function ReliefMark({ size = "md" }: { size?: "sm" | "md" }) {
   const h = size === "sm" ? 32 : 48;
   return (
-    <div style={{ width: h, height: h, overflow: "hidden", borderRadius: "50%", flexShrink: 0, border: "1px solid rgba(255,255,255,0.1)" }}>
+    <div style={{ width: h, height: h, overflow: "hidden", borderRadius: "50%", flexShrink: 0, border: "1px solid rgba(0,0,0,0.1)" }}>
       <Image src="/logo-relief.jpg" alt="Relief" width={h} height={h} style={{ objectFit: "cover", objectPosition: "center center" }} />
     </div>
   );
@@ -34,7 +34,7 @@ export default function SocialProof() {
           <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "var(--foreground)" }}>
             Already trusted by local businesses
           </h2>
-          <p className="mt-3 text-sm" style={{ color: "rgba(240,236,230,0.55)" }}>
+          <p className="mt-3 text-sm" style={{ color: "rgba(26,20,16,0.55)" }}>
             These are real business owners using clientIn today.
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function SocialProof() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
 
           {/* Subtle border */}
-          <div className="absolute inset-0 rounded-3xl" style={{ border: "1px solid rgba(255,255,255,0.08)" }} />
+          <div className="absolute inset-0 rounded-3xl" style={{ border: "1px solid rgba(0,0,0,0.06)" }} />
 
           {/* Stars — top left */}
           <div className="absolute top-5 left-5 flex gap-1">

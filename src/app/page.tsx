@@ -26,14 +26,14 @@ export default function Home() {
       {/* ─── Top bar: logo + CTA ─── */}
       <div className="fixed top-0 inset-x-0 z-[60] flex items-center justify-between px-5 sm:px-10 py-4 pointer-events-none">
         <a href="#top" className="pointer-events-auto">
-          <span className="font-black text-sm sm:text-base tracking-[0.15em] uppercase" style={{ color: "#ffffff" }}>
+          <span className="font-black text-sm sm:text-base tracking-[0.15em] uppercase" style={{ color: "#1a1410" }}>
             clientIn
           </span>
         </a>
         <a
           href="/subscribe"
           className="pointer-events-auto px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold tracking-wider uppercase transition-all hover:opacity-90"
-          style={{ border: "1px solid rgba(255,255,255,0.3)", color: "#ffffff", backdropFilter: "blur(8px)", background: "rgba(255,255,255,0.08)" }}
+          style={{ border: "1px solid rgba(0,0,0,0.18)", color: "#1a1410", backdropFilter: "blur(8px)", background: "rgba(0,0,0,0.05)" }}
         >
           Manage Plan
         </a>
@@ -50,11 +50,11 @@ export default function Home() {
           display: "flex",
           flexDirection: "column",
             overflow: "hidden",
-            background: "linear-gradient(160deg, #0f0a06 0%, #1e1008 35%, #2a1509 60%, #1a0d06 80%, #0c0704 100%)",
+            background: "linear-gradient(160deg, #f5f0e8 0%, #ede7db 30%, #e8dfd0 60%, #ede7db 80%, #f5f0e8 100%)",
         }}
       >
         {/* Dark gradient overlay — keeps text crisp, darkens bottom for panel transition */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.4) 45%, rgba(0,0,0,0.78) 100%)", zIndex: 1 }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 0%, transparent 55%, rgba(245,240,232,0.6) 100%)", zIndex: 1 }} />
         {/* Hero — full width, nav-inset padding */}
         <div className="w-full px-5 sm:px-14 relative flex flex-col pt-[72px]" style={{ zIndex: 3 }}>
 
@@ -72,8 +72,8 @@ export default function Home() {
             {/* Subtitle — bold, Starlink-style */}
             <ScrollReveal variant="fade-up" delay={700} className="flex flex-col items-center w-full text-center mt-4">
               <p className="max-w-2xl" style={{ lineHeight: 1.5 }}>
-                <span className="block text-lg sm:text-xl md:text-2xl font-bold" style={{ color: "rgba(255,255,255,0.9)" }}>Stop guessing.</span>
-                <span className="block text-lg sm:text-xl md:text-2xl font-bold" style={{ color: "rgba(255,255,255,0.9)" }}>Know who&apos;s loyal and who&apos;s leaving.</span>
+                <span className="block text-lg sm:text-xl md:text-2xl font-bold" style={{ color: "rgba(26,20,16,0.85)" }}>Stop guessing.</span>
+                <span className="block text-lg sm:text-xl md:text-2xl font-bold" style={{ color: "rgba(26,20,16,0.85)" }}>Know who&apos;s loyal and who&apos;s leaving.</span>
               </p>
             </ScrollReveal>
 
@@ -83,19 +83,19 @@ export default function Home() {
                 <a
                   href="#how-it-works"
                   className="px-8 py-4 rounded-xl text-sm font-black tracking-widest uppercase transition-all hover:opacity-90 whitespace-nowrap"
-                  style={{ background: "#ffffff", color: "#0a0a0a", letterSpacing: "0.1em" }}
+                  style={{ background: "#1a1410", color: "#ffffff", letterSpacing: "0.1em" }}
                 >
                   Download App
                 </a>
                 <a
                   href="#how-it-works"
                   className="px-8 py-4 rounded-xl text-sm font-bold tracking-wider uppercase transition-all hover:opacity-80 whitespace-nowrap"
-                  style={{ background: "rgba(255,255,255,0.08)", color: "#ffffff", border: "1px solid rgba(255,255,255,0.22)" }}
+                  style={{ background: "rgba(0,0,0,0.06)", color: "#1a1410", border: "1px solid rgba(0,0,0,0.15)" }}
                 >
                   See How It Works
                 </a>
               </div>
-              <p className="text-xs mt-4" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.02em" }}>
+              <p className="text-xs mt-4" style={{ color: "rgba(26,20,16,0.45)", letterSpacing: "0.02em" }}>
                 30-day free trial · Download the app to get started · Cancel anytime
               </p>
             </ScrollReveal>
@@ -110,7 +110,7 @@ export default function Home() {
       </div>{/* end dark hero */}
 
       {/* ─── Panel 2: Industry + How it Works — scrolls over dark hero ─── */}
-      <div className="w-full relative" style={{ position: "relative", zIndex: 10, background: "#1a1612", borderRadius: "28px 28px 0 0", boxShadow: "0 -8px 40px rgba(0,0,0,0.5)", marginTop: "-2px" }}>
+      <div className="w-full relative" style={{ position: "relative", zIndex: 10, background: "#f5f0e8", borderRadius: "28px 28px 0 0", boxShadow: "0 -8px 40px rgba(0,0,0,0.08)", marginTop: "-2px" }}>
       <main id="main-content" className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 pt-12">
 
         {/* Industry Grid */}
@@ -212,7 +212,7 @@ export default function Home() {
       </div>{/* end panel 2 */}
 
       {/* ─── Panel 3: Features + Analytics + Social Proof + FAQ ─── */}
-      <div className="w-full relative" style={{ background: "#141210" }}>
+      <div className="w-full relative" style={{ background: "#ede8df" }}>
         <div className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 py-16">
 
           {/* Feature List */}
@@ -256,7 +256,7 @@ export default function Home() {
                   <a
                     href="#how-it-works"
                     className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-black tracking-widest uppercase transition-all hover:opacity-90 whitespace-nowrap"
-                    style={{ background: "#ffffff", color: "#0a0a0a", letterSpacing: "0.1em" }}
+                    style={{ background: "#1a1410", color: "#ffffff", letterSpacing: "0.1em" }}
                   >
                     Download App
                   </a>
@@ -269,7 +269,7 @@ export default function Home() {
                     { stat: "£0", label: "customer acquisition cost", sub: "No budget needed. Your partner's loyalty does the heavy lifting." },
                     { stat: "2×", label: "loyalty card engagement", sub: "A shared reward gives customers twice the reason to keep coming back." },
                   ].map((item, i) => (
-                    <div key={i} className="p-5 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    <div key={i} className="p-5 rounded-2xl" style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.07)" }}>
                       <p className="text-3xl font-black mb-1" style={{ color: "#e8944a" }}>{item.stat}</p>
                       <p className="text-sm font-bold mb-1" style={{ color: "var(--foreground)" }}>{item.label}</p>
                       <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>{item.sub}</p>
@@ -319,7 +319,7 @@ export default function Home() {
                   <a
                     href="#how-it-works"
                     className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-black tracking-widest uppercase transition-all hover:opacity-90 whitespace-nowrap"
-                    style={{ background: "#ffffff", color: "#0a0a0a", letterSpacing: "0.1em" }}
+                    style={{ background: "#1a1410", color: "#ffffff", letterSpacing: "0.1em" }}
                   >
                     Download App
                   </a>
@@ -397,7 +397,7 @@ export default function Home() {
       </div>{/* end panel 3 */}
 
       {/* ─── Panel 4: CTA + Footer ─── */}
-      <div className="w-full relative overflow-hidden" style={{ background: "#0f0d0a" }}>
+      <div className="w-full relative overflow-hidden" style={{ background: "#e8e2d6" }}>
         {/* Subtle radial glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(201,123,58,0.15) 0%, transparent 70%)" }} />
         <div className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 py-24 text-center relative z-10">
@@ -408,10 +408,10 @@ export default function Home() {
             >
               Existing customers
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "#f0ece6" }}>
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "#1a1410" }}>
               Already a customer?
             </h2>
-            <p className="text-base mb-8 max-w-lg" style={{ color: "rgba(240,236,230,0.65)" }}>
+            <p className="text-base mb-8 max-w-lg" style={{ color: "rgba(26,20,16,0.6)" }}>
               Manage your subscription, view invoices, and change your plan — all in one place.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -430,16 +430,16 @@ export default function Home() {
           </ScrollReveal>
 
           {/* Footer */}
-          <footer className="w-full pt-16 mt-16 flex flex-col sm:flex-row items-center justify-between gap-4 border-t" style={{ borderColor: "rgba(240,236,230,0.1)" }}>
+          <footer className="w-full pt-16 mt-16 flex flex-col sm:flex-row items-center justify-between gap-4 border-t" style={{ borderColor: "rgba(26,20,16,0.12)" }}>
             <div className="flex items-center gap-2">
               <Image src="/favicon.png" alt="clientIn logo" width={24} height={24} className="rounded-md" />
-              <span className="text-sm font-bold" style={{ color: "#f0ece6" }}>clientIn</span>
+              <span className="text-sm font-bold" style={{ color: "#1a1410" }}>clientIn</span>
             </div>
             <div className="flex items-center gap-4">
-              <a href="/terms" className="text-xs hover:underline py-2 px-1" aria-label="Terms of Service" style={{ color: "rgba(240,236,230,0.5)" }}>Terms of Service</a>
-              <a href="/privacy" className="text-xs hover:underline py-2 px-1" aria-label="Privacy Policy" style={{ color: "rgba(240,236,230,0.5)" }}>Privacy Policy</a>
+              <a href="/terms" className="text-xs hover:underline py-2 px-1" aria-label="Terms of Service" style={{ color: "rgba(26,20,16,0.5)" }}>Terms of Service</a>
+              <a href="/privacy" className="text-xs hover:underline py-2 px-1" aria-label="Privacy Policy" style={{ color: "rgba(26,20,16,0.5)" }}>Privacy Policy</a>
             </div>
-            <span className="text-xs" style={{ color: "rgba(240,236,230,0.4)" }}>
+            <span className="text-xs" style={{ color: "rgba(26,20,16,0.4)" }}>
               &copy; {new Date().getFullYear()} clientIn. All rights reserved.
             </span>
           </footer>

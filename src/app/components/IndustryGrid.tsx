@@ -203,11 +203,11 @@ export default function IndustryGrid() {
                   scrollSnapAlign: "center",
                   background: isActive
                     ? "linear-gradient(135deg, #c97b3a, #e8944a)"
-                    : "rgba(255,255,255,0.04)",
-                  color: isActive ? "#fff" : "rgba(240,236,230,0.55)",
+                    : "rgba(0,0,0,0.04)",
+                  color: isActive ? "#fff" : "rgba(26,20,16,0.45)",
                   border: isActive
                     ? "1px solid rgba(201,123,58,0.5)"
-                    : "1px solid rgba(255,255,255,0.08)",
+                    : "1px solid rgba(0,0,0,0.07)",
                   boxShadow: isActive
                     ? "0 2px 8px rgba(201,123,58,0.25)"
                     : "none",
@@ -241,8 +241,8 @@ export default function IndustryGrid() {
           style={{
             opacity: contentVisible ? 1 : 0,
             transform: contentVisible ? "translateY(0)" : "translateY(8px)",
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "rgba(0,0,0,0.03)",
+            border: "1px solid rgba(0,0,0,0.07)",
             boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
             minHeight: 280,
           }}
@@ -278,7 +278,7 @@ export default function IndustryGrid() {
 
               <p
                 className="text-sm sm:text-base leading-relaxed"
-                style={{ color: "rgba(240,236,230,0.75)" }}
+                style={{ color: "rgba(26,20,16,0.75)" }}
               >
                 {o.description}
               </p>
@@ -304,7 +304,7 @@ export default function IndustryGrid() {
                   </div>
                   <span
                     className="text-sm leading-snug"
-                    style={{ color: "#4b5563" }}
+                    style={{ color: "rgba(26,20,16,0.6)" }}
                   >
                     {b}
                   </span>
@@ -317,7 +317,7 @@ export default function IndustryGrid() {
         {/* Bottom hint */}
         <p
           className="text-xs font-medium text-center"
-          style={{ color: "rgba(240,236,230,0.4)" }}
+          style={{ color: "rgba(26,20,16,0.4)" }}
         >
           Click any industry above — clientIn works for all of them
         </p>

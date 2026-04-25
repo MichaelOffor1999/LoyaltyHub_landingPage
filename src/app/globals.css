@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
-/* ─── Dark espresso theme ─── */
+/* ─── Warm cream theme ─── */
 :root {
-  --background: #1a1612;
-  --foreground: #f0ece6;
+  --background: #f5f0e8;
+  --foreground: #1a1410;
   --brand: #c97b3a;
   --brand-light: #e8944a;
-  --surface: rgba(255,255,255,0.04);
-  --surface-border: rgba(255,255,255,0.08);
-  --muted: rgba(240,236,230,0.5);
-  --nav-bg: rgba(26,22,18,0.92);
-  --nav-border: rgba(255,255,255,0.08);
-  --card-bg: rgba(30,26,22,0.9);
-  --card-border: rgba(255,255,255,0.08);
-  --section-alt-bg: rgba(255,255,255,0.02);
-  --section-alt-border: rgba(255,255,255,0.06);
-  --glass-bg: linear-gradient(135deg, rgba(30,26,22,0.8) 0%, rgba(30,26,22,0.6) 100%);
-  --glass-border: rgba(255,255,255,0.1);
-  --footer-border: rgba(255,255,255,0.08);
-  --text-muted: rgba(240,236,230,0.45);
-  --text-sub: rgba(240,236,230,0.65);
+  --surface: rgba(0,0,0,0.04);
+  --surface-border: rgba(0,0,0,0.08);
+  --muted: rgba(26,20,16,0.45);
+  --nav-bg: rgba(245,240,232,0.92);
+  --nav-border: rgba(0,0,0,0.08);
+  --card-bg: rgba(245,240,232,0.9);
+  --card-border: rgba(0,0,0,0.08);
+  --section-alt-bg: rgba(0,0,0,0.02);
+  --section-alt-border: rgba(0,0,0,0.06);
+  --glass-bg: linear-gradient(135deg, rgba(245,240,232,0.8) 0%, rgba(245,240,232,0.6) 100%);
+  --glass-border: rgba(0,0,0,0.08);
+  --footer-border: rgba(0,0,0,0.1);
+  --text-muted: rgba(26,20,16,0.45);
+  --text-sub: rgba(26,20,16,0.6);
 }
 
 @theme inline {
