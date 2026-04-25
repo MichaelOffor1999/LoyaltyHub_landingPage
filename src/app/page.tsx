@@ -82,13 +82,6 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row items-center gap-3" id="waitlist">
                 <a
                   href="#how-it-works"
-                  className="px-8 py-4 rounded-xl text-sm font-black tracking-widest uppercase transition-all hover:opacity-90 whitespace-nowrap"
-                  style={{ background: "#1a1410", color: "#ffffff", letterSpacing: "0.1em" }}
-                >
-                  Download App
-                </a>
-                <a
-                  href="#how-it-works"
                   className="px-8 py-4 rounded-xl text-sm font-bold tracking-wider uppercase transition-all hover:opacity-80 whitespace-nowrap"
                   style={{ background: "rgba(0,0,0,0.06)", color: "#1a1410", border: "1px solid rgba(0,0,0,0.15)" }}
                 >
@@ -96,7 +89,7 @@ export default function Home() {
                 </a>
               </div>
               <p className="text-xs mt-4" style={{ color: "rgba(26,20,16,0.45)", letterSpacing: "0.02em" }}>
-                30-day free trial · Download the app to get started · Cancel anytime
+                30-day free trial · Cancel anytime
               </p>
             </ScrollReveal>
 
@@ -241,13 +234,6 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <a
-                    href="#how-it-works"
-                    className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-black tracking-widest uppercase transition-all hover:opacity-90 whitespace-nowrap"
-                    style={{ background: "#1a1410", color: "#ffffff", letterSpacing: "0.1em" }}
-                  >
-                    Download App
-                  </a>
                 </div>
 
                 {/* Right — stat column */}
@@ -300,13 +286,6 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <a
-                    href="#how-it-works"
-                    className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-black tracking-widest uppercase transition-all hover:opacity-90 whitespace-nowrap"
-                    style={{ background: "#1a1410", color: "#ffffff", letterSpacing: "0.1em" }}
-                  >
-                    Download App
-                  </a>
                 </div>
 
                 {/* Right — WhatsApp chat mock */}

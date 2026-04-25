@@ -14,7 +14,7 @@ function ReliefMark({ size = "md" }: { size?: "sm" | "md" }) {
 }
 
 const testimonial = {
-  quote: "I used to have no idea who my best clients were beyond memory. Now I can see exactly who's been in, how often, and who I'm at risk of losing. It's changed how I run the shop.",
+  quote: "I used to have no idea who my best clients were beyond memory. Now I can see exactly who's been in, how often, and who I'm at risk of losing. It'll change how I run my shop.",
   business: "Relief",
   stars: 5,
   imageSrc: "/relief-testimonial.jpg",
