@@ -87,12 +87,6 @@ export default function FeatureList() {
     >
         {/* Header */}
         <div className="text-center mb-10">
-          <div
-            className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
-            style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
-          >
-            Why businesses choose clientIn
-          </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "var(--foreground)" }}>
             Built around the problems<br />you actually have
           </h2>
@@ -202,7 +196,7 @@ export default function FeatureList() {
                       width: i === active ? 20 : 7,
                       height: 7,
                       borderRadius: 99,
-                      background: i === active ? "#c97b3a" : "rgba(255,255,255,0.1)",
+                      background: i === active ? "#c97b3a" : "rgba(0,0,0,0.15)",
                       transition: "width 0.3s ease, background 0.3s ease",
                       border: "none",
                       cursor: "pointer",

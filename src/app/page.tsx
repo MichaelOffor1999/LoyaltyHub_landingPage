@@ -121,17 +121,9 @@ export default function Home() {
         {/* How it works */}
         <section
           id="how-it-works"
-          className="w-full mt-16 rounded-3xl py-14 sm:py-16 px-6 sm:px-10 relative overflow-hidden"
-          style={{ background: "var(--surface)", border: "1px solid var(--surface-border)", boxShadow: "0 0 60px rgba(201,123,58,0.06)" }}
+          className="w-full mt-16 py-14 sm:py-16 relative"
         >
-          <div style={{ position: "absolute", top: "-20%", left: "50%", transform: "translateX(-50%)", width: "500px", height: "350px", background: "radial-gradient(ellipse, rgba(201,123,58,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
-          <ScrollReveal delay={0} className="text-center mb-10 relative" variant="blur-in">
-            <div
-              className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
-              style={{ background: "rgba(201,123,58,0.12)", color: "#e8944a", border: "1px solid rgba(201,123,58,0.3)" }}
-            >
-              How it works
-            </div>
+          <ScrollReveal delay={0} className="text-center mb-10" variant="blur-in">
             <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "var(--foreground)" }}>
               Up and running in 3 steps
             </h2>
@@ -222,12 +214,8 @@ export default function Home() {
 
           {/* Collab Loyalty Programs */}
           <ScrollReveal className="w-full mt-16" variant="fade-up" threshold={0.08}>
-            <section
-              className="w-full rounded-3xl py-14 sm:py-16 px-6 sm:px-10 relative overflow-hidden"
-              style={{ background: "var(--surface)", border: "1px solid var(--surface-border)", boxShadow: "0 0 60px rgba(201,123,58,0.08)" }}
-            >
-              <div style={{ position: "absolute", top: "-20%", left: "30%", width: "500px", height: "350px", background: "radial-gradient(ellipse, rgba(201,123,58,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
-              <div className="relative flex flex-col lg:flex-row gap-12 items-center">
+            <section className="w-full py-16 sm:py-20">
+              <div className="flex flex-col lg:flex-row gap-16 items-start">
 
                 {/* Left — copy */}
                 <div className="flex-1 min-w-0">
@@ -262,15 +250,15 @@ export default function Home() {
                   </a>
                 </div>
 
-                {/* Right — stat callout */}
-                <div className="w-full lg:w-[300px] shrink-0 flex flex-col gap-4">
+                {/* Right — stat column */}
+                <div className="w-full lg:w-[240px] shrink-0 flex flex-col">
                   {[
                     { stat: "5×", label: "higher conversion than paid ads", sub: "Word-of-mouth from a trusted neighbour just hits different." },
                     { stat: "£0", label: "customer acquisition cost", sub: "No budget needed. Your partner's loyalty does the heavy lifting." },
                     { stat: "2×", label: "loyalty card engagement", sub: "A shared reward gives customers twice the reason to keep coming back." },
                   ].map((item, i) => (
-                    <div key={i} className="p-5 rounded-2xl" style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.07)" }}>
-                      <p className="text-3xl font-black mb-1" style={{ color: "#e8944a" }}>{item.stat}</p>
+                    <div key={i} className={`py-7 ${i > 0 ? "border-t" : ""}`} style={{ borderColor: "rgba(0,0,0,0.1)" }}>
+                      <p className="text-5xl font-black mb-2 leading-none" style={{ color: "#c97b3a" }}>{item.stat}</p>
                       <p className="text-sm font-bold mb-1" style={{ color: "var(--foreground)" }}>{item.label}</p>
                       <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>{item.sub}</p>
                     </div>
@@ -288,12 +276,8 @@ export default function Home() {
 
           {/* WhatsApp AI Agent */}
           <ScrollReveal className="w-full mt-16" variant="fade-up" threshold={0.08}>
-            <section
-              className="w-full rounded-3xl py-14 sm:py-16 px-6 sm:px-10 relative overflow-hidden"
-              style={{ background: "var(--surface)", border: "1px solid var(--surface-border)", boxShadow: "0 0 60px rgba(37,211,102,0.06)" }}
-            >
-              <div style={{ position: "absolute", top: "-10%", right: "10%", width: "500px", height: "400px", background: "radial-gradient(ellipse, rgba(37,211,102,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
-              <div className="relative flex flex-col lg:flex-row gap-12 items-center">
+            <section className="w-full py-16 sm:py-20">
+              <div className="flex flex-col lg:flex-row gap-16 items-start">
 
                 {/* Left — copy */}
                 <div className="flex-1 min-w-0">
@@ -402,12 +386,6 @@ export default function Home() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(201,123,58,0.15) 0%, transparent 70%)" }} />
         <div className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 py-24 text-center relative z-10">
           <ScrollReveal staggerChildren variant="scale-up" staggerBase={120} className="w-full flex flex-col items-center">
-            <div
-              className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-5"
-              style={{ background: "rgba(201,123,58,0.12)", color: "#e8944a", border: "1px solid rgba(201,123,58,0.3)" }}
-            >
-              Existing customers
-            </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "#1a1410" }}>
               Already a customer?
             </h2>

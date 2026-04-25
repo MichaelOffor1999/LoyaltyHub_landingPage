@@ -3,15 +3,8 @@ import Image from "next/image";
 export default function AnalyticsSpotlight() {
   return (
     <section className="w-full mt-8 mb-8">
-      <div className="w-full rounded-3xl p-6 sm:p-8" style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.08)", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}>
       {/* Header */}
       <div className="text-center mb-8 sm:mb-10">
-        <div
-          className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
-          style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
-        >
-          Customer Intelligence
-        </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
           Know your customers<br />better than ever before
         </h2>
@@ -26,7 +19,7 @@ export default function AnalyticsSpotlight() {
         {/* Left: insight callouts — matched to real app features */}
         <div className="flex flex-col gap-3">
           {/* Mobile: compact list in one card */}
-          <div className="sm:hidden card rounded-2xl p-3">
+          <div className="sm:hidden">
             {[
               {
                 icon: (
@@ -121,7 +114,7 @@ export default function AnalyticsSpotlight() {
               desc: "See your busiest days of the week with a visual visit trend chart — spot patterns and plan your staffing and promotions.",
             },
           ].map((item, i) => (
-            <div key={i} className="hidden sm:flex card card-hover rounded-2xl p-3 sm:p-5 gap-3 sm:gap-4 items-start">
+            <div key={i} className="hidden sm:flex gap-4 items-start py-4 border-b last:border-b-0" style={{ borderColor: "rgba(0,0,0,0.08)" }}>
               <div className="mt-0.5 shrink-0">{item.icon}</div>
               <div>
                 <div className="text-sm font-bold mb-0 sm:mb-1" style={{ color: "var(--foreground)" }}>{item.label}</div>
@@ -161,7 +154,6 @@ export default function AnalyticsSpotlight() {
             </div>
           </div>
         </div>
-      </div>
       </div>
     </section>
   );
