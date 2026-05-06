@@ -195,6 +195,12 @@ function SignInModal({ onSuccess, onClose }: { onSuccess: (token: string, email:
                 {sending ? <><Loader2 className="w-4 h-4 animate-spin" />Sending…</> : "Continue →"}
               </button>
             </form>
+            <p className="text-xs text-center mt-5" style={{ color: "var(--text-muted)" }}>
+              Need help?{" "}
+              <a href="mailto:hello@clientin.co" className="hover:opacity-80 transition-opacity" style={{ color: "var(--brand)" }}>
+                hello@clientin.co
+              </a>
+            </p>
           </>
         ) : (
           <>
