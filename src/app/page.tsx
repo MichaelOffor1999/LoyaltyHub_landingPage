@@ -395,6 +395,7 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <a href="/terms" className="text-xs hover:underline py-2 px-1" aria-label="Terms of Service" style={{ color: "rgba(26,20,16,0.5)" }}>Terms of Service</a>
               <a href="/privacy" className="text-xs hover:underline py-2 px-1" aria-label="Privacy Policy" style={{ color: "rgba(26,20,16,0.5)" }}>Privacy Policy</a>
+              <a href="mailto:hello@clientin.co" className="text-xs hover:underline py-2 px-1" aria-label="Contact us" style={{ color: "rgba(26,20,16,0.5)" }}>hello@clientin.co</a>
             </div>
             <span className="text-xs" style={{ color: "rgba(26,20,16,0.4)" }}>
               &copy; {new Date().getFullYear()} clientIn. All rights reserved.
