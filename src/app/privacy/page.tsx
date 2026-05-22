@@ -94,28 +94,68 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>8. Cookies</h2>
+            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>8. Video Content and Analytics</h2>
+
+            <p className="text-base font-semibold mb-2">Information we collect</p>
+            <p className="text-base leading-relaxed mb-3">
+              When you watch a Business Video on ClientIn, we collect the following data associated with your account:
+            </p>
+            <ul className="text-base leading-relaxed flex flex-col gap-2 list-disc list-inside mb-4">
+              <li>Whether you watched a video (view event)</li>
+              <li>Whether you watched the video to completion (completion event)</li>
+              <li>Whether you visited a business profile after watching a video (profile visit event)</li>
+              <li>Whether you tapped a booking link on a business profile (booking tap event)</li>
+            </ul>
+            <p className="text-base leading-relaxed mb-4">
+              This data is linked to your user account ID and the relevant business ID.
+            </p>
+
+            <p className="text-base font-semibold mb-2">How we use this data</p>
+            <p className="text-base leading-relaxed mb-4">
+              This data is used exclusively to provide business owners with anonymised performance statistics about their promotional video content. It is not used for personalised advertising, sold to third parties, or shared outside of the platform.
+            </p>
+
+            <p className="text-base font-semibold mb-2">What we do not collect</p>
+            <p className="text-base leading-relaxed mb-4">
+              We do not record the specific times you watched a video, your device camera or microphone data, or any content you did not explicitly submit. Business owners cannot see your name, email address, or any personally identifying information — they only see aggregate totals (e.g. &quot;42 views&quot;).
+            </p>
+
+            <p className="text-base font-semibold mb-2">Data retention</p>
+            <p className="text-base leading-relaxed mb-4">
+              Video engagement data is retained for as long as the associated business account remains active on the platform. If a business account is deleted, all associated video engagement data is permanently deleted.
+            </p>
+
+            <p className="text-base font-semibold mb-2">Your rights</p>
+            <p className="text-base leading-relaxed">
+              You may request deletion of your video engagement data at any time by contacting us at{" "}
+              <a href="mailto:hello@clientin.co" className="underline" style={{ color: "#c97b3a" }}>hello@clientin.co</a>.
+              See our GDPR / Data Rights section for full details.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>9. Cookies</h2>
             <p className="text-base leading-relaxed">
               Our website uses only essential cookies required for the site to function. We do not use advertising or tracking cookies.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>9. Security</h2>
+            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>10. Security</h2>
             <p className="text-base leading-relaxed">
               We use industry-standard encryption and security practices to protect your data. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>10. Changes to This Policy</h2>
+            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>11. Changes to This Policy</h2>
             <p className="text-base leading-relaxed">
               We may update this Privacy Policy periodically. We will notify you of significant changes via email or in-app notification. The date at the top of this page reflects the most recent update.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>11. Contact</h2>
+            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>12. Contact</h2>
             <p className="text-base leading-relaxed">
               For any privacy-related queries, contact us at{" "}
               <a href="mailto:hello@clientin.co" className="underline" style={{ color: "#c97b3a" }}>hello@clientin.co</a>.

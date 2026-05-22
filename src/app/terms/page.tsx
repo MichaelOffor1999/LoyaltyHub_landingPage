@@ -78,7 +78,35 @@ export default function Terms() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>10. Governing Law</h2>
+            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>10. Business Video Content</h2>
+            <p className="text-base leading-relaxed mb-4">
+              Businesses on ClientIn may upload short promotional videos (&quot;Business Videos&quot;) to their profile for display to customers on the platform.
+            </p>
+            <p className="text-base font-semibold mb-2">By uploading a Business Video, you agree that:</p>
+            <ol className="text-base leading-relaxed flex flex-col gap-2 list-decimal list-inside mb-4">
+              <li>You own all rights to the video content, or have obtained all necessary licences, consents, and permissions from any individuals, rights holders, or third parties featured in or associated with the video.</li>
+              <li>The video does not contain content that is unlawful, defamatory, obscene, misleading, or in violation of any third-party intellectual property rights.</li>
+              <li>You grant ClientIn a non-exclusive, royalty-free, worldwide licence to host, display, and distribute the video solely for the purpose of operating the platform.</li>
+              <li>You are solely responsible for any claims arising from the content of your video.</li>
+              <li>Videos must not contain contact details, third-party URLs, or any content designed to redirect customers away from the platform in an unsanctioned manner.</li>
+            </ol>
+            <p className="text-base leading-relaxed mb-4">
+              <strong>ClientIn reserves the right to remove any Business Video at its sole discretion, without notice, if it reasonably believes the content violates these Terms or applicable law.</strong>
+            </p>
+            <p className="text-base leading-relaxed">
+              Video content is stored and delivered via Cloudflare Stream. By uploading a video, you acknowledge that it will be processed and hosted on Cloudflare&apos;s infrastructure in accordance with Cloudflare&apos;s terms of service.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>11. Video Analytics</h2>
+            <p className="text-base leading-relaxed">
+              When customers view a Business Video, ClientIn may collect anonymised engagement data including view counts, video completion rates, profile visits, and booking link taps (&quot;Video Analytics&quot;). This data is provided to the business owner solely for the purpose of measuring promotional performance. Video Analytics exclude activity by the business owner themselves. ClientIn makes no warranties as to the absolute accuracy of Video Analytics data.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold mb-3" style={{ color: "#111827" }}>12. Governing Law</h2>
             <p className="text-base leading-relaxed">
               These Terms are governed by the laws of Ireland. Any disputes shall be subject to the exclusive jurisdiction of the Irish courts. If you are an EU consumer, you may also have rights under the laws of your country of residence. You may also use the EU Online Dispute Resolution platform at{" "}
               <a href="https://www.ccpc.ie" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: "#c97b3a" }}>https://www.ccpc.ie</a>.
