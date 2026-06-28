@@ -139,9 +139,6 @@ export default function IndustryGrid() {
     };
   }, [active, paused]);
 
-  const o = industries[active];
-  const Icon = o.icon;
-
   return (
     <section
       className="w-full mt-16"
@@ -235,83 +232,94 @@ export default function IndustryGrid() {
           />
         </div>
 
-        {/* Content panel */}
-        <div
-          className="rounded-2xl p-8 sm:p-10 transition-all duration-200"
-          style={{
-            opacity: contentVisible ? 1 : 0,
-            transform: contentVisible ? "translateY(0)" : "translateY(8px)",
-            background: "rgba(0,0,0,0.03)",
-            border: "1px solid rgba(0,0,0,0.07)",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
-            minHeight: 280,
-          }}
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center gap-6">
-            {/* Left: icon + text */}
-            <div className="flex-1 flex flex-col gap-4 text-center sm:text-left items-center sm:items-start">
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
-                  style={{
-                    background: "linear-gradient(135deg, rgba(201,123,58,0.12), rgba(232,148,74,0.08))",
-                    border: "1px solid rgba(201,123,58,0.18)",
-                  }}
-                >
-                  <Icon size={20} strokeWidth={2} style={{ color: "#c97b3a" }} />
-                </div>
-                <div>
-                  <h3
-                    className="text-lg sm:text-xl font-extrabold"
-                    style={{ color: "var(--foreground)" }}
-                  >
-                    {o.title}
-                  </h3>
-                  <p
-                    className="text-sm font-semibold"
-                    style={{ color: "#c97b3a" }}
-                  >
-                    {o.tagline}
-                  </p>
+        {/* Content panels — all rendered in the same grid cell so the container
+            height is always set by the tallest panel. No layout shift on switch. */}
+        <div style={{ display: "grid" }}>
+          {industries.map((ind, i) => {
+            const PanelIcon = ind.icon;
+            return (
+              <div
+                key={ind.title}
+                className="rounded-2xl p-8 sm:p-10"
+                style={{
+                  gridArea: "1 / 1",
+                  opacity: i === active && contentVisible ? 1 : 0,
+                  transform: i === active && contentVisible ? "translateY(0)" : "translateY(8px)",
+                  transition: "opacity 200ms ease, transform 200ms ease",
+                  pointerEvents: i === active ? "auto" : "none",
+                  background: "rgba(0,0,0,0.03)",
+                  border: "1px solid rgba(0,0,0,0.07)",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+                }}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+                  {/* Left: icon + text */}
+                  <div className="flex-1 flex flex-col gap-4 text-center sm:text-left items-center sm:items-start">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                        style={{
+                          background: "linear-gradient(135deg, rgba(201,123,58,0.12), rgba(232,148,74,0.08))",
+                          border: "1px solid rgba(201,123,58,0.18)",
+                        }}
+                      >
+                        <PanelIcon size={20} strokeWidth={2} style={{ color: "#c97b3a" }} />
+                      </div>
+                      <div>
+                        <h3
+                          className="text-lg sm:text-xl font-extrabold"
+                          style={{ color: "var(--foreground)" }}
+                        >
+                          {ind.title}
+                        </h3>
+                        <p
+                          className="text-sm font-semibold"
+                          style={{ color: "#c97b3a" }}
+                        >
+                          {ind.tagline}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p
+                      className="text-sm sm:text-base leading-relaxed"
+                      style={{ color: "rgba(26,20,16,0.75)" }}
+                    >
+                      {ind.description}
+                    </p>
+                  </div>
+
+                  {/* Right: bullets */}
+                  <div className="sm:w-[280px] flex flex-col gap-2.5 shrink-0 items-center sm:items-start">
+                    {ind.bullets.map((b, bi) => (
+                      <div key={bi} className="flex items-start gap-2.5">
+                        <div
+                          className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                          style={{
+                            background: "rgba(201,123,58,0.1)",
+                            border: "1px solid rgba(201,123,58,0.2)",
+                          }}
+                        >
+                          <span
+                            className="text-xs font-bold"
+                            style={{ color: "#c97b3a" }}
+                          >
+                            ✓
+                          </span>
+                        </div>
+                        <span
+                          className="text-sm leading-snug"
+                          style={{ color: "rgba(26,20,16,0.6)" }}
+                        >
+                          {b}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-
-              <p
-                className="text-sm sm:text-base leading-relaxed"
-                style={{ color: "rgba(26,20,16,0.75)" }}
-              >
-                {o.description}
-              </p>
-            </div>
-
-            {/* Right: bullets */}
-            <div className="sm:w-[280px] flex flex-col gap-2.5 shrink-0 items-center sm:items-start">
-              {o.bullets.map((b, i) => (
-                <div key={i} className="flex items-start gap-2.5">
-                  <div
-                    className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                    style={{
-                      background: "rgba(201,123,58,0.1)",
-                      border: "1px solid rgba(201,123,58,0.2)",
-                    }}
-                  >
-                    <span
-                      className="text-xs font-bold"
-                      style={{ color: "#c97b3a" }}
-                    >
-                      ✓
-                    </span>
-                  </div>
-                  <span
-                    className="text-sm leading-snug"
-                    style={{ color: "rgba(26,20,16,0.6)" }}
-                  >
-                    {b}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+            );
+          })}
         </div>
 
         {/* Bottom hint */}
