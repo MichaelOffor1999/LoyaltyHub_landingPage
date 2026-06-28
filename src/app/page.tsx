@@ -130,8 +130,8 @@ export default function Home() {
             <div className="flex flex-col gap-0 px-2">
               {[
                 { step: "01", title: "Create your program", desc: "Set your rewards, tiers, and branding in minutes." },
-                { step: "02", title: "Invite your customers", desc: "Customers download the free app and get their own QR code — you scan it at the till to stamp their card." },
-                { step: "03", title: "Watch them return", desc: "Customers earn points and redeem rewards — you watch revenue grow." },
+                { step: "02", title: "Customers tap to check in", desc: "Customers tap their phone on your NFC tag at the counter, loyalty card stamped instantly. QR code is always available as a backup." },
+                { step: "03", title: "Watch them return", desc: "Customers earn points and redeem rewards. You watch revenue grow." },
               ].map((s, i) => (
                 <div key={i} className="flex gap-4">
                   <div className="flex flex-col items-center">
@@ -168,8 +168,8 @@ export default function Home() {
             <div className="flex flex-col gap-8 max-w-xs">
               {[
                 { step: "01", title: "Create your program", desc: "Set your rewards, tiers, and branding in minutes." },
-                { step: "02", title: "Invite your customers", desc: "Customers download the free app and get their own QR code — you scan it at the till to stamp their card." },
-                { step: "03", title: "Watch them return", desc: "Customers earn points and redeem rewards — you watch revenue grow." },
+                { step: "02", title: "Customers tap to check in", desc: "Customers tap their phone on your NFC tag at the counter, loyalty card stamped instantly. QR code is always available as a backup." },
+                { step: "03", title: "Watch them return", desc: "Customers earn points and redeem rewards. You watch revenue grow." },
               ].map((s, i) => (
                 <div key={i} className="flex gap-4 items-start">
                   <div
@@ -193,6 +193,77 @@ export default function Home() {
           </ScrollReveal>
         </section>
 
+        {/* Video Marketplace */}
+        <ScrollReveal className="w-full mt-4" variant="fade-up" threshold={0.08}>
+          <section className="w-full py-16 sm:py-20">
+            <div className="flex flex-col lg:flex-row gap-16 items-start">
+
+              {/* Left — copy */}
+              <div className="flex-1 min-w-0">
+                <div
+                  className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold mb-4"
+                  style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
+                >
+                  Video Marketplace
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
+                  Your video.<br />Their first impression.
+                </h2>
+                <p className="text-base mb-3 max-w-md" style={{ color: "var(--text-sub)" }}>
+                  Customers browsing the clientIn Discover page aren&apos;t just reading names and addresses. They&apos;re watching short promo videos and choosing who to visit based on what they see.
+                </p>
+                <p className="text-base mb-8 max-w-md font-semibold" style={{ color: "var(--foreground)" }}>
+                  Upload a short video to your clientIn profile and appear in the local video marketplace instantly. Your best work, in front of customers already looking for what you offer.
+                </p>
+                <ul className="flex flex-col gap-3 mb-8">
+                  {[
+                    "Upload once. Your video lives on your clientIn profile permanently",
+                    "Customers discover you through the in-app video marketplace before they even visit",
+                    "Stand out from text-only listings with video that shows what you actually do",
+                    "Customers who watch your video arrive already sold on what you offer",
+                  ].map((point, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
+                      <span className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black" style={{ background: "rgba(201,123,58,0.15)", color: "#e8944a" }}>✓</span>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Right — video in phone frame */}
+              <div className="flex items-center justify-center w-full lg:w-auto shrink-0">
+                <div
+                  className="relative w-full max-w-[280px] mx-auto p-[10px]"
+                  style={{
+                    borderRadius: 44,
+                    background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)",
+                    boxShadow: "0 0 0 1.5px #3a3a3a, 0 0 0 3px #111, 0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.06)",
+                  }}
+                >
+                  {/* Side buttons */}
+                  <div className="absolute -left-[3px] top-[80px] w-[3px] h-8 rounded-l-sm" style={{ background: "#2a2a2a" }} />
+                  <div className="absolute -left-[3px] top-[124px] w-[3px] h-10 rounded-l-sm" style={{ background: "#2a2a2a" }} />
+                  <div className="absolute -left-[3px] top-[172px] w-[3px] h-10 rounded-l-sm" style={{ background: "#2a2a2a" }} />
+                  <div className="absolute -right-[3px] top-[120px] w-[3px] h-14 rounded-r-sm" style={{ background: "#2a2a2a" }} />
+
+                  {/* Screen */}
+                  <div style={{ borderRadius: 36, overflow: "hidden", background: "#000" }}>
+                    <video
+                      src="/promo-demo.mp4"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      style={{ width: "100%", height: "auto", display: "block" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </ScrollReveal>
+
       </main>
       </div>{/* end panel 2 */}
 
@@ -205,6 +276,132 @@ export default function Home() {
             <FeatureList />
           </section>
 
+          {/* Customer App */}
+          <ScrollReveal className="w-full mt-8" variant="fade-up" threshold={0.08}>
+            <section className="w-full py-16 sm:py-20">
+              <div className="flex flex-col lg:flex-row gap-16 items-start">
+
+                {/* Left — copy */}
+                <div className="flex-1 min-w-0">
+                  <div
+                    className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold mb-4"
+                    style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
+                  >
+                    One app
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
+                    One app.<br />Two experiences.
+                  </h2>
+                  <p className="text-base mb-3 max-w-md" style={{ color: "var(--text-sub)" }}>
+                    clientIn is a single app. You just choose how you sign in. Business owners log in to manage their loyalty program. Customers log in to collect stamps and discover local spots.
+                  </p>
+                  <p className="text-base mb-8 max-w-md font-semibold" style={{ color: "var(--foreground)" }}>
+                    Same app, same download. The experience adapts to who you are the moment you sign in.
+                  </p>
+                  <ul className="flex flex-col gap-3">
+                    {[
+                      "Sign in as a business to manage your program, view insights and send notifications",
+                      "Sign in as a customer to browse Discover, collect loyalty cards and redeem rewards",
+                      "Digital loyalty wallet with all their cards in one place, updated in real time",
+                      "Customers watch your promo video on Discover before they even visit",
+                    ].map((point, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
+                        <span className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black" style={{ background: "rgba(201,123,58,0.15)", color: "#e8944a" }}>✓</span>
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Right — two-sided stat cards */}
+                <div className="w-full lg:w-[260px] shrink-0 flex flex-col gap-4">
+                  {/* Business mode */}
+                  <div className="rounded-2xl p-5" style={{ background: "rgba(201,123,58,0.06)", border: "1px solid rgba(201,123,58,0.18)" }}>
+                    <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color: "#c97b3a" }}>Business sign-in</p>
+                    {["Manage your loyalty program", "View customer insights", "Send push notifications", "Run Collabs with nearby businesses"].map((f, i) => (
+                      <div key={i} className={`flex items-center gap-2 py-2 text-xs font-medium ${i < 3 ? "border-b" : ""}`} style={{ borderColor: "rgba(201,123,58,0.12)", color: "rgba(26,20,16,0.7)" }}>
+                        <span className="w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[9px] font-black" style={{ background: "rgba(201,123,58,0.15)", color: "#e8944a" }}>✓</span>
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                  {/* Customer mode */}
+                  <div className="rounded-2xl p-5" style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.09)" }}>
+                    <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color: "rgba(26,20,16,0.45)" }}>Customer sign-in</p>
+                    {["Discover nearby businesses", "Collect digital loyalty cards", "Track stamps in real time", "Redeem rewards with one tap"].map((f, i) => (
+                      <div key={i} className={`flex items-center gap-2 py-2 text-xs font-medium ${i < 3 ? "border-b" : ""}`} style={{ borderColor: "rgba(0,0,0,0.06)", color: "rgba(26,20,16,0.6)" }}>
+                        <span className="w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[9px] font-black" style={{ background: "rgba(0,0,0,0.06)", color: "rgba(26,20,16,0.5)" }}>✓</span>
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </section>
+          </ScrollReveal>
+
+          {/* Engagement Tools: Vouchers, Push Notifications, Video */}
+          <ScrollReveal className="w-full" variant="fade-up" threshold={0.08}>
+            <section className="w-full pb-16 sm:pb-20">
+              <div className="text-center mb-10">
+                <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "var(--foreground)" }}>
+                  More ways to fill your diary
+                </h2>
+                <p className="mt-3 text-base max-w-lg mx-auto" style={{ color: "var(--text-sub)" }}>
+                  Beyond stamps and rewards, clientIn gives you powerful tools to reach customers and drive visits.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  {
+                    icon: (
+                      <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#c97b3a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="#c97b3a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ),
+                    title: "Push Notifications",
+                    desc: "Send targeted messages to exactly the right customers: at-risk customers who need a nudge, VIPs deserving a thank-you, or everyone at once.",
+                  },
+                  {
+                    icon: (
+                      <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0" stroke="#c97b3a" strokeWidth="1.8"/>
+                        <path d="M7.5 7.5a6.5 6.5 0 0 0 0 9" stroke="#e8944a" strokeWidth="1.6" strokeLinecap="round"/>
+                        <path d="M16.5 7.5a6.5 6.5 0 0 1 0 9" stroke="#e8944a" strokeWidth="1.6" strokeLinecap="round"/>
+                        <path d="M4.5 4.5a10.5 10.5 0 0 0 0 15" stroke="#c97b3a" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.45"/>
+                        <path d="M19.5 4.5a10.5 10.5 0 0 1 0 15" stroke="#c97b3a" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.45"/>
+                      </svg>
+                    ),
+                    title: "Tap or scan. Stamped instantly.",
+                    desc: "Two ways to check in: customers tap your NFC tag for a hands-free stamp, or you scan their QR code from the app on your business device. Your call, every time.",
+                  },
+                ].map((card, i) => (
+                  <div
+                    key={i}
+                    className="rounded-2xl p-6 flex flex-col gap-4"
+                    style={{
+                      background: "rgba(201,123,58,0.04)",
+                      border: "1px solid rgba(201,123,58,0.14)",
+                    }}
+                  >
+                    <div
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                      style={{ background: "rgba(201,123,58,0.1)", border: "1px solid rgba(201,123,58,0.2)" }}
+                    >
+                      {card.icon}
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold mb-1.5" style={{ color: "var(--foreground)" }}>{card.title}</h3>
+                      <p className="text-sm leading-relaxed" style={{ color: "var(--text-sub)" }}>{card.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </ScrollReveal>
+
           {/* Collab Loyalty Programs */}
           <ScrollReveal className="w-full mt-16" variant="fade-up" threshold={0.08}>
             <section className="w-full py-16 sm:py-20">
@@ -216,17 +413,17 @@ export default function Home() {
                     New customers.<br />No ad spend.
                   </h2>
                   <p className="text-base mb-3 max-w-md" style={{ color: "var(--text-sub)" }}>
-                    Flyers cost money. Instagram ads cost more. A referral from a trusted local business? Free — and it converts at 5x the rate.
+                    Flyers cost money. Instagram ads cost more. A referral from a trusted local business? Free, and it converts at 5x the rate.
                   </p>
                   <p className="text-base mb-8 max-w-md font-semibold" style={{ color: "var(--foreground)" }}>
                     ClientIn Collabs lets you team up with a nearby business and instantly tap into their loyal customer base.
                   </p>
                   <ul className="flex flex-col gap-3 mb-8">
                     {[
-                      "Partner with a complementary business — a gym & a smoothie bar, a salon & a nail studio",
+                      "Partner with a complementary business like a gym & a smoothie bar, or a salon & a nail studio",
                       "Their customers earn stamps with you. Your customers earn stamps with them",
                       "One shared reward keeps both customer bases engaged",
-                      "Your data, your branding — the collab is opt-in, not a merger",
+                      "Your data, your branding. The collab is opt-in, not a merger",
                     ].map((point, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
                         <span className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black" style={{ background: "rgba(201,123,58,0.15)", color: "#e8944a" }}>✓</span>
@@ -260,92 +457,6 @@ export default function Home() {
             <AnalyticsSpotlight />
           </ScrollReveal>
 
-          {/* WhatsApp AI Agent */}
-          <ScrollReveal className="w-full mt-16" variant="fade-up" threshold={0.08}>
-            <section className="w-full py-16 sm:py-20">
-              <div className="flex flex-col lg:flex-row gap-16 items-start">
-
-                {/* Left — copy */}
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
-                    Tomorrow looks quiet.<br />Let&apos;s fix that.
-                  </h2>
-                  <p className="text-base mb-6 max-w-md" style={{ color: "var(--text-sub)" }}>
-                    ClientIn&apos;s WhatsApp agent watches your business while you&apos;re on the floor — then tells you exactly what to do about it. No dashboards. No apps. Just a message.
-                  </p>
-                  <ul className="flex flex-col gap-3 mb-8">
-                    {[
-                      "Proactively warns you before a slow day hits",
-                      "Suggests and sends campaigns — with your approval",
-                      "Answers questions like a business partner who knows your data",
-                      "Works 24/7. Zero learning curve.",
-                    ].map((point, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
-                        <span className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black" style={{ background: "rgba(37,211,102,0.15)", color: "#25d366" }}>✓</span>
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Right — WhatsApp chat mock */}
-                <div className="w-full lg:w-[340px] shrink-0">
-                  {/* Phone chrome */}
-                  <div className="rounded-[28px] overflow-hidden shadow-2xl" style={{ background: "#111b21", border: "1px solid rgba(255,255,255,0.08)" }}>
-                    {/* WhatsApp header */}
-                    <div className="flex items-center gap-3 px-4 py-3" style={{ background: "#1f2c34" }}>
-                      <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: "linear-gradient(135deg, #c97b3a, #e8944a)", color: "#fff" }}>CI</div>
-                      <div>
-                        <p className="text-sm font-semibold leading-none" style={{ color: "#e9edef" }}>ClientIn AI</p>
-                        <p className="text-xs mt-0.5" style={{ color: "#8696a0" }}>Your business manager</p>
-                      </div>
-                    </div>
-                    {/* Chat area */}
-                    <div className="flex flex-col gap-2 px-3 py-4" style={{ background: "#0b141a", minHeight: "340px" }}>
-                      {/* Incoming */}
-                      <div className="flex flex-col items-start gap-2">
-                        <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-tl-sm text-sm leading-relaxed" style={{ background: "#1f2c34", color: "#e9edef" }}>
-                          Hey, heads up — Mondays tend to be your quietest day. You also have 11 customers who haven&apos;t visited in over 3 weeks.
-                          <span className="block text-right text-[10px] mt-1" style={{ color: "#8696a0" }}>Sun 8:14 am</span>
-                        </div>
-                        <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-tl-sm text-sm leading-relaxed" style={{ background: "#1f2c34", color: "#e9edef" }}>
-                          Want me to send them a &ldquo;Come in today — 20% off, today only&rdquo; message? I&apos;ll wait for your go-ahead before sending anything.
-                          <span className="block text-right text-[10px] mt-1" style={{ color: "#8696a0" }}>Sun 8:14 am</span>
-                        </div>
-                      </div>
-                      {/* Outgoing */}
-                      <div className="flex justify-end">
-                        <div className="max-w-[75%] px-3 py-2 rounded-2xl rounded-tr-sm text-sm" style={{ background: "#005c4b", color: "#e9edef" }}>
-                          Yeah go for it
-                          <span className="block text-right text-[10px] mt-1" style={{ color: "rgba(233,237,239,0.6)" }}>8:16 am ✓✓</span>
-                        </div>
-                      </div>
-                      {/* Incoming */}
-                      <div className="flex flex-col items-start">
-                        <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-tl-sm text-sm leading-relaxed" style={{ background: "#1f2c34", color: "#e9edef" }}>
-                          Done. Sent to 11 customers. Offer expires tonight at midnight.
-                          <span className="block text-right text-[10px] mt-1" style={{ color: "#8696a0" }}>Sun 8:16 am</span>
-                        </div>
-                      </div>
-                      {/* Date divider */}
-                      <div className="flex justify-center my-1">
-                        <span className="text-[10px] px-3 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.06)", color: "#8696a0" }}>Monday</span>
-                      </div>
-                      {/* Incoming next morning */}
-                      <div className="flex flex-col items-start">
-                        <div className="max-w-[85%] px-3 py-2 rounded-2xl rounded-tl-sm text-sm leading-relaxed" style={{ background: "#1f2c34", color: "#e9edef" }}>
-                          Morning! 6 of those 11 came in yesterday. Looks like a good Monday after all.
-                          <span className="block text-right text-[10px] mt-1" style={{ color: "#8696a0" }}>9:05 am</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </section>
-          </ScrollReveal>
-
           {/* Social Proof */}
           <SocialProof />
 
@@ -369,7 +480,7 @@ export default function Home() {
               Already a customer?
             </h2>
             <p className="text-base mb-8 max-w-lg" style={{ color: "rgba(26,20,16,0.6)" }}>
-              Manage your subscription, view invoices, and change your plan — all in one place.
+              Manage your subscription, view invoices, and change your plan. All in one place.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-3">
               <a

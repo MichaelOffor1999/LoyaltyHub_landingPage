@@ -43,7 +43,7 @@ export default function NotFound() {
           marginBottom: "2rem",
         }}
       >
-        Oops — this page doesn&apos;t exist. Let&apos;s get you back on track.
+        Oops, this page doesn&apos;t exist. Let&apos;s get you back on track.
       </p>
       <Link
         href="/"

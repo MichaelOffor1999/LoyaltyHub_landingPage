@@ -127,11 +127,22 @@ export async function GET(req: NextRequest) {
     let pendingPlanDate: string | null = null;
 
     if (stripeCustomerId) {
-      // Validate customer exists in current mode; if not, treat as no subscription
+      // Step 1: confirm the customer exists in the current Stripe mode.
+      // resource_missing (404) means the ID belongs to the other mode (test vs live) —
+      // silently skip and return no Stripe data.
+      // Any other error (network blip, Stripe 5xx) is re-thrown so the outer catch
+      // returns a 500 to the client instead of a false "no subscription" response.
+      let customerValid = false;
       try {
-        await stripe.customers.retrieve(stripeCustomerId);
+        const customer = await stripe.customers.retrieve(stripeCustomerId);
+        customerValid = !(customer as Stripe.DeletedCustomer).deleted;
+      } catch (err) {
+        const e = err as { statusCode?: number; code?: string };
+        if (e?.statusCode !== 404 && e?.code !== "resource_missing") throw err;
+      }
 
-        // Prefer retrieving the known subscription id if we have it.
+      if (customerValid) {
+        // Step 2: fetch subscription (retrieve by known ID, fall back to list)
         let sub: Stripe.Subscription | null = null;
         if (stripeSubId) {
           try {
@@ -179,19 +190,20 @@ export async function GET(req: NextRequest) {
           }
         }
 
+        // Step 3: fetch invoices.
+        // amount_paid is 0 on open/failed invoices; use amount_due for those
+        // so the customer sees the correct amount they owe, not €0.
         const inv = await stripe.invoices.list({ customer: stripeCustomerId, limit: 10 });
         invoices = inv.data.map((i) => ({
           id: i.id,
           number: i.number,
-          amount: i.amount_paid,
+          amount: i.status === "paid" ? i.amount_paid : i.amount_due,
           currency: i.currency,
           status: i.status,
           date: i.created,
           pdf: i.invoice_pdf ?? null,
           hostedUrl: i.hosted_invoice_url ?? null,
         }));
-      } catch {
-        // invalid customer in this mode => treat as no Stripe data
       }
     }
 

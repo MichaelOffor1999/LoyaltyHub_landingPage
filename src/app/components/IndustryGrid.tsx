@@ -18,11 +18,11 @@ const industries = [
     icon: Scissors,
     tagline: "Fill your chair every single day",
     description:
-      "Every 6th cut is on you. Clients book ahead to claim their reward — filling your chair automatically and predictably.",
+      "Every 6th cut is on you. Clients book ahead to claim their reward, filling your chair automatically and predictably.",
     bullets: [
       "Visit-based rewards that drive rebooking",
       "At-risk alerts when a regular hasn\u2019t booked",
-      "Referral tracking to reward word-of-mouth",
+      "NFC tap check-in \u2014 no QR, no friction at the chair",
     ],
   },
   {
@@ -42,7 +42,7 @@ const industries = [
     icon: Hand,
     tagline: "Clients who earn rewards rebook 3\u00d7 more",
     description:
-      "Offer a free set after 5 appointments and watch bookings soar. Nail clients love collecting — give them a reason to stay loyal.",
+      "Offer a free set after 5 appointments and watch bookings soar. Nail clients love collecting. Give them a reason to stay loyal.",
     bullets: [
       "Treatment-based stamp cards with visual progress",
       "Push reminders when it\u2019s time for their next fill",
@@ -66,7 +66,7 @@ const industries = [
     icon: Eye,
     tagline: "Keep your books full between infills",
     description:
-      "Lash and brow clients need regular maintenance — reward that habit. Fill gaps in your diary with automated nudges and loyalty perks.",
+      "Lash and brow clients need regular maintenance. Reward that habit. Fill gaps in your diary with automated nudges and loyalty perks.",
     bullets: [
       "Infill reminders that drive consistent rebooking",
       "Loyalty stamps for lash lifts, tints, and extensions",
@@ -319,7 +319,7 @@ export default function IndustryGrid() {
           className="text-xs font-medium text-center"
           style={{ color: "rgba(26,20,16,0.4)" }}
         >
-          Click any industry above — clientIn works for all of them
+          Click any industry above. clientIn works for all of them
         </p>
       </div>
     </section>

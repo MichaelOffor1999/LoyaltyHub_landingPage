@@ -6,10 +6,10 @@ export default function AnalyticsSpotlight() {
       {/* Header */}
       <div className="text-center mb-8 sm:mb-10">
         <h2 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
-          Know your customers<br />better than ever before
+          Five views. Every customer<br />accounted for.
         </h2>
         <p className="text-sm sm:text-base max-w-xl mx-auto font-semibold" style={{ color: "rgba(26,20,16,0.65)" }}>
-          Most businesses are flying blind. clientIn gives you real data on exactly who walks through your door, what keeps them coming back, and who&apos;s about to leave.
+          Most businesses are flying blind. clientIn gives you five dedicated insight screens: Active, Repeat, At-Risk, VIP, and New. So you always know exactly where every customer stands.
         </p>
       </div>
 
@@ -25,19 +25,19 @@ export default function AnalyticsSpotlight() {
                 icon: (
                   <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
                     <circle cx="10" cy="10" r="10" fill="#c97b3a" fillOpacity="0.15"/>
-                    <path d="M5 14l3-4 3 2 4-6" stroke="#e8944a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M10 5v6M7 8l3-3 3 3" stroke="#e8944a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 ),
-                label: "Monthly comparison at a glance",
+                label: "Active & New customers",
               },
               {
                 icon: (
                   <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
                     <circle cx="10" cy="10" r="10" fill="#c97b3a" fillOpacity="0.15"/>
-                    <path d="M10 5v6M7 8l3-3 3 3" stroke="#e8944a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5 14l3-4 3 2 4-6" stroke="#e8944a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 ),
-                label: "See who's active right now",
+                label: "Repeat customers at a glance",
               },
               {
                 icon: (
@@ -46,7 +46,7 @@ export default function AnalyticsSpotlight() {
                     <path d="M10 6v3.5M10 13h.01" stroke="#e8944a" strokeWidth="1.8" strokeLinecap="round"/>
                   </svg>
                 ),
-                label: "Catch at-risk customers before they leave",
+                label: "At-risk customers, caught early",
               },
               {
                 icon: (
@@ -58,7 +58,7 @@ export default function AnalyticsSpotlight() {
                     <rect x="14.5" y="5" width="2.5" height="10" rx="0.5" fill="#e8944a"/>
                   </svg>
                 ),
-                label: "Visit trends, day by day",
+                label: "VIP customers, instantly identified",
               },
             ].map((item, i) => (
               <div key={i} className={`flex items-center gap-3 py-2.5 ${i < 3 ? "border-b" : ""}`} style={{ borderColor: "rgba(0,0,0,0.08)" }}>
@@ -74,21 +74,21 @@ export default function AnalyticsSpotlight() {
               icon: (
                 <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
                   <circle cx="10" cy="10" r="10" fill="#c97b3a" fillOpacity="0.15"/>
-                  <path d="M5 14l3-4 3 2 4-6" stroke="#e8944a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M10 5v6M7 8l3-3 3 3" stroke="#e8944a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               ),
-              label: "Monthly comparison at a glance",
-              desc: "Instantly compare this month vs. last — visits, active customers, and growth trends all in one view.",
+              label: "Active & New customers",
+              desc: "Dedicated screens for Active and New customers. See who's walked in recently, who's brand new, and how fast your base is growing.",
             },
             {
               icon: (
                 <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
                   <circle cx="10" cy="10" r="10" fill="#c97b3a" fillOpacity="0.15"/>
-                  <path d="M10 5v6M7 8l3-3 3 3" stroke="#e8944a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M5 14l3-4 3 2 4-6" stroke="#e8944a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               ),
-              label: "See who's active right now",
-              desc: "Track total customers, who's visited this month, and loyalty completions — all updating in real time.",
+              label: "Repeat customers at a glance",
+              desc: "A dedicated Repeat Customers view shows who keeps coming back. Your most engaged regulars, ranked and ready to reward.",
             },
             {
               icon: (
@@ -97,8 +97,8 @@ export default function AnalyticsSpotlight() {
                   <path d="M10 6v3.5M10 13h.01" stroke="#e8944a" strokeWidth="1.8" strokeLinecap="round"/>
                 </svg>
               ),
-              label: "Catch at-risk customers before they leave",
-              desc: "Set your own risk threshold (e.g. 30 days). Get flagged when regulars go quiet — At Risk, High Risk, and average days since last visit.",
+              label: "At-risk customers, caught early",
+              desc: "Set your own risk threshold (e.g. 30 days). The At-Risk screen flags regulars going quiet: At Risk, High Risk, and average days since last visit.",
             },
             {
               icon: (
@@ -110,8 +110,8 @@ export default function AnalyticsSpotlight() {
                   <rect x="14.5" y="5" width="2.5" height="10" rx="0.5" fill="#e8944a"/>
                 </svg>
               ),
-              label: "Visit trends, day by day",
-              desc: "See your busiest days of the week with a visual visit trend chart — spot patterns and plan your staffing and promotions.",
+              label: "VIP customers, instantly identified",
+              desc: "A separate VIP Customers screen surfaces your highest-value loyals automatically. You always know who deserves the red carpet treatment.",
             },
           ].map((item, i) => (
             <div key={i} className="hidden sm:flex gap-4 items-start py-4 border-b last:border-b-0" style={{ borderColor: "rgba(0,0,0,0.08)" }}>
@@ -144,7 +144,7 @@ export default function AnalyticsSpotlight() {
             {/* Screen */}
             <div style={{ borderRadius: 36, overflow: "hidden" }}>
               <Image
-                src="/insight-2.png"
+                src="/insight-analytics.png"
                 alt="Customer Insights dashboard"
                 width={400}
                 height={800}

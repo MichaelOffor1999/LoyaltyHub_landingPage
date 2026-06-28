@@ -27,11 +27,11 @@ const faqs = [
 		a: "Your partner's loyal customers become your new customers. You tap into a warm, local audience that already trusts a business like yours, without spending a penny on ads.",
 	},
 	{
-		initial: "W",
-		name: "WhatsApp",
-		color: "linear-gradient(135deg,#1a5c35,#25d366)",
-		q: "What is the WhatsApp AI assistant?",
-		a: "Your AI business manager on WhatsApp. It spots slow days, fading customers, and missed opportunities, then tells you exactly what to do. You approve, it handles the rest.",
+		initial: "N",
+		name: "NFC",
+		color: "linear-gradient(135deg,#1e3a5f,#2d7a9f)",
+		q: "What is NFC check-in?",
+		a: "Place an NFC tag at your counter. Customers tap their phone on it and their loyalty card is stamped instantly. No QR scanning, no staff interaction, no friction. Works with any modern iPhone or Android. QR code is always available as a backup.",
 	},
 	{
 		initial: "L",

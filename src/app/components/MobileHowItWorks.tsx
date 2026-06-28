@@ -22,7 +22,7 @@ const STEPS = [
   {
     step: "02",
     title: "Invite your customers",
-    desc: "Customers download the free app and get their own QR code — you scan it at the till to stamp their card.",
+    desc: "Customers download the free app and get their own QR code. You scan it at the till to stamp their card.",
     card: {
       gradient: "linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 100%)",
       customerName: "Sarah K.",
@@ -35,7 +35,7 @@ const STEPS = [
   {
     step: "03",
     title: "Watch them return",
-    desc: "Customers earn points and redeem rewards — you watch revenue grow.",
+    desc: "Customers earn points and redeem rewards. You watch revenue grow.",
     card: {
       gradient: "linear-gradient(135deg, #5b1e6e 0%, #9b3dbd 100%)",
       customerName: "Priya M.",

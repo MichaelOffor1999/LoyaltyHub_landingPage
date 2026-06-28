@@ -82,7 +82,7 @@ export default function Privacy() {
               <li><strong>Correct</strong> inaccurate or incomplete data.</li>
               <li><strong>Delete</strong> your personal data (&quot;right to be forgotten&quot;).</li>
               <li><strong>Object to or restrict</strong> how we process your data.</li>
-              <li><strong>Data portability</strong> — receive your data in a machine-readable format.</li>
+              <li><strong>Data portability</strong>: receive your data in a machine-readable format.</li>
               <li><strong>Withdraw consent</strong> at any time where processing is based on consent.</li>
             </ul>
             <p className="text-base leading-relaxed mt-3">
@@ -117,7 +117,7 @@ export default function Privacy() {
 
             <p className="text-base font-semibold mb-2">What we do not collect</p>
             <p className="text-base leading-relaxed mb-4">
-              We do not record the specific times you watched a video, your device camera or microphone data, or any content you did not explicitly submit. Business owners cannot see your name, email address, or any personally identifying information — they only see aggregate totals (e.g. &quot;42 views&quot;).
+              We do not record the specific times you watched a video, your device camera or microphone data, or any content you did not explicitly submit. Business owners cannot see your name, email address, or any personally identifying information. They only see aggregate totals (e.g. &quot;42 views&quot;).
             </p>
 
             <p className="text-base font-semibold mb-2">Data retention</p>

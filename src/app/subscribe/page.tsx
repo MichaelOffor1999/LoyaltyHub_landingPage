@@ -701,7 +701,7 @@ function Dashboard({
                 Your free trial has ended
               </p>
               <p className="text-sm mb-4" style={{ color: "var(--text-sub)" }}>
-                Your 30-day trial is over. Pick a plan below to keep using ClientIn — it only takes a minute to set up.
+                Your 30-day trial is over. Pick a plan below to keep using ClientIn. It only takes a minute to set up.
               </p>
               <button
                 onClick={() => setShowPlans(true)}
@@ -761,7 +761,7 @@ function Dashboard({
               <div>
                 <p className="text-xl font-black" style={{ color: "var(--foreground)" }}>
                   {planInfo
-                    ? `${planInfo.name} — ${planInfo.price}/mo`
+                    ? `${planInfo.name} · ${planInfo.price}/mo`
                     : data.business?.subscriptionStatus === "active"
                       ? "Active Plan"
                       : "Free Trial"}
@@ -989,7 +989,7 @@ function Dashboard({
                 <div className="py-8 text-center">
                   <p className="text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>No payments yet</p>
                   <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                    You&apos;re still in your free trial — no charges until your trial ends.
+                    You&apos;re still in your free trial. No charges until your trial ends.
                   </p>
                 </div>
               )}
@@ -1041,7 +1041,7 @@ function Dashboard({
             <p className="text-xs text-center mb-6" style={{ color: "var(--text-muted)" }}>
               {planTier(confirmPlan.key) > planTier(currentPlan ?? "")
                 ? "The difference will be charged pro-rata for the rest of this billing period."
-                : "You keep full access to your current plan until the billing period ends. No charges — just a plan switch."}
+                : "You keep full access to your current plan until the billing period ends. No charges. Just a plan switch."}
             </p>
             <div className="flex flex-col gap-3">
               <button
@@ -1144,7 +1144,7 @@ function AuthGate({ onAuth }: { onAuth: (token: string, email: string, businessN
               Enter your email
             </h2>
             <p className="text-sm mb-6" style={{ color: "var(--text-sub)" }}>
-              We&apos;ll send a one-time code — no password needed.
+              We&apos;ll send a one-time code. No password needed.
             </p>
             <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">
               <input
