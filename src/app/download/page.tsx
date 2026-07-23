@@ -79,7 +79,7 @@ export default function DownloadPage() {
         </div>
 
         <p className="text-[11px]" style={{ color: "rgba(26,20,16,0.32)" }}>
-          Free to download &nbsp;·&nbsp; iOS 16+ &nbsp;·&nbsp; Ireland &amp; United Kingdom
+          Free to download &nbsp;·&nbsp; iOS 16+ &nbsp;·&nbsp; Ireland
         </p>
       </section>
 
@@ -114,7 +114,7 @@ export default function DownloadPage() {
         {[
           { label: "For business owners", desc: "Manage loyalty programs, view insights, send push notifications" },
           { label: "For customers", desc: "Collect stamps, redeem rewards, discover local spots" },
-          { label: "One app", desc: "Sign in as a business or customer — same download" },
+          { label: "One app", desc: "Sign in as a business or customer, one download" },
         ].map((f) => (
           <div
             key={f.label}
@@ -149,7 +149,7 @@ export default function DownloadPage() {
           &nbsp;·&nbsp;
           <a href="/privacy" className="hover:opacity-70 transition-opacity">Privacy</a>
         </span>
-        <span className="text-[11px]" style={{ color: "rgba(26,20,16,0.28)" }}>Ireland · United Kingdom</span>
+        <span className="text-[11px]" style={{ color: "rgba(26,20,16,0.28)" }}>Ireland</span>
       </footer>
 
     </div>

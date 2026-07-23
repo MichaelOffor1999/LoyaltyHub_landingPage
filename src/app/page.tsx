@@ -205,7 +205,7 @@ export default function Home() {
                     "Customers who watch your video arrive already sold",
                   ].map((point, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
-                      <span className="mt-[3px] shrink-0 text-xs font-bold" style={{ color: "#c97b3a" }}>—</span>
+                      <span className="mt-[3px] shrink-0 text-xs font-bold" style={{ color: "#c97b3a" }}>·</span>
                       {point}
                     </li>
                   ))}
@@ -260,7 +260,7 @@ export default function Home() {
                       "Customers watch your promo video on Discover before they even visit",
                     ].map((point, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
-                        <span className="mt-[3px] shrink-0 text-xs font-bold" style={{ color: "#c97b3a" }}>—</span>
+                        <span className="mt-[3px] shrink-0 text-xs font-bold" style={{ color: "#c97b3a" }}>·</span>
                         {point}
                       </li>
                     ))}
@@ -332,13 +332,13 @@ export default function Home() {
                   </p>
                   <ul className="flex flex-col gap-4">
                     {[
-                      "Partner with a complementary business — a gym & smoothie bar, or a salon & nail studio",
+                      "Partner with a complementary business, like a gym and smoothie bar, or a salon and nail studio",
                       "Their customers earn stamps with you. Your customers earn stamps with them",
                       "One shared reward keeps both customer bases engaged",
                       "Your data, your branding. The collab is opt-in, not a merger",
                     ].map((point, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
-                        <span className="mt-[3px] shrink-0 text-xs font-bold" style={{ color: "#c97b3a" }}>—</span>
+                        <span className="mt-[3px] shrink-0 text-xs font-bold" style={{ color: "#c97b3a" }}>·</span>
                         {point}
                       </li>
                     ))}
@@ -480,7 +480,7 @@ export default function Home() {
                 <a href="/privacy" className="hover:opacity-70 transition-opacity">Privacy</a>
               </span>
               <span className="text-[11px]" style={{ color: "rgba(26,20,16,0.3)" }}>
-                Ireland &nbsp;·&nbsp; United Kingdom
+                Ireland
               </span>
             </div>
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "../components/Navbar";
 
 export const metadata: Metadata = {
-  title: "Collabs — clientIn",
+  title: "Collabs | clientIn",
   description: "Two businesses, one shared loyalty program. Build a local community and grow your customer base without spending on ads.",
 };
 
@@ -10,12 +10,12 @@ const steps = [
   {
     n: "01",
     title: "Find a partner",
-    desc: "Team up with a complementary local business — a barber and a coffee shop, a hair salon and a nail tech, a gym and a smoothie bar. Any two businesses that share the same kind of customer.",
+    desc: "Team up with a complementary local business: a barber and a coffee shop, a hair salon and a nail tech, a gym and a smoothie bar. Any two businesses that share the same kind of customer.",
   },
   {
     n: "02",
     title: "Set your stamp targets",
-    desc: "Each business sets its own visit target — for example, 5 visits at the barber and 5 visits at the coffee shop. The customer sees one shared card with two sides, each tracking their progress independently.",
+    desc: "Each business sets its own visit target. For example, 5 visits at the barber and 5 visits at the coffee shop. The customer sees one shared card with two sides, each tracking their progress independently.",
   },
   {
     n: "03",
@@ -25,15 +25,15 @@ const steps = [
   {
     n: "04",
     title: "Everyone wins",
-    desc: "You get a customer that your partner's loyalty programme built for you. Your partner gets a customer you built for them. The customer gets a reward they genuinely had to earn — which makes it feel worth coming back for.",
+    desc: "You get a customer that your partner's loyalty programme built for you. Your partner gets a customer you built for them. The customer gets a reward they genuinely had to earn, which makes it feel worth coming back for.",
   },
 ];
 
 const examples = [
   { a: "Barber", aTarget: 5, b: "Coffee Shop", bTarget: 5, reward: "Free haircut + free coffee", idea: "5 cuts at the barber and 5 coffees at the café. Once both sides are complete, the customer unlocks a free round of each." },
-  { a: "Hair Salon", aTarget: 4, b: "Nail Tech", bTarget: 4, reward: "Free treatment or free set", idea: "4 colour appointments and 4 nail sets. Clients are nudged to visit both to complete the card — growing both books in the process." },
+  { a: "Hair Salon", aTarget: 4, b: "Nail Tech", bTarget: 4, reward: "Free treatment or free set", idea: "4 colour appointments and 4 nail sets. Clients are nudged to visit both to complete the card, growing both books in the process." },
   { a: "Gym", aTarget: 8, b: "Smoothie Bar", bTarget: 8, reward: "Free session + free smoothie", idea: "8 gym sessions and 8 post-workout smoothies. The card becomes part of their routine and the reward feels earned." },
-  { a: "Spa", aTarget: 3, b: "Skincare Clinic", bTarget: 3, reward: "Free facial or free treatment", idea: "3 spa visits and 3 skin treatments. Completing both sides brings a premium reward — keeping clients inside your shared wellness ecosystem." },
+  { a: "Spa", aTarget: 3, b: "Skincare Clinic", bTarget: 3, reward: "Free facial or free treatment", idea: "3 spa visits and 3 skin treatments. Completing both sides brings a premium reward, keeping clients inside your shared wellness ecosystem." },
 ];
 
 const benefits = [
@@ -56,7 +56,7 @@ export default function CollabsPage() {
           Build a loyalty<br />community, together.
         </h1>
         <p className="text-lg max-w-xl mb-10" style={{ color: "rgba(26,20,16,0.55)", lineHeight: 1.7 }}>
-          Two businesses. One shared stamp card — with two sides. Customers earn stamps at your place and at your partner's. Only once they've hit the target at both do they unlock the reward. That's what keeps them coming back to you both.
+          Two businesses. One shared stamp card with two sides. Customers earn stamps at your place and at your partner's. Only once they've hit the target at both do they unlock the reward. That's what keeps them coming back to you both.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
           <a
@@ -207,7 +207,7 @@ export default function CollabsPage() {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-px" style={{ background: "rgba(26,20,16,0.08)", border: "1px solid rgba(26,20,16,0.08)", borderRadius: 16, overflow: "hidden" }}>
           {[
-            { title: "Warm introductions", desc: "Customers don't discover you through an ad — they discover you because a business they already trust is telling them to visit you." },
+            { title: "Warm introductions", desc: "Customers don't discover you through an ad. They discover you because a business they already trust is telling them to visit you." },
             { title: "Zero ad spend", desc: "Every customer your Collab partner sends your way costs you nothing. No CPM, no CPC, no budget. Just a shared loyalty card." },
             { title: "Your brand stays yours", desc: "The Collab is opt-in and non-exclusive. Your loyalty programme stays yours. You keep full control of your customers, your data, your branding." },
             { title: "Community, not competition", desc: "Collabs aren't mergers. They're partnerships between local businesses that complement each other. Both shops grow. Nobody loses." },
@@ -250,7 +250,7 @@ export default function CollabsPage() {
           &nbsp;·&nbsp;
           <a href="/privacy" className="hover:opacity-70 transition-opacity">Privacy</a>
         </span>
-        <span className="text-[11px]" style={{ color: "rgba(26,20,16,0.28)" }}>Ireland · United Kingdom</span>
+        <span className="text-[11px]" style={{ color: "rgba(26,20,16,0.28)" }}>Ireland</span>
       </footer>
     </div>
   );
