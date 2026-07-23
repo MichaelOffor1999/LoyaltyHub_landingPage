@@ -4,12 +4,13 @@ export default function AnalyticsSpotlight() {
   return (
     <section className="w-full mt-8 mb-8">
       {/* Header */}
-      <div className="text-center mb-8 sm:mb-10">
+      <div className="mb-8 sm:mb-10">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(26,20,16,0.38)" }}>Analytics</p>
         <h2 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
-          Five views. Every customer<br />accounted for.
+          Five views. Every customer accounted for.
         </h2>
-        <p className="text-sm sm:text-base max-w-xl mx-auto font-semibold" style={{ color: "rgba(26,20,16,0.65)" }}>
-          Most businesses are flying blind. clientIn gives you five dedicated insight screens: Active, Repeat, At-Risk, VIP, and New. So you always know exactly where every customer stands.
+        <p className="text-sm sm:text-base max-w-xl font-semibold" style={{ color: "rgba(26,20,16,0.65)" }}>
+          Most businesses are flying blind. clientIn gives you five dedicated insight screens: Active, Repeat, At-Risk, VIP, and New.
         </p>
       </div>
 

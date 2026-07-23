@@ -124,7 +124,8 @@ export default function FAQ() {
 						!isExpanded && "cursor-pointer",
 					)}
 					style={{
-						width: isExpanded ? EXPANDED_W : COLLAPSED_W,
+						width: isExpanded ? Math.min(EXPANDED_W, 340) : COLLAPSED_W,
+						maxWidth: "calc(100vw - 48px)",
 						height: isExpanded ? EXPANDED_H : 60,
 						borderRadius: isExpanded ? 24 : 999,
 						background: "var(--card-bg)",

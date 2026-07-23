@@ -148,37 +148,12 @@ export default function IndustryGrid() {
       <div className="flex flex-col gap-8">
 
         {/* Header */}
-        <div className="text-center">
-          <div
-            className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
-            style={{
-              background: "rgba(201,123,58,0.1)",
-              color: "#c97b3a",
-              border: "1px solid rgba(201,123,58,0.22)",
-            }}
-          >
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(26,20,16,0.38)" }}>
             Built for self-care
-          </div>
-          <h2
-            className="text-3xl sm:text-4xl font-black leading-tight"
-            style={{ color: "var(--foreground)" }}
-          >
-            Your clients love what you do.
-          </h2>
-          <h2
-            className="text-3xl sm:text-4xl font-black leading-tight mt-1"
-            style={{ color: "var(--foreground)" }}
-          >
-            Give them a reason to{" "}
-            <span
-              style={{
-                background: "linear-gradient(90deg, #c97b3a, #e8944a)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              keep coming back.
-            </span>
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight" style={{ color: "var(--foreground)" }}>
+            Your clients love what you do.<br />Give them a reason to keep coming back.
           </h2>
         </div>
 
@@ -244,8 +219,7 @@ export default function IndustryGrid() {
                 style={{
                   gridArea: "1 / 1",
                   opacity: i === active && contentVisible ? 1 : 0,
-                  transform: i === active && contentVisible ? "translateY(0)" : "translateY(8px)",
-                  transition: "opacity 200ms ease, transform 200ms ease",
+                  transition: "opacity 200ms ease",
                   pointerEvents: i === active ? "auto" : "none",
                   background: "rgba(0,0,0,0.03)",
                   border: "1px solid rgba(0,0,0,0.07)",

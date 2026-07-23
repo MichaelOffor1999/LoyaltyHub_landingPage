@@ -24,18 +24,15 @@ export default function SocialProof() {
   return (
     <section className="w-full mt-8 mb-8">
       <ScrollReveal staggerChildren variant="fade-right" staggerBase={120} className="flex flex-col gap-5">
-        <div className="text-center mb-6">
-          <div
-            className="inline-block rounded-full px-4 py-1.5 text-sm font-semibold mb-4"
-            style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
-          >
+        <div className="mb-8">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(26,20,16,0.38)" }}>
             Real businesses. Real results.
-          </div>
+          </p>
           <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "var(--foreground)" }}>
-            Already trusted by local businesses
+            Already trusted by local businesses.
           </h2>
-          <p className="mt-3 text-sm" style={{ color: "rgba(26,20,16,0.55)" }}>
-            These are real business owners using clientIn today.
+          <p className="mt-3 text-base" style={{ color: "rgba(26,20,16,0.52)" }}>
+            Real business owners using clientIn today.
           </p>
         </div>
       </ScrollReveal>

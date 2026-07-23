@@ -128,7 +128,7 @@ export function HeroSplineCard() {
                 }}
               >
                 <Image
-                  src="/favicon.png"
+                  src="/logo.png"
                   alt="Clienty"
                   width={26}
                   height={26}

@@ -1,13 +1,12 @@
 import Image from "next/image";
+import Navbar from "./components/Navbar";
 import FeatureList from "./components/FeatureList";
 import IndustryGrid from "./components/IndustryGrid";
 import SocialProof from "./components/SocialProof";
 import AnalyticsSpotlight from "./components/AnalyticsSpotlight";
 import FAQ from "./components/FAQ";
 import ScrollReveal from "./components/ScrollReveal";
-import StepCard from "./components/StepCard";
 import HowItWorksCards from "./components/ui/how-it-works-cards";
-import { HeroSplineCard } from "./components/ui/hero-spline-card";
 import AnimatedHeroHeadline from "./components/AnimatedHeroHeadline";
 
 export default function Home() {
@@ -23,23 +22,9 @@ export default function Home() {
         Skip to main content
       </a>
 
-      {/* ─── Top bar: logo + CTA ─── */}
-      <div className="fixed top-0 inset-x-0 z-[60] flex items-center justify-between px-5 sm:px-10 py-4 pointer-events-none">
-        <a href="#top" className="pointer-events-auto">
-          <span className="font-black text-sm sm:text-base tracking-[0.15em] uppercase" style={{ color: "#1a1410" }}>
-            clientIn
-          </span>
-        </a>
-        <a
-          href="/subscribe"
-          className="pointer-events-auto px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold tracking-wider uppercase transition-all hover:opacity-90"
-          style={{ border: "1px solid rgba(0,0,0,0.18)", color: "#1a1410", backdropFilter: "blur(8px)", background: "rgba(0,0,0,0.05)" }}
-        >
-          Manage Plan
-        </a>
-      </div>
+      <Navbar />
 
-      {/* ─── Full-bleed dark hero — sticky so light content slides over it ─── */}
+      {/* ─── Hero ─── */}
       <div
         className="w-full"
         style={{
@@ -47,145 +32,150 @@ export default function Home() {
           top: 0,
           zIndex: 0,
           minHeight: "100dvh",
-          display: "flex",
-          flexDirection: "column",
-            overflow: "hidden",
-            background: "linear-gradient(160deg, #f5f0e8 0%, #ede7db 30%, #e8dfd0 60%, #ede7db 80%, #f5f0e8 100%)",
+          overflow: "hidden",
+          background: "#f5f0e8",
         }}
       >
-        {/* Dark gradient overlay — keeps text crisp, darkens bottom for panel transition */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 0%, transparent 55%, rgba(245,240,232,0.6) 100%)", zIndex: 1 }} />
-        {/* Hero — full width, nav-inset padding */}
-        <div className="w-full px-5 sm:px-14 relative flex flex-col pt-[72px]" style={{ zIndex: 3 }}>
+        {/* Bottom fade for panel scroll-over */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "22%", background: "linear-gradient(to bottom, transparent, #f5f0e8)", zIndex: 1, pointerEvents: "none" }} />
 
-          {/* ── First viewport: Starlink-style — headline upper-centre, form anchored near bottom ── */}
-          <section id="top" className="w-full flex flex-col items-center" style={{ minHeight: "calc(100dvh - 72px)" }}>
+        <div className="w-full h-full px-6 sm:px-10 lg:px-16 pt-[60px] relative" style={{ zIndex: 2 }}>
+          <section
+            id="top"
+            className="w-full flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-16"
+            style={{ minHeight: "calc(100dvh - 60px)" }}
+          >
 
-            {/* Top spacer — smaller to push everything up */}
-            <div style={{ flex: "0.3" }} />
+            {/* ── Left: text ── */}
+            <div className="flex-1 flex flex-col justify-center pt-10 lg:pt-0 pb-6 lg:pb-0">
 
-            {/* Headline — centred, single line */}
-            <div className="w-full flex flex-col justify-center items-center" style={{ fontSize: "clamp(1.2rem, 5vw, 4rem)" }}>
-              <AnimatedHeroHeadline />
-            </div>
-
-            {/* Subtitle — bold, Starlink-style */}
-            <ScrollReveal variant="fade-up" delay={700} className="flex flex-col items-center w-full text-center mt-4">
-              <p className="max-w-2xl" style={{ lineHeight: 1.5 }}>
-                <span className="block text-lg sm:text-xl md:text-2xl font-bold" style={{ color: "rgba(26,20,16,0.85)" }}>Stop guessing.</span>
-                <span className="block text-lg sm:text-xl md:text-2xl font-bold" style={{ color: "rgba(26,20,16,0.85)" }}>Know who&apos;s loyal and who&apos;s leaving.</span>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] mb-7" style={{ color: "rgba(26,20,16,0.38)" }}>
+                Loyalty for self-care businesses
               </p>
-            </ScrollReveal>
 
-            {/* CTA buttons — closer to subtitle */}
-            <ScrollReveal variant="fade-up" delay={900} className="flex flex-col items-center w-full text-center mt-8">
-              <div className="flex flex-col sm:flex-row items-center gap-3" id="waitlist">
+              <div style={{ fontSize: "clamp(2rem, 4.8vw, 4.4rem)" }}>
+                <AnimatedHeroHeadline />
+              </div>
+
+              <p className="text-base max-w-[400px] mt-6" style={{ color: "rgba(26,20,16,0.52)", lineHeight: 1.72 }}>
+                clientIn gives every client a digital stamp card and shows you exactly who&apos;s loyal, who&apos;s drifting, and who just hit VIP.
+              </p>
+
+              <div className="flex items-center gap-3 mt-9 flex-wrap" id="waitlist">
+                <a
+                  href="/download"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-[0.84rem] font-bold tracking-wide transition-opacity hover:opacity-80 whitespace-nowrap"
+                  style={{ background: "#1a1410", color: "#fff" }}
+                >
+                  Start free trial →
+                </a>
                 <a
                   href="#how-it-works"
-                  className="px-8 py-4 rounded-xl text-sm font-bold tracking-wider uppercase transition-all hover:opacity-80 whitespace-nowrap"
-                  style={{ background: "rgba(0,0,0,0.06)", color: "#1a1410", border: "1px solid rgba(0,0,0,0.15)" }}
+                  className="inline-flex items-center px-6 py-3.5 rounded-xl text-[0.84rem] font-semibold transition-opacity hover:opacity-60 whitespace-nowrap"
+                  style={{ color: "#1a1410", border: "1px solid rgba(26,20,16,0.2)" }}
                 >
-                  See How It Works
+                  See how it works
                 </a>
               </div>
-              <p className="text-xs mt-4" style={{ color: "rgba(26,20,16,0.45)", letterSpacing: "0.02em" }}>
-                30-day free trial · Cancel anytime
-              </p>
-            </ScrollReveal>
 
-            {/* Bottom spacer — fills remaining space */}
-            <div style={{ flex: "1" }} />
+              <p className="text-[11px] mt-3.5" style={{ color: "rgba(26,20,16,0.32)", letterSpacing: "0.025em" }}>
+                30-day free trial · No credit card required
+              </p>
+
+              {/* Logo row */}
+              <div className="mt-12 pt-8" style={{ borderTop: "1px solid rgba(26,20,16,0.1)" }}>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-5" style={{ color: "rgba(26,20,16,0.28)" }}>
+                  Trusted by
+                </p>
+                <div className="flex items-center gap-7 sm:gap-10 flex-wrap">
+                  <Image src="/logo-relief.jpg" alt="Relief" width={90} height={36} className="h-7 w-auto object-contain" style={{ opacity: 0.32, filter: "grayscale(1)" }} />
+                  <Image src="/logo-district4.jpg" alt="District4 Padel" width={36} height={36} className="h-7 w-auto object-contain rounded-full" style={{ opacity: 0.32, filter: "grayscale(1)" }} />
+                </div>
+              </div>
+
+            </div>
+
+            {/* ── Right: photo ── */}
+            <div
+              className="hidden lg:block flex-shrink-0"
+              style={{ width: "46%", height: "78vh", maxHeight: 660, borderRadius: 20, overflow: "hidden", position: "relative" }}
+            >
+              <Image
+                src="/hero-salon.jpg"
+                alt="Self-care business"
+                fill
+                className="object-cover object-center"
+                priority
+              />
+            </div>
 
           </section>
+        </div>
+      </div>{/* end hero */}
 
-
-        </div>{/* end hero constrained */}
-      </div>{/* end dark hero */}
-
-      {/* ─── Panel 2: Industry + How it Works — scrolls over dark hero ─── */}
-      <div className="w-full relative" style={{ position: "relative", zIndex: 10, background: "#f5f0e8", borderRadius: "28px 28px 0 0", boxShadow: "0 -8px 40px rgba(0,0,0,0.08)", marginTop: "-2px" }}>
+      {/* ─── Panel 2: Industry + How it Works ─── */}
+      <div className="w-full relative" style={{ position: "relative", zIndex: 10, background: "#f5f0e8", borderRadius: "28px 28px 0 0", boxShadow: "0 -8px 40px rgba(0,0,0,0.06)", marginTop: "-2px" }}>
       <main id="main-content" className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 pt-12">
 
         {/* Industry Grid */}
-        <ScrollReveal className="w-full" variant="scale-up" threshold={0.08}>
-          <IndustryGrid />
-        </ScrollReveal>
+        <IndustryGrid />
 
         {/* How it works */}
-        <section
-          id="how-it-works"
-          className="w-full mt-16 py-14 sm:py-16 relative"
-        >
-          <ScrollReveal delay={0} className="text-center mb-10" variant="blur-in">
-            <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "var(--foreground)" }}>
-              Up and running in 3 steps
+        <section id="how-it-works" className="w-full mt-20 pb-16">
+          <ScrollReveal variant="fade-up">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(26,20,16,0.38)" }}>
+              How it works
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-12" style={{ color: "var(--foreground)" }}>
+              Up and running in 3 steps.
             </h2>
           </ScrollReveal>
 
-          {/* Mobile: cards + timeline */}
+          {/* Mobile */}
           <ScrollReveal className="sm:hidden" variant="fade-up">
-            <div className="flex justify-center mb-8" style={{ transform: "scale(0.82)", transformOrigin: "top center" }}>
-              <HowItWorksCards />
-            </div>
-            <div className="flex flex-col gap-0 px-2">
+            <div className="flex flex-col gap-0">
               {[
                 { step: "01", title: "Create your program", desc: "Set your rewards, tiers, and branding in minutes." },
-                { step: "02", title: "Customers tap to check in", desc: "Customers tap their phone on your NFC tag at the counter, loyalty card stamped instantly. QR code is always available as a backup." },
+                { step: "02", title: "Customers tap to check in", desc: "Customers tap their phone on your NFC tag at the counter. Loyalty card stamped instantly. QR code is always available as a backup." },
                 { step: "03", title: "Watch them return", desc: "Customers earn points and redeem rewards. You watch revenue grow." },
               ].map((s, i) => (
                 <div key={i} className="flex gap-4">
                   <div className="flex flex-col items-center">
                     <div
-                      className="w-11 h-11 rounded-2xl flex items-center justify-center text-xs font-black shrink-0"
-                      style={{
-                        background: i === 1 ? "linear-gradient(135deg, #c97b3a, #e8944a)" : "rgba(201,123,58,0.12)",
-                        color: i === 1 ? "#fff" : "#e8944a",
-                        boxShadow: i === 1 ? "0 4px 12px rgba(201,123,58,0.3)" : "none",
-                      }}
+                      className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shrink-0"
+                      style={{ background: "rgba(26,20,16,0.08)", color: "rgba(26,20,16,0.5)" }}
                     >
                       {s.step}
                     </div>
-                    {i < 2 && <div className="w-px flex-1 my-1" style={{ background: "rgba(201,123,58,0.25)" }} />}
+                    {i < 2 && <div className="w-px flex-1 my-1" style={{ background: "rgba(26,20,16,0.1)" }} />}
                   </div>
-                  <div className={`pb-${i < 2 ? "6" : "0"} pt-1`}>
-                    <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: "#e8944a" }}>{`Step ${s.step}`}</span>
-                    <h3 className="text-base font-bold mt-0.5" style={{ color: "var(--foreground)" }}>{s.title}</h3>
-                    <p className="text-sm font-medium mt-1 leading-relaxed" style={{ color: "var(--text-sub)" }}>{s.desc}</p>
+                  <div className={i < 2 ? "pb-6 pt-1" : "pt-1"}>
+                    <h3 className="text-base font-bold" style={{ color: "var(--foreground)" }}>{s.title}</h3>
+                    <p className="text-sm mt-1 leading-relaxed" style={{ color: "var(--text-sub)" }}>{s.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </ScrollReveal>
 
-          {/* Desktop: stacked loyalty cards + step list side-by-side */}
-          <ScrollReveal className="hidden sm:flex items-center justify-center gap-10 lg:gap-16" staggerChildren variant="fade-left" staggerBase={160}>
-            {/* Left: stacked cards */}
+          {/* Desktop */}
+          <ScrollReveal className="hidden sm:flex items-center gap-10 lg:gap-16" variant="fade-up">
             <div className="shrink-0 py-10 pl-4 max-w-[380px]">
               <HowItWorksCards />
             </div>
-
-            {/* Right: numbered steps */}
             <div className="flex flex-col gap-8 max-w-xs">
               {[
                 { step: "01", title: "Create your program", desc: "Set your rewards, tiers, and branding in minutes." },
-                { step: "02", title: "Customers tap to check in", desc: "Customers tap their phone on your NFC tag at the counter, loyalty card stamped instantly. QR code is always available as a backup." },
+                { step: "02", title: "Customers tap to check in", desc: "Customers tap their phone on your NFC tag. Loyalty card stamped instantly. QR code always available as a backup." },
                 { step: "03", title: "Watch them return", desc: "Customers earn points and redeem rewards. You watch revenue grow." },
               ].map((s, i) => (
                 <div key={i} className="flex gap-4 items-start">
-                  <div
-                    className="shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center text-xs font-black"
-                    style={{
-                      background: i === 1 ? "linear-gradient(135deg,#c97b3a,#e8944a)" : "rgba(201,123,58,0.1)",
-                      color: i === 1 ? "#fff" : "#e8944a",
-                      boxShadow: i === 1 ? "0 4px 16px rgba(201,123,58,0.3)" : "none",
-                    }}
-                  >
+                  <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold" style={{ background: "rgba(26,20,16,0.07)", color: "rgba(26,20,16,0.45)" }}>
                     {s.step}
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold tracking-widest uppercase mb-0.5" style={{ color: "#e8944a" }}>Step {s.step}</p>
                     <h3 className="text-base font-bold" style={{ color: "var(--foreground)" }}>{s.title}</h3>
-                    <p className="text-sm font-medium leading-relaxed mt-1" style={{ color: "var(--text-sub)" }}>{s.desc}</p>
+                    <p className="text-sm leading-relaxed mt-1" style={{ color: "var(--text-sub)" }}>{s.desc}</p>
                   </div>
                 </div>
               ))}
@@ -194,72 +184,44 @@ export default function Home() {
         </section>
 
         {/* Video Marketplace */}
-        <ScrollReveal className="w-full mt-4" variant="fade-up" threshold={0.08}>
-          <section className="w-full py-16 sm:py-20">
+        <ScrollReveal className="w-full" variant="fade-up" threshold={0.08}>
+          <section className="w-full py-16 sm:py-20" style={{ borderTop: "1px solid rgba(26,20,16,0.08)" }}>
             <div className="flex flex-col lg:flex-row gap-16 items-start">
-
-              {/* Left — copy */}
               <div className="flex-1 min-w-0">
-                <div
-                  className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold mb-4"
-                  style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
-                >
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(26,20,16,0.38)" }}>
                   Video Marketplace
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
+                </p>
+                <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "var(--foreground)" }}>
                   Your video.<br />Their first impression.
                 </h2>
-                <p className="text-base mb-3 max-w-md" style={{ color: "var(--text-sub)" }}>
-                  Customers browsing the clientIn Discover page aren&apos;t just reading names and addresses. They&apos;re watching short promo videos and choosing who to visit based on what they see.
+                <p className="text-base max-w-md mb-6" style={{ color: "var(--text-sub)", lineHeight: 1.7 }}>
+                  Customers browsing the clientIn Discover page aren&apos;t just reading names. They&apos;re watching short promo videos and choosing who to visit based on what they see. Upload once and appear in the local video marketplace instantly.
                 </p>
-                <p className="text-base mb-8 max-w-md font-semibold" style={{ color: "var(--foreground)" }}>
-                  Upload a short video to your clientIn profile and appear in the local video marketplace instantly. Your best work, in front of customers already looking for what you offer.
-                </p>
-                <ul className="flex flex-col gap-3 mb-8">
+                <ul className="flex flex-col gap-4">
                   {[
-                    "Upload once. Your video lives on your clientIn profile permanently",
-                    "Customers discover you through the in-app video marketplace before they even visit",
-                    "Stand out from text-only listings with video that shows what you actually do",
-                    "Customers who watch your video arrive already sold on what you offer",
+                    "Your video lives on your clientIn profile permanently",
+                    "Customers discover you through the in-app marketplace before they visit",
+                    "Stand out from text-only listings with video that shows your work",
+                    "Customers who watch your video arrive already sold",
                   ].map((point, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
-                      <span className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black" style={{ background: "rgba(201,123,58,0.15)", color: "#e8944a" }}>✓</span>
+                      <span className="mt-[3px] shrink-0 text-xs font-bold" style={{ color: "#c97b3a" }}>—</span>
                       {point}
                     </li>
                   ))}
                 </ul>
               </div>
-
-              {/* Right — video in phone frame */}
               <div className="flex items-center justify-center w-full lg:w-auto shrink-0">
-                <div
-                  className="relative w-full max-w-[280px] mx-auto p-[10px]"
-                  style={{
-                    borderRadius: 44,
-                    background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)",
-                    boxShadow: "0 0 0 1.5px #3a3a3a, 0 0 0 3px #111, 0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.06)",
-                  }}
-                >
-                  {/* Side buttons */}
+                <div className="relative w-full max-w-[260px] mx-auto p-[9px]" style={{ borderRadius: 44, background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)", boxShadow: "0 0 0 1.5px #3a3a3a, 0 0 0 3px #111, 0 20px 60px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.06)" }}>
                   <div className="absolute -left-[3px] top-[80px] w-[3px] h-8 rounded-l-sm" style={{ background: "#2a2a2a" }} />
                   <div className="absolute -left-[3px] top-[124px] w-[3px] h-10 rounded-l-sm" style={{ background: "#2a2a2a" }} />
                   <div className="absolute -left-[3px] top-[172px] w-[3px] h-10 rounded-l-sm" style={{ background: "#2a2a2a" }} />
                   <div className="absolute -right-[3px] top-[120px] w-[3px] h-14 rounded-r-sm" style={{ background: "#2a2a2a" }} />
-
-                  {/* Screen */}
                   <div style={{ borderRadius: 36, overflow: "hidden", background: "#000" }}>
-                    <video
-                      src="/promo-demo.mp4"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      style={{ width: "100%", height: "auto", display: "block" }}
-                    />
+                    <video src="/promo-demo.mp4" autoPlay muted loop playsInline style={{ width: "100%", height: "auto", display: "block" }} />
                   </div>
                 </div>
               </div>
-
             </div>
           </section>
         </ScrollReveal>
@@ -277,125 +239,77 @@ export default function Home() {
           </section>
 
           {/* Customer App */}
-          <ScrollReveal className="w-full mt-8" variant="fade-up" threshold={0.08}>
-            <section className="w-full py-16 sm:py-20">
+          <ScrollReveal className="w-full mt-4" variant="fade-up" threshold={0.08}>
+            <section className="w-full py-16 sm:py-20" style={{ borderTop: "1px solid rgba(26,20,16,0.08)" }}>
               <div className="flex flex-col lg:flex-row gap-16 items-start">
-
-                {/* Left — copy */}
                 <div className="flex-1 min-w-0">
-                  <div
-                    className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold mb-4"
-                    style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a", border: "1px solid rgba(201,123,58,0.25)" }}
-                  >
-                    One app
-                  </div>
-                  <h2 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(26,20,16,0.38)" }}>
+                    The app
+                  </p>
+                  <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "var(--foreground)" }}>
                     One app.<br />Two experiences.
                   </h2>
-                  <p className="text-base mb-3 max-w-md" style={{ color: "var(--text-sub)" }}>
-                    clientIn is a single app. You just choose how you sign in. Business owners log in to manage their loyalty program. Customers log in to collect stamps and discover local spots.
+                  <p className="text-base max-w-md mb-6" style={{ color: "var(--text-sub)", lineHeight: 1.7 }}>
+                    clientIn is a single app. Business owners sign in to manage their loyalty program. Customers sign in to collect stamps and discover local spots. Same app, same download.
                   </p>
-                  <p className="text-base mb-8 max-w-md font-semibold" style={{ color: "var(--foreground)" }}>
-                    Same app, same download. The experience adapts to who you are the moment you sign in.
-                  </p>
-                  <ul className="flex flex-col gap-3">
+                  <ul className="flex flex-col gap-4">
                     {[
-                      "Sign in as a business to manage your program, view insights and send notifications",
-                      "Sign in as a customer to browse Discover, collect loyalty cards and redeem rewards",
-                      "Digital loyalty wallet with all their cards in one place, updated in real time",
+                      "Sign in as a business to manage your program, view insights, and send notifications",
+                      "Sign in as a customer to browse Discover, collect loyalty cards, and redeem rewards",
+                      "Digital loyalty wallet with all cards in one place, updated in real time",
                       "Customers watch your promo video on Discover before they even visit",
                     ].map((point, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
-                        <span className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black" style={{ background: "rgba(201,123,58,0.15)", color: "#e8944a" }}>✓</span>
+                        <span className="mt-[3px] shrink-0 text-xs font-bold" style={{ color: "#c97b3a" }}>—</span>
                         {point}
                       </li>
                     ))}
                   </ul>
                 </div>
-
-                {/* Right — two-sided stat cards */}
-                <div className="w-full lg:w-[260px] shrink-0 flex flex-col gap-4">
-                  {/* Business mode */}
-                  <div className="rounded-2xl p-5" style={{ background: "rgba(201,123,58,0.06)", border: "1px solid rgba(201,123,58,0.18)" }}>
-                    <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color: "#c97b3a" }}>Business sign-in</p>
-                    {["Manage your loyalty program", "View customer insights", "Send push notifications", "Run Collabs with nearby businesses"].map((f, i) => (
-                      <div key={i} className={`flex items-center gap-2 py-2 text-xs font-medium ${i < 3 ? "border-b" : ""}`} style={{ borderColor: "rgba(201,123,58,0.12)", color: "rgba(26,20,16,0.7)" }}>
-                        <span className="w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[9px] font-black" style={{ background: "rgba(201,123,58,0.15)", color: "#e8944a" }}>✓</span>
-                        {f}
-                      </div>
+                <div className="w-full lg:w-[260px] shrink-0 flex flex-col border-t lg:border-t-0 lg:border-l pt-8 lg:pt-0 lg:pl-8" style={{ borderColor: "rgba(26,20,16,0.09)" }}>
+                  <div className="pb-6 mb-6" style={{ borderBottom: "1px solid rgba(26,20,16,0.09)" }}>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] mb-4" style={{ color: "rgba(26,20,16,0.35)" }}>Business sign-in</p>
+                    {["Manage your loyalty program", "View customer insights", "Send push notifications", "Run Collabs with nearby businesses"].map((f) => (
+                      <p key={f} className="text-sm py-1.5" style={{ color: "rgba(26,20,16,0.65)" }}>{f}</p>
                     ))}
                   </div>
-                  {/* Customer mode */}
-                  <div className="rounded-2xl p-5" style={{ background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.09)" }}>
-                    <p className="text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color: "rgba(26,20,16,0.45)" }}>Customer sign-in</p>
-                    {["Discover nearby businesses", "Collect digital loyalty cards", "Track stamps in real time", "Redeem rewards with one tap"].map((f, i) => (
-                      <div key={i} className={`flex items-center gap-2 py-2 text-xs font-medium ${i < 3 ? "border-b" : ""}`} style={{ borderColor: "rgba(0,0,0,0.06)", color: "rgba(26,20,16,0.6)" }}>
-                        <span className="w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[9px] font-black" style={{ background: "rgba(0,0,0,0.06)", color: "rgba(26,20,16,0.5)" }}>✓</span>
-                        {f}
-                      </div>
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] mb-4" style={{ color: "rgba(26,20,16,0.35)" }}>Customer sign-in</p>
+                    {["Discover nearby businesses", "Collect digital loyalty cards", "Track stamps in real time", "Redeem rewards with one tap"].map((f) => (
+                      <p key={f} className="text-sm py-1.5" style={{ color: "rgba(26,20,16,0.65)" }}>{f}</p>
                     ))}
                   </div>
                 </div>
-
               </div>
             </section>
           </ScrollReveal>
 
-          {/* Engagement Tools: Vouchers, Push Notifications, Video */}
+          {/* Engagement Tools */}
           <ScrollReveal className="w-full" variant="fade-up" threshold={0.08}>
-            <section className="w-full pb-16 sm:pb-20">
-              <div className="text-center mb-10">
-                <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "var(--foreground)" }}>
-                  More ways to fill your diary
-                </h2>
-                <p className="mt-3 text-base max-w-lg mx-auto" style={{ color: "var(--text-sub)" }}>
-                  Beyond stamps and rewards, clientIn gives you powerful tools to reach customers and drive visits.
-                </p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <section className="w-full pb-16 sm:pb-20" style={{ borderTop: "1px solid rgba(26,20,16,0.08)", paddingTop: "4rem" }}>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(26,20,16,0.38)" }}>
+                Features
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
+                More ways to fill your diary.
+              </h2>
+              <p className="text-base max-w-lg mb-10" style={{ color: "var(--text-sub)" }}>
+                Beyond stamps and rewards, clientIn gives you the tools to reach customers and drive visits.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-px" style={{ background: "rgba(26,20,16,0.09)", border: "1px solid rgba(26,20,16,0.09)", borderRadius: 16, overflow: "hidden" }}>
                 {[
                   {
-                    icon: (
-                      <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#c97b3a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="#c97b3a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    ),
                     title: "Push Notifications",
                     desc: "Send targeted messages to exactly the right customers: at-risk customers who need a nudge, VIPs deserving a thank-you, or everyone at once.",
                   },
                   {
-                    icon: (
-                      <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0" stroke="#c97b3a" strokeWidth="1.8"/>
-                        <path d="M7.5 7.5a6.5 6.5 0 0 0 0 9" stroke="#e8944a" strokeWidth="1.6" strokeLinecap="round"/>
-                        <path d="M16.5 7.5a6.5 6.5 0 0 1 0 9" stroke="#e8944a" strokeWidth="1.6" strokeLinecap="round"/>
-                        <path d="M4.5 4.5a10.5 10.5 0 0 0 0 15" stroke="#c97b3a" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.45"/>
-                        <path d="M19.5 4.5a10.5 10.5 0 0 1 0 15" stroke="#c97b3a" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.45"/>
-                      </svg>
-                    ),
                     title: "Tap or scan. Stamped instantly.",
-                    desc: "Two ways to check in: customers tap your NFC tag for a hands-free stamp, or you scan their QR code from the app on your business device. Your call, every time.",
+                    desc: "Two ways to check in: customers tap your NFC tag for a hands-free stamp, or you scan their QR code from your device. Your call, every time.",
                   },
                 ].map((card, i) => (
-                  <div
-                    key={i}
-                    className="rounded-2xl p-6 flex flex-col gap-4"
-                    style={{
-                      background: "rgba(201,123,58,0.04)",
-                      border: "1px solid rgba(201,123,58,0.14)",
-                    }}
-                  >
-                    <div
-                      className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                      style={{ background: "rgba(201,123,58,0.1)", border: "1px solid rgba(201,123,58,0.2)" }}
-                    >
-                      {card.icon}
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold mb-1.5" style={{ color: "var(--foreground)" }}>{card.title}</h3>
-                      <p className="text-sm leading-relaxed" style={{ color: "var(--text-sub)" }}>{card.desc}</p>
-                    </div>
+                  <div key={i} className="p-7 flex flex-col gap-3" style={{ background: "#ede8df" }}>
+                    <h3 className="text-base font-bold" style={{ color: "var(--foreground)" }}>{card.title}</h3>
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-sub)" }}>{card.desc}</p>
                   </div>
                 ))}
               </div>
@@ -403,57 +317,53 @@ export default function Home() {
           </ScrollReveal>
 
           {/* Collab Loyalty Programs */}
-          <ScrollReveal className="w-full mt-16" variant="fade-up" threshold={0.08}>
-            <section className="w-full py-16 sm:py-20">
+          <ScrollReveal className="w-full" variant="fade-up" threshold={0.08}>
+            <section className="w-full py-16 sm:py-20" style={{ borderTop: "1px solid rgba(26,20,16,0.08)" }}>
               <div className="flex flex-col lg:flex-row gap-16 items-start">
-
-                {/* Left — copy */}
                 <div className="flex-1 min-w-0">
-                  <h2 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: "var(--foreground)" }}>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(26,20,16,0.38)" }}>
+                    Collabs
+                  </p>
+                  <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "var(--foreground)" }}>
                     New customers.<br />No ad spend.
                   </h2>
-                  <p className="text-base mb-3 max-w-md" style={{ color: "var(--text-sub)" }}>
-                    Flyers cost money. Instagram ads cost more. A referral from a trusted local business? Free, and it converts at 5x the rate.
+                  <p className="text-base max-w-md mb-6" style={{ color: "var(--text-sub)", lineHeight: 1.7 }}>
+                    Flyers cost money. Instagram ads cost more. A referral from a trusted local business? Free, and it converts at 5× the rate. clientIn Collabs lets you team up with a nearby business and tap into their loyal customer base.
                   </p>
-                  <p className="text-base mb-8 max-w-md font-semibold" style={{ color: "var(--foreground)" }}>
-                    ClientIn Collabs lets you team up with a nearby business and instantly tap into their loyal customer base.
-                  </p>
-                  <ul className="flex flex-col gap-3 mb-8">
+                  <ul className="flex flex-col gap-4">
                     {[
-                      "Partner with a complementary business like a gym & a smoothie bar, or a salon & a nail studio",
+                      "Partner with a complementary business — a gym & smoothie bar, or a salon & nail studio",
                       "Their customers earn stamps with you. Your customers earn stamps with them",
                       "One shared reward keeps both customer bases engaged",
                       "Your data, your branding. The collab is opt-in, not a merger",
                     ].map((point, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--text-sub)" }}>
-                        <span className="mt-0.5 w-4 h-4 rounded-full shrink-0 flex items-center justify-center text-[10px] font-black" style={{ background: "rgba(201,123,58,0.15)", color: "#e8944a" }}>✓</span>
+                        <span className="mt-[3px] shrink-0 text-xs font-bold" style={{ color: "#c97b3a" }}>—</span>
                         {point}
                       </li>
                     ))}
                   </ul>
                 </div>
-
-                {/* Right — stat column */}
-                <div className="w-full lg:w-[240px] shrink-0 flex flex-col">
-                  {[
-                    { stat: "5×", label: "higher conversion than paid ads", sub: "Word-of-mouth from a trusted neighbour just hits different." },
-                    { stat: "£0", label: "customer acquisition cost", sub: "No budget needed. Your partner's loyalty does the heavy lifting." },
-                    { stat: "2×", label: "loyalty card engagement", sub: "A shared reward gives customers twice the reason to keep coming back." },
-                  ].map((item, i) => (
-                    <div key={i} className={`py-7 ${i > 0 ? "border-t" : ""}`} style={{ borderColor: "rgba(0,0,0,0.1)" }}>
-                      <p className="text-5xl font-black mb-2 leading-none" style={{ color: "#c97b3a" }}>{item.stat}</p>
-                      <p className="text-sm font-bold mb-1" style={{ color: "var(--foreground)" }}>{item.label}</p>
-                      <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>{item.sub}</p>
-                    </div>
-                  ))}
+                <div className="w-full lg:w-[220px] shrink-0 border-t lg:border-t-0 pt-8 lg:pt-0" style={{ borderColor: "rgba(26,20,16,0.1)" }}>
+                  <div className="flex flex-row lg:flex-col divide-x lg:divide-x-0 lg:divide-y" style={{ "--tw-divide-opacity": 1, borderColor: "rgba(26,20,16,0.1)" } as React.CSSProperties}>
+                    {[
+                      { stat: "5×", label: "higher conversion than paid ads" },
+                      { stat: "£0", label: "customer acquisition cost" },
+                      { stat: "2×", label: "loyalty card engagement" },
+                    ].map((item, i) => (
+                      <div key={i} className="flex-1 py-5 lg:py-7 px-4 lg:px-0" style={{ borderColor: "rgba(26,20,16,0.1)" }}>
+                        <p className="text-3xl lg:text-5xl font-black mb-1 leading-none" style={{ color: "#1a1410" }}>{item.stat}</p>
+                        <p className="text-xs lg:text-sm" style={{ color: "rgba(26,20,16,0.55)" }}>{item.label}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-
               </div>
             </section>
           </ScrollReveal>
 
           {/* Analytics Spotlight */}
-          <ScrollReveal className="w-full" variant="flip-up" threshold={0.08}>
+          <ScrollReveal className="w-full" variant="fade-up" threshold={0.08}>
             <AnalyticsSpotlight />
           </ScrollReveal>
 
@@ -471,46 +381,108 @@ export default function Home() {
       </div>{/* end panel 3 */}
 
       {/* ─── Panel 4: CTA + Footer ─── */}
-      <div className="w-full relative overflow-hidden" style={{ background: "#e8e2d6" }}>
-        {/* Subtle radial glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(201,123,58,0.15) 0%, transparent 70%)" }} />
-        <div className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 py-24 text-center relative z-10">
-          <ScrollReveal staggerChildren variant="scale-up" staggerBase={120} className="w-full flex flex-col items-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ color: "#1a1410" }}>
-              Already a customer?
-            </h2>
-            <p className="text-base mb-8 max-w-lg" style={{ color: "rgba(26,20,16,0.6)" }}>
-              Manage your subscription, view invoices, and change your plan. All in one place.
+      <div className="w-full relative" style={{ background: "#e8e2d6" }}>
+        <div className="w-full max-w-5xl mx-auto flex flex-col items-center px-6 py-24 text-center">
+          <ScrollReveal className="w-full flex flex-col items-center" variant="fade-up">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-6" style={{ color: "rgba(26,20,16,0.38)" }}>
+              Get started
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 max-w-lg" style={{ color: "#1a1410" }}>
+              Ready to fill your diary?
+            </h2>
+            <p className="text-base mb-10 max-w-md" style={{ color: "rgba(26,20,16,0.55)", lineHeight: 1.7 }}>
+              Join hundreds of self-care businesses using clientIn to keep clients coming back.
+            </p>
+            <div className="flex flex-col items-center gap-3 w-full max-w-xs">
+              <a
+                href="/download"
+                className="w-full text-center px-8 py-4 rounded-xl text-sm font-bold tracking-wide transition-opacity hover:opacity-80"
+                style={{ background: "#1a1410", color: "#fff" }}
+              >
+                Download the app →
+              </a>
               <a
                 href="/subscribe"
-                className="px-10 py-4 rounded-xl text-base font-black tracking-wider uppercase transition-all hover:opacity-90 whitespace-nowrap"
-                style={{
-                  background: "linear-gradient(135deg, #c97b3a, #e8944a)",
-                  color: "#fff",
-                  boxShadow: "0 0 30px 2px rgba(201,123,58,0.35)",
-                }}
+                className="text-sm font-semibold transition-opacity hover:opacity-60"
+                style={{ color: "rgba(26,20,16,0.55)" }}
               >
-                Manage My Plan →
+                Manage your plan →
               </a>
             </div>
+            <p className="text-[11px] mt-4" style={{ color: "rgba(26,20,16,0.35)" }}>
+              30-day free trial · No credit card required
+            </p>
           </ScrollReveal>
 
           {/* Footer */}
-          <footer className="w-full pt-16 mt-16 flex flex-col sm:flex-row items-center justify-between gap-4 border-t" style={{ borderColor: "rgba(26,20,16,0.12)" }}>
-            <div className="flex items-center gap-2">
-              <Image src="/favicon.png" alt="clientIn logo" width={24} height={24} className="rounded-md" />
-              <span className="text-sm font-bold" style={{ color: "#1a1410" }}>clientIn</span>
+          <footer className="w-full mt-16 pt-14" style={{ borderTop: "1px solid rgba(26,20,16,0.11)" }}>
+
+            {/* Main grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 pb-12" style={{ borderBottom: "1px solid rgba(26,20,16,0.09)" }}>
+
+              {/* Brand column */}
+              <div className="col-span-1 sm:col-span-2 lg:col-span-1 flex flex-col gap-4">
+                <div className="flex items-center gap-2.5">
+                  <Image src="/logo.png" alt="clientIn" width={26} height={26} className="rounded-full" />
+                  <span className="text-sm font-black tracking-tight" style={{ color: "#1a1410" }}>clientIn</span>
+                </div>
+                <p className="text-sm leading-relaxed" style={{ color: "rgba(26,20,16,0.48)", maxWidth: 210 }}>
+                  Digital loyalty for self-care businesses. Turn first-time clients into loyal regulars.
+                </p>
+                <a href="mailto:hello@clientin.co" className="text-sm font-medium hover:opacity-70 transition-opacity mt-1" style={{ color: "rgba(26,20,16,0.55)" }}>
+                  hello@clientin.co
+                </a>
+              </div>
+
+              {/* Product column */}
+              <div className="flex flex-col gap-3">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-2" style={{ color: "rgba(26,20,16,0.32)" }}>Product</p>
+                {[
+                  { label: "How it works", href: "#how-it-works" },
+                  { label: "Pricing", href: "/subscribe" },
+                  { label: "Analytics", href: "#analytics" },
+                  { label: "NFC & QR stamps", href: "#nfc" },
+                  { label: "Video marketplace", href: "#video" },
+                ].map((l) => (
+                  <a key={l.label} href={l.href} className="text-sm hover:opacity-60 transition-opacity" style={{ color: "rgba(26,20,16,0.65)" }}>{l.label}</a>
+                ))}
+              </div>
+
+              {/* Industries column */}
+              <div className="flex flex-col gap-3">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-2" style={{ color: "rgba(26,20,16,0.32)" }}>Industries</p>
+                {["Barbers", "Hair Salons", "Nail Techs", "Spas & Wellness", "Lash & Brow", "Skincare & Facials"].map((l) => (
+                  <span key={l} className="text-sm" style={{ color: "rgba(26,20,16,0.65)" }}>{l}</span>
+                ))}
+              </div>
+
+              {/* Support column */}
+              <div className="flex flex-col gap-3">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-2" style={{ color: "rgba(26,20,16,0.32)" }}>Support</p>
+                {[
+                  { label: "Manage my plan", href: "/subscribe" },
+                  { label: "Privacy Policy", href: "/privacy" },
+                  { label: "Terms of Service", href: "/terms" },
+                ].map((l) => (
+                  <a key={l.label} href={l.href} className="text-sm hover:opacity-60 transition-opacity" style={{ color: "rgba(26,20,16,0.65)" }}>{l.label}</a>
+                ))}
+              </div>
+
             </div>
-            <div className="flex items-center gap-4">
-              <a href="/terms" className="text-xs hover:underline py-2 px-1" aria-label="Terms of Service" style={{ color: "rgba(26,20,16,0.5)" }}>Terms of Service</a>
-              <a href="/privacy" className="text-xs hover:underline py-2 px-1" aria-label="Privacy Policy" style={{ color: "rgba(26,20,16,0.5)" }}>Privacy Policy</a>
-              <a href="mailto:hello@clientin.co" className="text-xs hover:underline py-2 px-1" aria-label="Contact us" style={{ color: "rgba(26,20,16,0.5)" }}>hello@clientin.co</a>
+
+            {/* Bottom bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-5 pb-6">
+              <span className="text-[11px]" style={{ color: "rgba(26,20,16,0.36)" }}>
+                &copy; {new Date().getFullYear()} clientIn &nbsp;·&nbsp;
+                <a href="/terms" className="hover:opacity-70 transition-opacity">Terms</a>
+                &nbsp;·&nbsp;
+                <a href="/privacy" className="hover:opacity-70 transition-opacity">Privacy</a>
+              </span>
+              <span className="text-[11px]" style={{ color: "rgba(26,20,16,0.3)" }}>
+                Ireland &nbsp;·&nbsp; United Kingdom
+              </span>
             </div>
-            <span className="text-xs" style={{ color: "rgba(26,20,16,0.4)" }}>
-              &copy; {new Date().getFullYear()} clientIn. All rights reserved.
-            </span>
+
           </footer>
         </div>
       </div>{/* end panel 5 */}

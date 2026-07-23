@@ -86,9 +86,12 @@ export default function FeatureList() {
       onMouseLeave={() => setPaused(false)}
     >
         {/* Header */}
-        <div className="text-center mb-10">
+        <div className="mb-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: "rgba(26,20,16,0.38)" }}>
+            Built for you
+          </p>
           <h2 className="text-3xl sm:text-4xl font-extrabold" style={{ color: "var(--foreground)" }}>
-            Built around the problems<br />you actually have
+            Built around the problems<br />you actually have.
           </h2>
         </div>
 
