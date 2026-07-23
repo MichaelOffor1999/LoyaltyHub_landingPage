@@ -10,31 +10,36 @@ const steps = [
   {
     n: "01",
     title: "Find a partner",
-    desc: "Team up with a complementary local business. A barber and a coffee shop. A hair salon and a nail tech. A gym and a smoothie bar. Any two businesses that share the same kind of customer.",
+    desc: "Team up with a complementary local business — a barber and a coffee shop, a hair salon and a nail tech, a gym and a smoothie bar. Any two businesses that share the same kind of customer.",
   },
   {
     n: "02",
-    title: "Create a shared program",
-    desc: "Set up a joint loyalty program directly in the clientIn app. You both brand it your own way. One shared reward, two separate businesses.",
+    title: "Set your stamp targets",
+    desc: "Each business sets its own visit target — for example, 5 visits at the barber and 5 visits at the coffee shop. The customer sees one shared card with two sides, each tracking their progress independently.",
   },
   {
     n: "03",
-    title: "Grow each other's customer base",
-    desc: "Your customers start earning stamps when they visit your partner. Their customers start earning stamps when they visit you. Both loyalty cards update in real time — no manual tracking, no admin.",
+    title: "Both sides must be completed",
+    desc: "The reward only unlocks once the customer has hit the target at both businesses. This means they're actively motivated to keep coming back to you and your partner until both sides of the card are complete.",
+  },
+  {
+    n: "04",
+    title: "Everyone wins",
+    desc: "You get a customer that your partner's loyalty programme built for you. Your partner gets a customer you built for them. The customer gets a reward they genuinely had to earn — which makes it feel worth coming back for.",
   },
 ];
 
 const examples = [
-  { a: "Barber", b: "Coffee Shop", idea: "Every haircut earns a stamp. Every coffee earns a stamp. 10 stamps = a free cut or a free coffee." },
-  { a: "Hair Salon", b: "Nail Tech", idea: "Clients come in for colour, stay loyal for nails. A combined stamp card keeps them visiting both." },
-  { a: "Gym", b: "Smoothie Bar", idea: "Post-workout rewards. Members earn at both. The loyalty card becomes part of their weekly routine." },
-  { a: "Spa", b: "Skincare Clinic", idea: "Wellness clients who book a facial also book a treatment next door. One stamp card keeps them in your ecosystem." },
+  { a: "Barber", aTarget: 5, b: "Coffee Shop", bTarget: 5, reward: "Free haircut + free coffee", idea: "5 cuts at the barber and 5 coffees at the café. Once both sides are complete, the customer unlocks a free round of each." },
+  { a: "Hair Salon", aTarget: 4, b: "Nail Tech", bTarget: 4, reward: "Free treatment or free set", idea: "4 colour appointments and 4 nail sets. Clients are nudged to visit both to complete the card — growing both books in the process." },
+  { a: "Gym", aTarget: 8, b: "Smoothie Bar", bTarget: 8, reward: "Free session + free smoothie", idea: "8 gym sessions and 8 post-workout smoothies. The card becomes part of their routine and the reward feels earned." },
+  { a: "Spa", aTarget: 3, b: "Skincare Clinic", bTarget: 3, reward: "Free facial or free treatment", idea: "3 spa visits and 3 skin treatments. Completing both sides brings a premium reward — keeping clients inside your shared wellness ecosystem." },
 ];
 
 const benefits = [
   { stat: "5×", label: "higher conversion", sub: "A warm referral from a trusted local business converts at 5× the rate of a paid ad." },
   { stat: "£0", label: "acquisition cost", sub: "No budget required. Your partner's loyalty programme does the heavy lifting for you." },
-  { stat: "2×", label: "card engagement", sub: "A shared reward gives customers twice as many reasons to keep tapping and coming back." },
+  { stat: "2×", label: "visit incentive", sub: "Because both sides must be completed before the reward unlocks, customers are twice as motivated to keep visiting." },
 ];
 
 export default function CollabsPage() {
@@ -51,7 +56,7 @@ export default function CollabsPage() {
           Build a loyalty<br />community, together.
         </h1>
         <p className="text-lg max-w-xl mb-10" style={{ color: "rgba(26,20,16,0.55)", lineHeight: 1.7 }}>
-          Two businesses. One shared loyalty programme. Your customers earn stamps when they visit your partner. Their customers earn stamps when they visit you. Everyone benefits.
+          Two businesses. One shared stamp card — with two sides. Customers earn stamps at your place and at your partner's. Only once they've hit the target at both do they unlock the reward. That's what keeps them coming back to you both.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
           <a
@@ -129,26 +134,64 @@ export default function CollabsPage() {
           {examples.map((ex, i) => (
             <div
               key={i}
-              className="rounded-2xl p-6"
+              className="rounded-2xl p-6 flex flex-col gap-4"
               style={{ background: "rgba(26,20,16,0.04)", border: "1px solid rgba(26,20,16,0.08)" }}
             >
-              {/* Partner pill */}
-              <div className="flex items-center gap-2 mb-4">
-                <span
-                  className="px-3 py-1 rounded-full text-xs font-bold"
-                  style={{ background: "rgba(201,123,58,0.12)", color: "#c97b3a" }}
-                >
-                  {ex.a}
-                </span>
-                <span className="text-xs font-bold" style={{ color: "rgba(26,20,16,0.3)" }}>+</span>
-                <span
-                  className="px-3 py-1 rounded-full text-xs font-bold"
-                  style={{ background: "rgba(26,20,16,0.07)", color: "rgba(26,20,16,0.55)" }}
-                >
-                  {ex.b}
-                </span>
+              {/* Dual stamp card */}
+              <div className="flex flex-col gap-2">
+                {/* Side A */}
+                <div className="rounded-xl p-3" style={{ background: "rgba(201,123,58,0.08)", border: "1px solid rgba(201,123,58,0.18)" }}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold" style={{ color: "#c97b3a" }}>{ex.a}</span>
+                    <span className="text-[10px] font-semibold" style={{ color: "rgba(201,123,58,0.7)" }}>{ex.aTarget} visits</span>
+                  </div>
+                  <div className="flex gap-1">
+                    {Array.from({ length: ex.aTarget }).map((_, j) => (
+                      <div
+                        key={j}
+                        className="flex-1 rounded-full"
+                        style={{
+                          height: 6,
+                          background: j < Math.ceil(ex.aTarget * 0.6)
+                            ? "linear-gradient(90deg,#c97b3a,#e8944a)"
+                            : "rgba(201,123,58,0.15)",
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+                {/* Side B */}
+                <div className="rounded-xl p-3" style={{ background: "rgba(26,20,16,0.05)", border: "1px solid rgba(26,20,16,0.1)" }}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold" style={{ color: "rgba(26,20,16,0.65)" }}>{ex.b}</span>
+                    <span className="text-[10px] font-semibold" style={{ color: "rgba(26,20,16,0.38)" }}>{ex.bTarget} visits</span>
+                  </div>
+                  <div className="flex gap-1">
+                    {Array.from({ length: ex.bTarget }).map((_, j) => (
+                      <div
+                        key={j}
+                        className="flex-1 rounded-full"
+                        style={{
+                          height: 6,
+                          background: j < Math.ceil(ex.bTarget * 0.3)
+                            ? "rgba(26,20,16,0.45)"
+                            : "rgba(26,20,16,0.1)",
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+                {/* Reward unlock */}
+                <div className="flex items-center gap-2 pt-1">
+                  <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(201,123,58,0.15)" }}>
+                    <span style={{ fontSize: 9, color: "#c97b3a" }}>★</span>
+                  </div>
+                  <span className="text-[11px] font-semibold" style={{ color: "rgba(26,20,16,0.5)" }}>
+                    Complete both → <span style={{ color: "#c97b3a" }}>{ex.reward}</span>
+                  </span>
+                </div>
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: "rgba(26,20,16,0.6)" }}>{ex.idea}</p>
+              <p className="text-sm leading-relaxed" style={{ color: "rgba(26,20,16,0.55)" }}>{ex.idea}</p>
             </div>
           ))}
         </div>
