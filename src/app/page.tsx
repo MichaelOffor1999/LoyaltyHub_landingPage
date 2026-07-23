@@ -439,10 +439,11 @@ export default function Home() {
                 <p className="text-[10px] font-semibold uppercase tracking-[0.16em] mb-2" style={{ color: "rgba(26,20,16,0.32)" }}>Product</p>
                 {[
                   { label: "How it works", href: "#how-it-works" },
+                  { label: "Collabs", href: "/collabs" },
                   { label: "Pricing", href: "/subscribe" },
-                  { label: "Analytics", href: "#analytics" },
-                  { label: "NFC & QR stamps", href: "#nfc" },
-                  { label: "Video marketplace", href: "#video" },
+                  { label: "Analytics", href: "#features" },
+                  { label: "NFC & QR stamps", href: "#how-it-works" },
+                  { label: "Video marketplace", href: "#main-content" },
                 ].map((l) => (
                   <a key={l.label} href={l.href} className="text-sm hover:opacity-60 transition-opacity" style={{ color: "rgba(26,20,16,0.65)" }}>{l.label}</a>
                 ))}
