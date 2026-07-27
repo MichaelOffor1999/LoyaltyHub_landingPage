@@ -59,27 +59,30 @@ export default function DownloadPage() {
             </div>
           </a>
 
-          {/* Google Play — Coming Soon */}
-          <div
-            className="flex items-center gap-3 px-5 py-3.5 rounded-2xl cursor-not-allowed"
-            style={{ background: "rgba(26,20,16,0.06)", border: "1px solid rgba(26,20,16,0.09)", minWidth: 190 }}
+          {/* Google Play */}
+          <a
+            href="https://play.google.com/store/apps/details?id=com.loyaltyhubapp.android"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-opacity hover:opacity-80"
+            style={{ background: "#1a1410", border: "1px solid rgba(255,255,255,0.08)", minWidth: 190 }}
           >
             <svg width="22" height="24" viewBox="0 0 22 24" fill="none" aria-hidden="true">
-              <path d="M1.22 0.5C0.77 0.76 0.5 1.22 0.5 1.82v20.36c0 .6.27 1.06.72 1.32l.12.07 11.4-11.4v-.27L1.34 0.43l-.12.07z" fill="rgba(26,20,16,0.2)"/>
-              <path d="M16.45 15.9l-3.79-3.79v-.27l3.8-3.8.08.05 4.5 2.56c1.28.73 1.28 1.92 0 2.65l-4.5 2.56-.09.04z" fill="rgba(26,20,16,0.2)"/>
-              <path d="M16.54 15.86L12.66 12 1.22 23.5c.42.44 1.11.5 1.89.05l13.43-7.69" fill="rgba(26,20,16,0.2)"/>
-              <path d="M16.54 8.14L3.11.45C2.33 0 1.64.06 1.22.5L12.66 12l3.88-3.86z" fill="rgba(26,20,16,0.2)"/>
+              <path d="M1.22 0.5C0.77 0.76 0.5 1.22 0.5 1.82v20.36c0 .6.27 1.06.72 1.32l.12.07 11.4-11.4v-.27L1.34 0.43l-.12.07z" fill="#fff"/>
+              <path d="M16.45 15.9l-3.79-3.79v-.27l3.8-3.8.08.05 4.5 2.56c1.28.73 1.28 1.92 0 2.65l-4.5 2.56-.09.04z" fill="#fff"/>
+              <path d="M16.54 15.86L12.66 12 1.22 23.5c.42.44 1.11.5 1.89.05l13.43-7.69" fill="#fff"/>
+              <path d="M16.54 8.14L3.11.45C2.33 0 1.64.06 1.22.5L12.66 12l3.88-3.86z" fill="#fff"/>
             </svg>
             <div className="text-left">
-              <p className="text-[9px] font-medium leading-none mb-0.5" style={{ color: "rgba(26,20,16,0.3)" }}>Coming soon on</p>
-              <p className="text-base font-bold leading-none" style={{ color: "rgba(26,20,16,0.3)" }}>Google Play</p>
+              <p className="text-[9px] font-medium leading-none mb-0.5" style={{ color: "rgba(255,255,255,0.65)" }}>Get it on</p>
+              <p className="text-base font-bold leading-none" style={{ color: "#fff" }}>Google Play</p>
             </div>
-          </div>
+          </a>
 
         </div>
 
         <p className="text-[11px]" style={{ color: "rgba(26,20,16,0.32)" }}>
-          Free to download &nbsp;·&nbsp; iOS 16+ &nbsp;·&nbsp; Ireland
+          Free to download &nbsp;·&nbsp; iOS &amp; Android &nbsp;·&nbsp; Ireland
         </p>
       </section>
 
@@ -125,20 +128,6 @@ export default function DownloadPage() {
             <p className="text-[11px] leading-relaxed" style={{ color: "rgba(26,20,16,0.45)" }}>{f.desc}</p>
           </div>
         ))}
-      </div>
-
-      {/* Re-CTA */}
-      <div className="flex flex-col items-center px-6 pt-10 pb-16 text-center">
-        <p className="text-sm mb-5 font-medium" style={{ color: "rgba(26,20,16,0.45)" }}>Ready to get started?</p>
-        <a
-          href="https://apps.apple.com/ie/app/clientin/id6759510406"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-8 py-4 rounded-xl text-sm font-bold tracking-wide transition-opacity hover:opacity-80"
-          style={{ background: "#1a1410", color: "#fff" }}
-        >
-          Download on the App Store →
-        </a>
       </div>
 
       {/* Footer */}
