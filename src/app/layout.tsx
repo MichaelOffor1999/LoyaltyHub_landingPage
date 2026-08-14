@@ -77,6 +77,8 @@ export const metadata: Metadata = {
     },
   },
   icons: {
+    icon: [{ url: "/icon.png", type: "image/png" }],
+    shortcut: [{ url: "/icon.png", type: "image/png" }],
     apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
   },
 };
