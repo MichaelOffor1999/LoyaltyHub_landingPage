@@ -81,6 +81,9 @@ export const metadata: Metadata = {
     shortcut: [{ url: "/icon.png", type: "image/png" }],
     apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
   },
+  verification: {
+    google: "DhCX8dpPvwY-lj5nMza8qiyhMi1BYaLzKdWbKtyobSo",
+  },
 };
 
 export default function RootLayout({
