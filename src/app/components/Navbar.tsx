@@ -5,7 +5,7 @@ import Image from "next/image";
 const links = [
   { label: "How it works", href: "/#how-it-works" },
   { label: "Collabs",      href: "/collabs" },
-  { label: "Pricing",      href: "/subscribe" },
+  { label: "Manage Plan",  href: "/subscribe" },
   { label: "Download",     href: "/download" },
 ];
 

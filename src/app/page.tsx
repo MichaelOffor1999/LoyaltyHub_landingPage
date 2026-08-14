@@ -440,7 +440,7 @@ export default function Home() {
                 {[
                   { label: "How it works", href: "#how-it-works" },
                   { label: "Collabs", href: "/collabs" },
-                  { label: "Pricing", href: "/subscribe" },
+                  { label: "Manage Plan", href: "/subscribe" },
                   { label: "Analytics", href: "#features" },
                   { label: "NFC & QR stamps", href: "#how-it-works" },
                   { label: "Video marketplace", href: "#main-content" },
