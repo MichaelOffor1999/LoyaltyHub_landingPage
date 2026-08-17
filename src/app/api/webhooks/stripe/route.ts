@@ -8,6 +8,7 @@ import {
   priceIdToPlan,
   requireEnv,
 } from "@/lib/billing/config";
+import { handleMembershipWebhookEvent } from "@/lib/billing/memberships";
 
 const SUPABASE_URL = getSupabaseUrl();
 const SUPABASE_SERVICE_ROLE_KEY = requireEnv("SUPABASE_SERVICE_ROLE_KEY");
@@ -56,6 +57,14 @@ export async function POST(req: NextRequest) {
   const dataObject = (event.data as Record<string, unknown>)?.object as Record<string, unknown>;
 
   try {
+    // Membership events (metadata.kind === "membership", plus account.updated
+    // for Connect onboarding and charge.dispute.created for chargebacks) are a
+    // separate flow from business SaaS billing below — route them there first.
+    const handledAsMembership = await handleMembershipWebhookEvent(eventType, dataObject, stripe, supabase);
+    if (handledAsMembership) {
+      return NextResponse.json({ received: true });
+    }
+
     switch (eventType) {
       // ── Checkout completed → activate paid plan (or start Stripe trial) ──
       case "checkout.session.completed": {
