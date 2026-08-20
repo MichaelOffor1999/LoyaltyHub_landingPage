@@ -65,11 +65,16 @@ function mapMembershipStatus(s: Stripe.Subscription.Status): "incomplete" | "act
   return "incomplete";
 }
 
+// As of Stripe's 2025-03-31 API version, current_period_start/end moved off
+// the top-level Subscription object onto each SubscriptionItem — reading
+// them off `sub` directly (the pre-2025-03-31 shape) silently returns
+// undefined forever. A membership subscription always has exactly one price
+// (one included plan), so the first item's period is the subscription's.
 function periodBounds(sub: Stripe.Subscription): { start: string | null; end: string | null } {
-  const raw = sub as unknown as { current_period_start?: number; current_period_end?: number };
+  const item = sub.items.data[0] as unknown as { current_period_start?: number; current_period_end?: number } | undefined;
   return {
-    start: raw.current_period_start ? new Date(raw.current_period_start * 1000).toISOString() : null,
-    end: raw.current_period_end ? new Date(raw.current_period_end * 1000).toISOString() : null,
+    start: item?.current_period_start ? new Date(item.current_period_start * 1000).toISOString() : null,
+    end: item?.current_period_end ? new Date(item.current_period_end * 1000).toISOString() : null,
   };
 }
 
@@ -170,6 +175,7 @@ export async function handleMembershipWebhookEvent(
         .update({
           stripe_connect_charges_enabled: !!account.charges_enabled,
           stripe_connect_details_submitted: !!account.details_submitted,
+          stripe_connect_disabled_reason: account.requirements?.disabled_reason ?? null,
         })
         .eq("id", biz.id);
       return true;
