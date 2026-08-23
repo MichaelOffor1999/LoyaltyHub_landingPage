@@ -32,7 +32,7 @@ export function StarRatingInput({
         >
           <Star
             size={size}
-            color={i <= display ? "var(--brand)" : "var(--card-border)"}
+            color={i <= display ? "var(--brand)" : "rgba(255,255,255,0.45)"}
             fill={i <= display ? "var(--brand)" : "transparent"}
             strokeWidth={1.5}
           />
