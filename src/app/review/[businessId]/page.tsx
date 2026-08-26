@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { Loader2, CheckCircle2, ExternalLink, Star as StarIcon } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { StarRatingInput } from "../../components/StarRatingInput";
+import { PollWidget } from "../../components/PollWidget";
 
 const DEVICE_TOKEN_KEY = "clientin_review_device_token";
 
@@ -40,6 +42,7 @@ export default function ReviewPage() {
 
   const [status, setStatus] = useState<Status>("loading");
   const [business, setBusiness] = useState<Business | null>(null);
+  const [flowStep, setFlowStep] = useState<"checking" | "poll" | "review">("checking");
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [reviewerName, setReviewerName] = useState("");
@@ -225,94 +228,122 @@ export default function ReviewPage() {
             </div>
 
             <div className="px-6 pb-8">
-              {(status === "ready" || status === "submitting") && (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                  <p className="text-sm text-center" style={{ color: fgSub }}>
-                    How was your experience?
-                  </p>
-                  <StarRatingInput value={rating} onChange={setRating} disabled={status === "submitting"} />
-                  <textarea
-                    value={reviewText}
-                    onChange={(e) => setReviewText(e.target.value)}
-                    disabled={status === "submitting"}
-                    placeholder="Tell us more (optional)"
-                    rows={4}
-                    className="w-full rounded-xl px-4 py-3 text-sm outline-none resize-none"
-                    style={{ background: "rgba(255,255,255,0.06)", border: innerBorder, color: fg }}
-                  />
-                  <input
-                    type="text"
-                    value={reviewerName}
-                    onChange={(e) => setReviewerName(e.target.value)}
-                    disabled={status === "submitting"}
-                    placeholder="Your name (optional)"
-                    className="w-full rounded-xl px-4 py-3 text-sm outline-none"
-                    style={{ background: "rgba(255,255,255,0.06)", border: innerBorder, color: fg }}
-                  />
-                  {error && (
-                    <p className="text-sm rounded-xl px-4 py-3" style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)" }}>
-                      {error}
-                    </p>
-                  )}
-                  <button
-                    type="submit"
-                    disabled={status === "submitting" || rating < 1}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold tracking-wide transition-all hover:opacity-90 disabled:opacity-60"
-                    style={{
-                      background: business.review_button_color || "var(--brand)",
-                      color: business.review_button_text_color || "#fff",
-                    }}
-                  >
-                    {status === "submitting" ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" /> Submitting…
-                      </>
-                    ) : (
-                      "Submit review"
-                    )}
-                  </button>
-                </form>
+              {/* Mounted once businessId is known and kept mounted throughout —
+                  it drives flowStep via onStatusKnown, and we just toggle its
+                  visibility rather than remounting it (which would re-fetch and
+                  lose any in-progress vote). */}
+              <div style={{ display: flowStep === "poll" ? "block" : "none" }}>
+                <PollWidget
+                  businessId={businessId}
+                  businessName={business.name}
+                  fg={fg}
+                  fgSub={fgSub}
+                  fgMuted={fgMuted}
+                  innerBorder={innerBorder}
+                  onStatusKnown={(hasPoll) => setFlowStep(hasPoll ? "poll" : "review")}
+                  onSkip={() => setFlowStep("review")}
+                  onContinue={() => setFlowStep("review")}
+                />
+              </div>
+
+              {flowStep === "checking" && (
+                <div className="flex justify-center py-10">
+                  <Loader2 className="w-6 h-6 animate-spin" style={{ color: "var(--brand)" }} />
+                </div>
               )}
 
-              {status === "submitted" && (
-                <div className="flex flex-col items-center text-center gap-4">
-                  <CheckCircle2 className="w-12 h-12" style={{ color: "#4ade80" }} />
-                  <p className="text-base font-bold" style={{ color: fg }}>
-                    Thanks for your review!
-                  </p>
-                  {business.google_maps_url && (
-                    <>
-                      <p className="text-sm" style={{ color: fgSub }}>
-                        Mind sharing it on Google too? It really helps.
+              {flowStep === "review" && (
+                <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
+                  {(status === "ready" || status === "submitting") && (
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                      <p className="text-sm text-center" style={{ color: fgSub }}>
+                        How was your experience?
                       </p>
-                      <button
-                        onClick={handleGoogleReview}
-                        className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold tracking-wide transition-all hover:opacity-90"
+                      <StarRatingInput value={rating} onChange={setRating} disabled={status === "submitting"} />
+                      <textarea
+                        value={reviewText}
+                        onChange={(e) => setReviewText(e.target.value)}
+                        disabled={status === "submitting"}
+                        placeholder="Tell us more (optional)"
+                        rows={4}
+                        className="w-full rounded-xl px-4 py-3 text-sm outline-none resize-none"
                         style={{ background: "rgba(255,255,255,0.06)", border: innerBorder, color: fg }}
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        Also leave a Google review
-                      </button>
-                      {copied && (
-                        <p className="text-xs" style={{ color: fgMuted }}>
-                          Your review was copied — just paste it in on Google.
+                      />
+                      <input
+                        type="text"
+                        value={reviewerName}
+                        onChange={(e) => setReviewerName(e.target.value)}
+                        disabled={status === "submitting"}
+                        placeholder="Your name (optional)"
+                        className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+                        style={{ background: "rgba(255,255,255,0.06)", border: innerBorder, color: fg }}
+                      />
+                      {error && (
+                        <p className="text-sm rounded-xl px-4 py-3" style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)" }}>
+                          {error}
                         </p>
                       )}
-                    </>
+                      <button
+                        type="submit"
+                        disabled={status === "submitting" || rating < 1}
+                        className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold tracking-wide transition-all hover:opacity-90 disabled:opacity-60"
+                        style={{
+                          background: business.review_button_color || "var(--brand)",
+                          color: business.review_button_text_color || "#fff",
+                        }}
+                      >
+                        {status === "submitting" ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" /> Submitting…
+                          </>
+                        ) : (
+                          "Submit review"
+                        )}
+                      </button>
+                    </form>
                   )}
-                </div>
-              )}
 
-              {status === "cooldown" && (
-                <div className="flex flex-col items-center text-center gap-3">
-                  <CheckCircle2 className="w-12 h-12" style={{ color: "var(--brand)" }} />
-                  <p className="text-base font-bold" style={{ color: fg }}>
-                    You&apos;ve already reviewed this business today
-                  </p>
-                  <p className="text-sm" style={{ color: fgSub }}>
-                    Thanks — come back tomorrow if you&apos;d like to leave another one.
-                  </p>
-                </div>
+                  {status === "submitted" && (
+                    <div className="flex flex-col items-center text-center gap-4">
+                      <CheckCircle2 className="w-12 h-12" style={{ color: "#4ade80" }} />
+                      <p className="text-base font-bold" style={{ color: fg }}>
+                        Thanks for your review!
+                      </p>
+                      {business.google_maps_url && (
+                        <>
+                          <p className="text-sm" style={{ color: fgSub }}>
+                            Mind sharing it on Google too? It really helps.
+                          </p>
+                          <button
+                            onClick={handleGoogleReview}
+                            className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold tracking-wide transition-all hover:opacity-90"
+                            style={{ background: "rgba(255,255,255,0.06)", border: innerBorder, color: fg }}
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            Also leave a Google review
+                          </button>
+                          {copied && (
+                            <p className="text-xs" style={{ color: fgMuted }}>
+                              Your review was copied — just paste it in on Google.
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  {status === "cooldown" && (
+                    <div className="flex flex-col items-center text-center gap-3">
+                      <CheckCircle2 className="w-12 h-12" style={{ color: "var(--brand)" }} />
+                      <p className="text-base font-bold" style={{ color: fg }}>
+                        You&apos;ve already reviewed this business today
+                      </p>
+                      <p className="text-sm" style={{ color: fgSub }}>
+                        Thanks — come back tomorrow if you&apos;d like to leave another one.
+                      </p>
+                    </div>
+                  )}
+                </motion.div>
               )}
             </div>
 
